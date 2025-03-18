@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>분수 개념 평가</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #ff9e4f;
+            --correct-color: #4CAF50;
+            --incorrect-color: #f44336;
+            --background-color: #f9f9f9;
+            --question-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #dddddd;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+            font-size: 18px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin: 0;
+        }
+
+        .instructions {
+            background-color: #e9f5ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #3a5a8c;
+        }
+
+        button:focus {
+            outline: 3px solid #a4c2f4;
+        }
+
+        button.secondary {
+            background-color: var(--secondary-color);
+        }
+
+        button.secondary:hover {
+            background-color: #e78c3d;
+        }
+
+        .question-container {
+            margin-bottom: 40px;
+            background-color: var(--question-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+            display: flow-root; /* 자식 요소 float 문제 해결에 도움 */
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .question-number {
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.2em;
+        }
+
+        .question-type {
+            color: #666;
+            font-style: italic;
+        }
+
+        .question-text {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .option:hover, .option:focus {
+            border-color: var(--primary-color);
+            background-color: #f0f5ff;
+        }
+
+        .option.selected {
+            border-color: var(--primary-color);
+            background-color: #e6effd;
+        }
+
+        .option input[type="radio"],
+        .option input[type="checkbox"] {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .option label {
+            cursor: pointer;
+            flex-grow: 1;
+        }
+
+        .matching-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .matching-item {
+            padding: 10px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .matching-select {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            font-size: 1em;
+        }
+
+        .fraction-visual {
+            max-width: 200px;
+            margin: 10px auto;
+        }
+
+        .fraction-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 3px solid #333;
+            margin: 10px auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fraction-segment {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transform-origin: center;
+            background-color: #f0f0f0;
+        }
+
+        .fraction-colored {
+            background-color: var(--secondary-color);
+        }
+
+        .fraction-grid {
+            display: grid;
+            width: 150px;
+            height: 150px;
+            border: 3px solid #333;
+            margin: 10px auto;
+        }
+
+        .grid-cell {
+            border: 1px solid #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .grid-cell.colored {
+            background-color: var(--secondary-color);
+        }
+
+        .number-line {
+            width: 100%;
+            height: 60px;
+            position: relative;
+            margin: 30px 0;
+        }
+
+        .number-line-bar {
+            position: absolute;
+            top: 30px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background-color: #333;
+        }
+
+        .number-marker {
+            position: absolute;
+            top: 20px;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+
+        .number-marker::after {
+            content: '';
+            display: block;
+            width: 2px;
+            height: 10px;
+            background-color: #333;
+            margin: 5px auto 0;
+        }
+
+        .interactive-marker {
+            position: absolute;
+            top: 15px;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 1em;
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .fraction-input-container {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 20px;
+            vertical-align: middle;
+        }
+
+        .fraction-input {
+            width: 70px;
+            padding: 8px;
+            font-size: 1.2em;
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
+            text-align: center;
+            margin: 4px 0;
+        }
+
+        .fraction-divider {
+            width: 80px;
+            height: 3px;
+            background-color: #333;
+            margin: 3px 0;
+            border-radius: 1.5px;
+        }
+        
+        /* 입력 필드에 포커스될 때 스타일 */
+        .fraction-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.2);
+            outline: none;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background-color: #e8f5e9;
+            color: var(--correct-color);
+            border-left: 5px solid var(--correct-color);
+        }
+
+        .feedback.incorrect {
+            background-color: #ffebee;
+            color: var(--incorrect-color);
+            border-left: 5px solid var(--incorrect-color);
+        }
+
+        .results-container {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .results-score {
+            font-size: 1.5em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .results-breakdown {
+            margin-top: 20px;
+        }
+
+        .result-category {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        .result-category-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 10px;
+        }
+
+        .progress-text {
+            text-align: right;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .question-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        @media print {
+            .controls, .submit-btn, .question-nav, button {
+                display: none !important;
+            }
+
+            .question-container {
+                page-break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ddd;
+                margin-bottom: 30px;
+            }
+
+            body {
+                padding: 0;
+                font-size: 16px;
+            }
+            
+            /* 시각적 컨텐츠가 있는 요소들이 잘리지 않도록 */
+            .fraction-visual, .fraction-circle, .fraction-grid, .number-line, svg {
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+            }
+            
+            /* PDF 페이지 여백 컨트롤 */
+            @page {
+                margin: 15mm;
+                size: A4;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+                font-size: 16px;
+            }
+
+            .matching-container {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+        }
+
+        /* 접근성 향상을 위한 스타일 */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            margin: -1px;
+            padding: 0;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .keyboard-focus:focus {
+            outline: 3px solid #4a90e2;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div id="assessment-container">
+        <div class="header">
+            <h1>분수 개념 평가</h1>
+            <p>학습장애 학생을 위한 30문제</p>
+        </div>
+
+        <div class="instructions">
+            <h2>평가 안내</h2>
+            <p>이 평가는 분수 개념의 이해도를 측정하기 위한 30개의 문제로 구성되어 있습니다.</p>
+            <p>마우스나 키보드(Tab, Space, Enter 키)를 사용하여 답을 선택하거나 입력하세요.</p>
+            <p>각 문제를 차례대로 풀고 '제출' 버튼을 눌러 결과를 확인하세요.</p>
+        </div>
+
+        <div class="controls">
+            <div class="button-group">
+                <button id="print-btn">인쇄하기</button>
+                <button id="pdf-btn">PDF 저장</button>
+            </div>
+            <div class="button-group">
+                <button id="check-answers-btn" class="secondary">답안 확인</button>
+                <button id="reset-btn">다시 시작</button>
+            </div>
+        </div>
+
+        <div id="questions">
+            <!-- 문제 1: 부분-전체 관계 이해 -->
+            <div class="question-container" id="q1">
+                <div class="question-header">
+                    <div class="question-number">문제 1</div>
+                    <div class="question-type">부분-전체 관계</div>
+                </div>
+                <div class="question-text">아래 원에서 색칠된 부분을 분수로 표현하세요.</div>
+                <div class="fraction-circle">
+                    <div class="fraction-segment fraction-colored" style="clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 50% 100%)"></div>
+                </div>
+                <div class="fraction-input-container">
+                    <input type="number" min="0" class="fraction-input numerator" id="q1-numerator" aria-label="분자">
+                    <div class="fraction-divider"></div>
+                    <input type="number" min="1" class="fraction-input denominator" id="q1-denominator" aria-label="분모">
+                </div>
+                <div class="feedback" id="q1-feedback"></div>
+            </div>
+
+            <!-- 문제 2: 단위 분수 인식 -->
+            <div class="question-container" id="q2">
+                <div class="question-header">
+                    <div class="question-number">문제 2</div>
+                    <div class="question-type">단위 분수 인식</div>
+                </div>
+                <div class="question-text">다음 중 1/4을 나타내는 그림은 무엇인가요?</div>
+                <div class="options">
+                    <div class="option" tabindex="0" data-value="A">
+                        <input type="radio" name="q2" id="q2-A" value="A">
+                        <label for="q2-A">
+                            <div class="fraction-circle" style="width: 80px; height: 80px">
+                                <div class="fraction-segment fraction-colored" style="clip-path: polygon(50% 50%, 50% 0%, 75% 0%, 75% 75%, 0% 75%, 0% 50%)"></div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="B">
+                        <input type="radio" name="q2" id="q2-B" value="B">
+                        <label for="q2-B">
+                            <div class="fraction-circle" style="width: 80px; height: 80px">
+                                <div class="fraction-segment fraction-colored" style="clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 50%)"></div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="C">
+                        <input type="radio" name="q2" id="q2-C" value="C">
+                        <label for="q2-C">
+                            <div class="fraction-circle" style="width: 80px; height: 80px">
+                                <div class="fraction-segment fraction-colored" style="clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 50% 100%)"></div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="D">
+                        <input type="radio" name="q2" id="q2-D" value="D">
+                        <label for="q2-D">
+                            <div class="fraction-circle" style="width: 80px; height: 80px">
+                                <div class="fraction-segment fraction-colored" style="clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 50%, 50% 50%)"></div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <div class="feedback" id="q2-feedback"></div>
+            </div>
+
+            <!-- 문제 3: 분모와 분자의 의미 -->
+            <div class="question-container" id="q3">
+                <div class="question-header">
+                    <div class="question-number">문제 3</div>
+                    <div class="question-type">분모와 분자의 의미</div>
+                </div>
+                <div class="question-text">분수 3/5에서, 분모 5는 무엇을 의미하나요?</div>
+                <div class="options">
+                    <div class="option" tabindex="0" data-value="A">
+                        <input type="radio" name="q3" id="q3-A" value="A">
+                        <label for="q3-A">전체의 크기</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="B">
+                        <input type="radio" name="q3" id="q3-B" value="B">
+                        <label for="q3-B">부분의 개수</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="C">
+                        <input type="radio" name="q3" id="q3-C" value="C">
+                        <label for="q3-C">전체를 나눈 조각의 수</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="D">
+                        <input type="radio" name="q3" id="q3-D" value="D">
+                        <label for="q3-D">가지고 있는 조각의 수</label>
+                    </div>
+                </div>
+                <div class="feedback" id="q3-feedback"></div>
+            </div>
+
+            <!-- 문제 4: 분수 읽기/쓰기 -->
+            <div class="question-container" id="q4">
+                <div class="question-header">
+                    <div class="question-number">문제 4</div>
+                    <div class="question-type">분수 읽기/쓰기</div>
+                </div>
+                <div class="question-text">'오분의 이'를 분수로 쓰세요.</div>
+                <div class="fraction-input-container">
+                    <input type="number" min="0" class="fraction-input numerator" id="q4-numerator" aria-label="분자">
+                    <div class="fraction-divider"></div>
+                    <input type="number" min="1" class="fraction-input denominator" id="q4-denominator" aria-label="분모">
+                </div>
+                <div class="feedback" id="q4-feedback"></div>
+            </div>
+
+            <!-- 문제 5: 다양한 모델에서의 분수 -->
+            <div class="question-container" id="q5">
+                <div class="question-header">
+                    <div class="question-number">문제 5</div>
+                    <div class="question-type">다양한 모델에서의 분수</div>
+                </div>
+                <div class="question-text">분수 2/6을 나타내는 그림을 모두 선택하세요.</div>
+                <div class="options">
+                    <div class="option" tabindex="0" data-value="A">
+                        <input type="checkbox" name="q5" id="q5-A" value="A">
+                        <label for="q5-A">
+                            <div class="fraction-grid" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr);">
+                                <div class="grid-cell colored"></div>
+                                <div class="grid-cell colored"></div>
+                                <div class="grid-cell"></div>
+                                <div class="grid-cell"></div>
+                                <div class="grid-cell"></div>
+                                <div class="grid-cell"></div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="B">
+                        <input type="checkbox" name="q5" id="q5-B" value="B">
+                        <label for="q5-B">
+                            <div class="fraction-grid" style="grid-template-columns: repeat(6, 1fr); grid-template-rows: 1fr;">
+                                <div class="grid-cell colored"></div>
+                                <div class="grid-cell colored"></div>
+                                <div class="grid-cell"></div>
+                                <div class="grid-cell"></div>
+                                <div class="grid-cell"></div>
+                                <div class="grid-cell"></div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="C">
+                        <input type="checkbox" name="q5" id="q5-C" value="C">
+                        <label for="q5-C">
+                            <div class="fraction-circle">
+                                <div class="fraction-segment fraction-colored" style="clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 33%, 50% 33%)"></div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="D">
+                        <input type="checkbox" name="q5" id="q5-D" value="D">
+                        <label for="q5-D">
+                            <div class="number-line" style="width: 300px; height: 40px; margin: 0 auto;">
+                                <div class="number-line-bar"></div>
+                                <div class="number-marker" style="left: 0%;">0</div>
+                                <div class="number-marker" style="left: 33.3%;">1/3</div>
+                                <div class="number-marker" style="left: 66.6%;">2/3</div>
+                                <div class="number-marker" style="left: 100%;">1</div>
+                                <div class="interactive-marker" style="left: 33.3%;"></div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <div class="feedback" id="q5-feedback"></div>
+            </div>
+
+            <!-- 문제 6: 시각적 동치분수 -->
+            <div class="question-container" id="q6">
+                <div class="question-header">
+                    <div class="question-number">문제 6</div>
+                    <div class="question-type">동치분수</div>
+                </div>
+                <div class="question-text">다음 그림에서 1/2와 동치인 분수를 모두 고르세요.</div>
+                <div class="fraction-grid" style="grid-template-columns: repeat(2, 1fr); grid-template-rows: 1fr;">
+                    <div class="grid-cell colored"></div>
+                    <div class="grid-cell"></div>
+                </div>
+                <div class="options">
+                    <div class="option" tabindex="0" data-value="A">
+                        <input type="checkbox" name="q6" id="q6-A" value="A">
+                        <label for="q6-A">2/4</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="B">
+                        <input type="checkbox" name="q6" id="q6-B" value="B">
+                        <label for="q6-B">3/6</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="C">
+                        <input type="checkbox" name="q6" id="q6-C" value="C">
+                        <label for="q6-C">4/6</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="D">
+                        <input type="checkbox" name="q6" id="q6-D" value="D">
+                        <label for="q6-D">5/10</label>
+                    </div>
+                </div>
+                <div class="feedback" id="q6-feedback"></div>
+            </div>
+
+            <!-- 문제 7: 간단한 약분/통분 -->
+            <div class="question-container" id="q7">
+                <div class="question-header">
+                    <div class="question-number">문제 7</div>
+                    <div class="question-type">약분/통분</div>
+                </div>
+                <div class="question-text">분수 8/12를 가장 간단한 형태로 약분하세요.</div>
+                <div class="fraction-input-container">
+                    <input type="number" min="0" class="fraction-input numerator" id="q7-numerator" aria-label="분자">
+                    <div class="fraction-divider"></div>
+                    <input type="number" min="1" class="fraction-input denominator" id="q7-denominator" aria-label="분모">
+                </div>
+                <div class="feedback" id="q7-feedback"></div>
+            </div>
+
+            <!-- 문제 8: 분수 패턴 완성하기 -->
+            <div class="question-container" id="q8">
+                <div class="question-header">
+                    <div class="question-number">문제 8</div>
+                    <div class="question-type">분수 패턴</div>
+                </div>
+                <div class="question-text">패턴을 완성하세요: 1/3 = 2/6 = ?/9 = 4/12</div>
+                <div class="fraction-input-container">
+                    <input type="number" min="0" class="fraction-input numerator" id="q8-numerator" aria-label="분자">
+                    <div class="fraction-divider"></div>
+                    <input type="number" min="1" class="fraction-input denominator" id="q8-denominator" value="9" disabled aria-label="분모">
+                </div>
+                <div class="feedback" id="q8-feedback"></div>
+            </div>
+
+            <!-- 문제 9: 실생활 동치분수 -->
+            <div class="question-container" id="q9">
+                <div class="question-header">
+                    <div class="question-number">문제 9</div>
+                    <div class="question-type">실생활 동치분수</div>
+                </div>
+                <div class="question-text">민수는 피자 한 판의 1/2을 먹었고, 영희는 같은 크기의 피자 한 판에서 2/4를 먹었습니다. 누가 더 많은 피자를 먹었나요?</div>
+                <div class="options">
+                    <div class="option" tabindex="0" data-value="A">
+                        <input type="radio" name="q9" id="q9-A" value="A">
+                        <label for="q9-A">민수가 더 많이 먹었다</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="B">
+                        <input type="radio" name="q9" id="q9-B" value="B">
+                        <label for="q9-B">영희가 더 많이 먹었다</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="C">
+                        <input type="radio" name="q9" id="q9-C" value="C">
+                        <label for="q9-C">둘 다 같은 양을 먹었다</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="D">
+                        <input type="radio" name="q9" id="q9-D" value="D">
+                        <label for="q9-D">알 수 없다</label>
+                    </div>
+                </div>
+                <div class="feedback" id="q9-feedback"></div>
+            </div>
+
+            <!-- 문제 10: 분수와 소수의 관계 -->
+            <div class="question-container" id="q10">
+                <div class="question-header">
+                    <div class="question-number">문제 10</div>
+                    <div class="question-type">분수와 소수</div>
+                </div>
+                <div class="question-text">분수 3/4를 소수로 나타내세요.</div>
+                <input type="number" step="0.01" class="answer-input" id="q10-answer" aria-label="소수 답안">
+                <div class="feedback" id="q10-feedback"></div>
+            </div>
+
+            <!-- 문제 11: 같은 분모 비교 -->
+            <div class="question-container" id="q11">
+                <div class="question-header">
+                    <div class="question-number">문제 11</div>
+                    <div class="question-type">분수 크기 비교</div>
+                </div>
+                <div class="question-text">다음 중 가장 큰 분수는 무엇인가요?</div>
+                <div class="options">
+                    <div class="option" tabindex="0" data-value="A">
+                        <input type="radio" name="q11" id="q11-A" value="A">
+                        <label for="q11-A">2/7</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="B">
+                        <input type="radio" name="q11" id="q11-B" value="B">
+                        <label for="q11-B">3/7</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="C">
+                        <input type="radio" name="q11" id="q11-C" value="C">
+                        <label for="q11-C">1/7</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="D">
+                        <input type="radio" name="q11" id="q11-D" value="D">
+                        <label for="q11-D">5/7</label>
+                    </div>
+                </div>
+                <div class="feedback" id="q11-feedback"></div>
+            </div>
+
+            <!-- 문제 12: 같은 분자 비교 -->
+            <div class="question-container" id="q12">
+                <div class="question-header">
+                    <div class="question-number">문제 12</div>
+                    <div class="question-type">분수 크기 비교</div>
+                </div>
+                <div class="question-text">다음 중 가장 작은 분수는 무엇인가요?</div>
+                <div class="options">
+                    <div class="option" tabindex="0" data-value="A">
+                        <input type="radio" name="q12" id="q12-A" value="A">
+                        <label for="q12-A">3/4</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="B">
+                        <input type="radio" name="q12" id="q12-B" value="B">
+                        <label for="q12-B">3/5</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="C">
+                        <input type="radio" name="q12" id="q12-C" value="C">
+                        <label for="q12-C">3/8</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="D">
+                        <input type="radio" name="q12" id="q12-D" value="D">
+                        <label for="q12-D">3/6</label>
+                    </div>
+                </div>
+                <div class="feedback" id="q12-feedback"></div>
+            </div>
+
+            <!-- 문제 13: 벤치마크 분수 사용 -->
+            <div class="question-container" id="q13">
+                <div class="question-header">
+                    <div class="question-number">문제 13</div>
+                    <div class="question-type">벤치마크 분수</div>
+                </div>
+                <div class="question-text">다음 분수 중 1/2보다 큰 것을 모두 고르세요.</div>
+                <div class="options">
+                    <div class="option" tabindex="0" data-value="A">
+                        <input type="checkbox" name="q13" id="q13-A" value="A">
+                        <label for="q13-A">3/5</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="B">
+                        <input type="checkbox" name="q13" id="q13-B" value="B">
+                        <label for="q13-B">2/5</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="C">
+                        <input type="checkbox" name="q13" id="q13-C" value="C">
+                        <label for="q13-C">4/7</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="D">
+                        <input type="checkbox" name="q13" id="q13-D" value="D">
+                        <label for="q13-D">3/8</label>
+                    </div>
+                </div>
+                <div class="feedback" id="q13-feedback"></div>
+            </div>
+
+            <!-- 문제 14: 시각적 비교 -->
+            <div class="question-container" id="q14">
+                <div class="question-header">
+                    <div class="question-number">문제 14</div>
+                    <div class="question-type">시각적 비교</div>
+                </div>
+                <div class="question-text">아래 그림에서 A와 B 중 어느 부분이 더 큰가요?</div>
+                <div style="display: flex; justify-content: space-around;">
+                    <div>
+                        <div class="fraction-circle">
+                            <div class="fraction-segment fraction-colored" style="clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 50% 100%)"></div>
+                        </div>
+                        <p style="text-align: center;">A: 1/2</p>
+                    </div>
+                    <div>
+                        <div class="fraction-grid" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr);">
+                            <div class="grid-cell colored"></div>
+                            <div class="grid-cell colored"></div>
+                            <div class="grid-cell colored"></div>
+                            <div class="grid-cell"></div>
+                            <div class="grid-cell"></div>
+                            <div class="grid-cell"></div>
+                        </div>
+                        <p style="text-align: center;">B: 3/6</p>
+                    </div>
+                </div>
+                <div class="options">
+                    <div class="option" tabindex="0" data-value="A">
+                        <input type="radio" name="q14" id="q14-A" value="A">
+                        <label for="q14-A">A가 더 크다</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="B">
+                        <input type="radio" name="q14" id="q14-B" value="B">
+                        <label for="q14-B">B가 더 크다</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="C">
+                        <input type="radio" name="q14" id="q14-C" value="C">
+                        <label for="q14-C">A와 B는 같다</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="D">
+                        <input type="radio" name="q14" id="q14-D" value="D">
+                        <label for="q14-D">알 수 없다</label>
+                    </div>
+                </div>
+                <div class="feedback" id="q14-feedback"></div>
+            </div>
+
+            <!-- 문제 15: 수직선에서의 위치 -->
+            <div class="question-container" id="q15">
+                <div class="question-header">
+                    <div class="question-number">문제 15</div>
+                    <div class="question-type">수직선에서의 위치</div>
+                </div>
+                <div class="question-text">수직선 위에 분수 2/3이 있는 위치를 표시하세요.</div>
+                <div class="number-line" id="number-line-q15">
+                    <div class="number-line-bar"></div>
+                    <div class="number-marker" style="left: 0%;">0</div>
+                    <div class="number-marker" style="left: 25%;">1/4</div>
+                    <div class="number-marker" style="left: 50%;">1/2</div>
+                    <div class="number-marker" style="left: 75%;">3/4</div>
+                    <div class="number-marker" style="left: 100%;">1</div>
+                    <div class="interactive-marker" id="q15-marker" draggable="true" style="left: 0;"></div>
+                </div>
+                <div class="feedback" id="q15-feedback"></div>
+            </div>
+
+            <!-- 문제 16: 같은 분모 분수 덧셈 -->
+            <div class="question-container" id="q16">
+                <div class="question-header">
+                    <div class="question-number">문제 16</div>
+                    <div class="question-type">분수 덧셈</div>
+                </div>
+                <div class="question-text">2/7 + 3/7 = ?</div>
+                <div class="fraction-input-container">
+                    <input type="number" min="0" class="fraction-input numerator" id="q16-numerator" aria-label="분자">
+                    <div class="fraction-divider"></div>
+                    <input type="number" min="1" class="fraction-input denominator" id="q16-denominator" aria-label="분모">
+                </div>
+                <div class="feedback" id="q16-feedback"></div>
+            </div>
+
+            <!-- 문제 17: 같은 분모 분수 뺄셈 -->
+            <div class="question-container" id="q17">
+                <div class="question-header">
+                    <div class="question-number">문제 17</div>
+                    <div class="question-type">분수 뺄셈</div>
+                </div>
+                <div class="question-text">5/8 - 2/8 = ?</div>
+                <div class="fraction-input-container">
+                    <input type="number" min="0" class="fraction-input numerator" id="q17-numerator" aria-label="분자">
+                    <div class="fraction-divider"></div>
+                    <input type="number" min="1" class="fraction-input denominator" id="q17-denominator" aria-label="분모">
+                </div>
+                <div class="feedback" id="q17-feedback"></div>
+            </div>
+
+            <!-- 문제 18: 분수와 자연수 곱셈 -->
+            <div class="question-container" id="q18">
+                <div class="question-header">
+                    <div class="question-number">문제 18</div>
+                    <div class="question-type">분수와 자연수 곱셈</div>
+                </div>
+                <div class="question-text">3 × 2/5 = ?</div>
+                <div class="fraction-input-container">
+                    <input type="number" min="0" class="fraction-input numerator" id="q18-numerator" aria-label="분자">
+                    <div class="fraction-divider"></div>
+                    <input type="number" min="1" class="fraction-input denominator" id="q18-denominator" aria-label="분모">
+                </div>
+                <div class="feedback" id="q18-feedback"></div>
+            </div>
+
+            <!-- 문제 19: 단위분수 나눗셈 -->
+            <div class="question-container" id="q19">
+                <div class="question-header">
+                    <div class="question-number">문제 19</div>
+                    <div class="question-type">단위분수 나눗셈</div>
+                </div>
+                <div class="question-text">2 ÷ 1/3 = ?</div>
+                <div class="options">
+                    <div class="option" tabindex="0" data-value="A">
+                        <input type="radio" name="q19" id="q19-A" value="A">
+                        <label for="q19-A">2/3</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="B">
+                        <input type="radio" name="q19" id="q19-B" value="B">
+                        <label for="q19-B">3/2</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="C">
+                        <input type="radio" name="q19" id="q19-C" value="C">
+                        <label for="q19-C">6</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="D">
+                        <input type="radio" name="q19" id="q19-D" value="D">
+                        <label for="q19-D">6/1</label>
+                    </div>
+                </div>
+                <div class="feedback" id="q19-feedback"></div>
+            </div>
+
+            <!-- 문제 20: 분수의 일부 구하기 -->
+            <div class="question-container" id="q20">
+                <div class="question-header">
+                    <div class="question-number">문제 20</div>
+                    <div class="question-type">분수의 일부</div>
+                </div>
+                <div class="question-text">1/3의 1/2은 무엇인가요?</div>
+                <div class="fraction-input-container">
+                    <input type="number" min="0" class="fraction-input numerator" id="q20-numerator" aria-label="분자">
+                    <div class="fraction-divider"></div>
+                    <input type="number" min="1" class="fraction-input denominator" id="q20-denominator" aria-label="분모">
+                </div>
+                <div class="feedback" id="q20-feedback"></div>
+            </div>
+
+            <!-- 문제 21: 분수 연산 오류 찾기 -->
+            <div class="question-container" id="q21">
+                <div class="question-header">
+                    <div class="question-number">문제 21</div>
+                    <div class="question-type">오류 찾기</div>
+                </div>
+                <div class="question-text">다음 계산 중 잘못된 것은 무엇인가요?</div>
+                <div class="options">
+                    <div class="option" tabindex="0" data-value="A">
+                        <input type="radio" name="q21" id="q21-A" value="A">
+                        <label for="q21-A">2/5 + 1/5 = 3/5</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="B">
+                        <input type="radio" name="q21" id="q21-B" value="B">
+                        <label for="q21-B">3/4 - 1/4 = 2/4</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="C">
+                        <input type="radio" name="q21" id="q21-C" value="C">
+                        <label for="q21-C">1/2 + 1/3 = 2/5</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="D">
+                        <input type="radio" name="q21" id="q21-D" value="D">
+                        <label for="q21-D">3/8 × 2 = 6/8</label>
+                    </div>
+                </div>
+                <div class="feedback" id="q21-feedback"></div>
+            </div>
+
+            <!-- 문제 22: 분모가 다른 간단한 덧셈 -->
+            <div class="question-container" id="q22">
+                <div class="question-header">
+                    <div class="question-number">문제 22</div>
+                    <div class="question-type">분모가 다른 덧셈</div>
+                </div>
+                <div class="question-text">1/2 + 1/4 = ?</div>
+                <div class="fraction-input-container">
+                    <input type="number" min="0" class="fraction-input numerator" id="q22-numerator" aria-label="분자">
+                    <div class="fraction-divider"></div>
+                    <input type="number" min="1" class="fraction-input denominator" id="q22-denominator" aria-label="분모">
+                </div>
+                <div class="feedback" id="q22-feedback"></div>
+            </div>
+
+            <!-- 문제 23: 분모가 다른 간단한 뺄셈 -->
+            <div class="question-container" id="q23">
+                <div class="question-header">
+                    <div class="question-number">문제 23</div>
+                    <div class="question-type">분모가 다른 뺄셈</div>
+                </div>
+                <div class="question-text">3/4 - 1/2 = ?</div>
+                <div class="fraction-input-container">
+                    <input type="number" min="0" class="fraction-input numerator" id="q23-numerator" aria-label="분자">
+                    <div class="fraction-divider"></div>
+                    <input type="number" min="1" class="fraction-input denominator" id="q23-denominator" aria-label="분모">
+                </div>
+                <div class="feedback" id="q23-feedback"></div>
+            </div>
+
+            <!-- 문제 24: 분수 어림하기 -->
+            <div class="question-container" id="q24">
+                <div class="question-header">
+                    <div class="question-number">문제 24</div>
+                    <div class="question-type">분수 어림하기</div>
+                </div>
+                <div class="question-text">7/8 + 4/9의 대략적인 결과는 무엇인가요?</div>
+                <div class="options">
+                    <div class="option" tabindex="0" data-value="A">
+                        <input type="radio" name="q24" id="q24-A" value="A">
+                        <label for="q24-A">약 0.5</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="B">
+                        <input type="radio" name="q24" id="q24-B" value="B">
+                        <label for="q24-B">약 1</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="C">
+                        <input type="radio" name="q24" id="q24-C" value="C">
+                        <label for="q24-C">약 1.5</label>
+                    </div>
+                    <div class="option" tabindex="0" data-value="D">
+                        <input type="radio" name="q24" id="q24-D" value="D">
+                        <label for="q24-D">약 2</label>
+                    </div>
+                </div>
+                <div class="feedback" id="q24-feedback"></div>
+            </div>
+
+            <!-- 문제 25: 혼합수와 가분수 변환 -->
+            <div class="question-container" id="q25">
+                <div class="question-header">
+                    <div class="question-number">문제 25</div>
+                    <div class="question-type">혼합수와 가분수</div>
+                </div>
+                <div class="question-text">혼합수 2 3/5를 가분수로 바꾸세요.</div>
+                <div class="fraction-input-container">
+                    <input type="number" min="0" class="fraction-input numerator" id="q25-numerator" aria-label="분자">
+                    <div class="fraction-divider"></div>
+                    <input type="number" min="1" class="fraction-input denominator" id="q25-denominator" aria-label="분모">
+                </div>
+                <div class="feedback" id="q25-feedback"></div>
+            </div>
+
+            <!-- 문제 26: 요리 상황 -->
+            <div class="question-container" id="q26">
+                <div class="question-header">
+                    <div class="question-number">문제 26</div>
+                    <div class="question-type">실생활 응용</div>
+                </div>
+                <div class="question-text">요리 레시피에 밀가루 3/4 컵이 필요합니다. 이 레시피의 2배 분량을 만들려면 밀가루가 몇 컵 필요한가요?</div>
+                <div class="fraction-input-container">
+                    <input type="number" min="0" class="fraction-input numerator" id="q26-numerator" aria-label="분자">
+                    <div class="fraction-divider"></div>
+                    <input type="number" min="1" class="fraction-input denominator" id="q26-denominator" aria-label="분모">
+                </div>
+                <div class="feedback" id="q26-feedback"></div>
+            </div>
+
+            <!-- 문제 27: 측정 상황 -->
+            <div class="question-container" id="q27">
+                <div class="question-header">
+                    <div class="question-number">문제 27</div>
+                    <div class="question-type">실생활 응용</div>
+                </div>
+                <div class="question-text">철수는 1/2m 길이의 리본을 가지고 있습니다. 이 리본을 1/4m 길이로 자르면 몇 개를 만들 수 있나요?</div>
+                <input type="number" class="answer-input" id="q27-answer" aria-label="리본 개수">
+                <div class="feedback" id="q27-feedback"></div>
+            </div>
+
+            <!-- 문제 28: 시간 관련 -->
+            <div class="question-container" id="q28">
+                <div class="question-header">
+                    <div class="question-number">문제 28</div>
+                    <div class="question-type">실생활 응용</div>
+                </div>
+                <div class="question-text">수업 시간이 1시간입니다. 수업의 3/4이 지났다면, 아직 몇 분이 남았나요?</div>
+                <input type="number" class="answer-input" id="q28-answer" aria-label="남은 시간(분)">
+                <div class="feedback" id="q28-feedback"></div>
+            </div>
+
+            <!-- 문제 29: 공유 상황 -->
+            <div class="question-container" id="q29">
+                <div class="question-header">
+                    <div class="question-number">문제 29</div>
+                    <div class="question-type">실생활 응용</div>
+                </div>
+                <div class="question-text">초콜릿 바 3개를 5명이 똑같이 나누어 먹으려고 합니다. 한 사람당 초콜릿을 얼마나 받게 되나요?</div>
+                <div class="fraction-input-container">
+                    <input type="number" min="0" class="fraction-input numerator" id="q29-numerator" aria-label="분자">
+                    <div class="fraction-divider"></div>
+                    <input type="number" min="1" class="fraction-input denominator" id="q29-denominator" aria-label="분모">
+                </div>
+                <div class="feedback" id="q29-feedback"></div>
+            </div>
+
+            <!-- 문제 30: 구매 상황 -->
+            <div class="question-container" id="q30">
+                <div class="question-header">
+                    <div class="question-number">문제 30</div>
+                    <div class="question-type">실생활 응용</div>
+                </div>
+                <div class="question-text">10,000원짜리 장난감이 2/5 할인 중입니다. 할인된 가격은 얼마인가요?</div>
+                <input type="number" class="answer-input" id="q30-answer" aria-label="할인된 가격(원)">
+                <div class="feedback" id="q30-feedback"></div>
+            </div>
+        </div>
+
+        <button id="submit-btn" class="secondary" style="display: block; margin: 30px auto;">답안 제출하기</button>
+
+        <div class="results-container" id="results-container">
+            <div class="results-header">
+                <h2>평가 결과</h2>
+            </div>
+            <div class="results-score" id="results-score"></div>
+            <div class="results-breakdown" id="results-breakdown"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const answers = {
+                q1: { type: 'fraction', answer: { numerator: 1, denominator: 2 } },
+                q2: { type: 'radio', answer: 'D' },
+                q3: { type: 'radio', answer: 'C' },
+                q4: { type: 'fraction', answer: { numerator: 2, denominator: 5 } },
+                q5: { type: 'checkbox', answer: ['A', 'B'] },
+                q6: { type: 'checkbox', answer: ['A', 'B', 'D'] },
+                q7: { type: 'fraction', answer: { numerator: 2, denominator: 3 } },
+                q8: { type: 'fraction', answer: { numerator: 3, denominator: 9 } },
+                q9: { type: 'radio', answer: 'C' },
+                q10: { type: 'number', answer: 0.75, tolerance: 0.01 },
+                q11: { type: 'radio', answer: 'D' },
+                q12: { type: 'radio', answer: 'C' },
+                q13: { type: 'checkbox', answer: ['A', 'C'] },
+                q14: { type: 'radio', answer: 'C' },
+                q15: { type: 'position', answer: 66.7, tolerance: 5 },
+                q16: { type: 'fraction', answer: { numerator: 5, denominator: 7 } },
+                q17: { type: 'fraction', answer: { numerator: 3, denominator: 8 } },
+                q18: { type: 'fraction', answer: { numerator: 6, denominator: 5 } },
+                q19: { type: 'radio', answer: 'C' },
+                q20: { type: 'fraction', answer: { numerator: 1, denominator: 6 } },
+                q21: { type: 'radio', answer: 'C' },
+                q22: { type: 'fraction', answer: { numerator: 3, denominator: 4 } },
+                q23: { type: 'fraction', answer: { numerator: 1, denominator: 4 } },
+                q24: { type: 'radio', answer: 'C' },
+                q25: { type: 'fraction', answer: { numerator: 13, denominator: 5 } },
+                q26: { type: 'fraction', answer: { numerator: 6, denominator: 4 } },
+                q27: { type: 'number', answer: 2, tolerance: 0 },
+                q28: { type: 'number', answer: 15, tolerance: 0 },
+                q29: { type: 'fraction', answer: { numerator: 3, denominator: 5 } },
+                q30: { type: 'number', answer: 6000, tolerance: 0 }
+            };
+
+            const categories = {
+                '기본 개념': ['q1', 'q2', 'q3', 'q4', 'q5'],
+                '동치분수': ['q6', 'q7', 'q8', 'q9', 'q10'],
+                '분수 크기 비교': ['q11', 'q12', 'q13', 'q14', 'q15'],
+                '분수 연산': ['q16', 'q17', 'q18', 'q19', 'q20', 'q21', 'q22', 'q23', 'q24', 'q25'],
+                '실생활 응용': ['q26', 'q27', 'q28', 'q29', 'q30']
+            };
+
+            // 라디오 버튼 이벤트 처리
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionId = this.closest('.question-container').id;
+                    const input = this.querySelector('input');
+                    
+                    if (input.type === 'radio') {
+                        document.querySelectorAll(`input[name=${input.name}]`).forEach(radio => {
+                            radio.closest('.option').classList.remove('selected');
+                        });
+                        this.classList.add('selected');
+                        input.checked = true;
+                    } else if (input.type === 'checkbox') {
+                        this.classList.toggle('selected');
+                        input.checked = !input.checked;
+                    }
+                });
+
+                option.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click();
+                    }
+                });
+            });
+
+            // 수직선 마커 드래그 이벤트
+            const marker = document.getElementById('q15-marker');
+            const numberLine = document.getElementById('number-line-q15');
+            
+            let isDragging = false;
+            
+            marker.addEventListener('mousedown', function(e) {
+                isDragging = true;
+                updateMarkerPosition(e);
+            });
+            
+            numberLine.addEventListener('mousemove', function(e) {
+                if (isDragging) {
+                    updateMarkerPosition(e);
+                }
+            });
+            
+            document.addEventListener('mouseup', function() {
+                isDragging = false;
+            });
+            
+            numberLine.addEventListener('click', function(e) {
+                updateMarkerPosition(e);
+            });
+            
+            function updateMarkerPosition(e) {
+                const rect = numberLine.getBoundingClientRect();
+                let xPos = e.clientX - rect.left;
+                
+                // 범위 제한
+                if (xPos < 0) xPos = 0;
+                if (xPos > rect.width) xPos = rect.width;
+                
+                const percentPosition = (xPos / rect.width) * 100;
+                marker.style.left = `${percentPosition}%`;
+            }
+
+            // 인쇄 버튼
+            document.getElementById('print-btn').addEventListener('click', function() {
+                window.print();
+            });
+
+            // PDF 저장 버튼
+            document.getElementById('pdf-btn').addEventListener('click', function() {
+                const element = document.getElementById('assessment-container');
+                console.log('PDF 버튼 클릭됨', element); // 디버깅용
+                
+                if (!element) {
+                    alert('문서 내용을 찾을 수 없습니다.');
+                    return;
+                }
+                
+                const opt = {
+                    margin: 15,
+                    filename: '분수_개념_평가.pdf',
+                    image: { type: 'jpeg', quality: 1.0 },
+                    html2canvas: { 
+                        scale: 2,
+                        useCORS: true,
+                        letterRendering: true,
+                        allowTaint: true
+                    },
+                    jsPDF: { 
+                        unit: 'mm', 
+                        format: 'a4', 
+                        orientation: 'portrait',
+                        compress: true
+                    },
+                    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+                };
+                
+                // 버튼 숨기기 전에 상태 저장
+                const buttons = element.querySelectorAll('button');
+                const buttonStates = [];
+                buttons.forEach(btn => {
+                    buttonStates.push({element: btn, display: btn.style.display});
+                    btn.style.display = 'none';
+                });
+                
+                try {
+                    html2pdf().from(element).set(opt).save().then(() => {
+                        // 버튼 원래 상태로 복원
+                        buttonStates.forEach(state => {
+                            state.element.style.display = state.display || '';
+                        });
+                    }).catch(err => {
+                        console.error('PDF 생성 오류:', err);
+                        alert('PDF 생성 중 오류가 발생했습니다.');
+                        // 오류 발생 시에도 버튼 상태 복원
+                        buttonStates.forEach(state => {
+                            state.element.style.display = state.display || '';
+                        });
+                    });
+                } catch (err) {
+                    console.error('PDF 생성 초기화 오류:', err);
+                    alert('PDF 생성 초기화 중 오류가 발생했습니다.');
+                    // 오류 발생 시에도 버튼 상태 복원
+                    buttonStates.forEach(state => {
+                        state.element.style.display = state.display || '';
+                    });
+                }
+            });
+
+            // 다시 시작 버튼
+            document.getElementById('reset-btn').addEventListener('click', function() {
+                if (confirm('모든 답변을 지우고 다시 시작하시겠습니까?')) {
+                    document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(input => {
+                        input.checked = false;
+                        input.closest('.option').classList.remove('selected');
+                    });
+                    
+                    document.querySelectorAll('input[type="number"]').forEach(input => {
+                        input.value = '';
+                    });
+                    
+                    document.querySelectorAll('.feedback').forEach(feedback => {
+                        feedback.style.display = 'none';
+                    });
+                    
+                    document.getElementById('q15-marker').style.left = '0%';
+                    
+                    document.getElementById('results-container').style.display = 'none';
+                }
+            });
+
+            // 답안 확인 버튼
+            document.getElementById('check-answers-btn').addEventListener('click', function() {
+                checkAllAnswers();
+                showFeedback();
+            });
+
+            // 제출 버튼
+            document.getElementById('submit-btn').addEventListener('click', function() {
+                const score = calculateScore();
+                showResults(score);
+            });
+
+            // 모든 답안 확인 함수
+            function checkAllAnswers() {
+                for (const qId in answers) {
+                    const question = answers[qId];
+                    const feedbackEl = document.getElementById(`${qId}-feedback`);
+                    let isCorrect = false;
+
+                    switch (question.type) {
+                        case 'radio':
+                            const selectedRadio = document.querySelector(`input[name=${qId}]:checked`);
+                            isCorrect = selectedRadio && selectedRadio.value === question.answer;
+                            break;
+
+                        case 'checkbox':
+                            const selectedCheckboxes = Array.from(document.querySelectorAll(`input[name=${qId}]:checked`))
+                                .map(cb => cb.value);
+                            isCorrect = arraysEqual(selectedCheckboxes.sort(), question.answer.sort());
+                            break;
+
+                        case 'fraction':
+                            const numerator = parseInt(document.getElementById(`${qId}-numerator`).value);
+                            const denominator = parseInt(document.getElementById(`${qId}-denominator`).value);
+                            
+                            if (!isNaN(numerator) && !isNaN(denominator) && denominator !== 0) {
+                                // 약분 기능 (단, q8은 패턴 문제이므로 약분 검사 안함)
+                                if (qId === 'q8') {
+                                    isCorrect = numerator === question.answer.numerator && 
+                                              denominator === question.answer.denominator;
+                                } else {
+                                    const gcd = findGCD(numerator, denominator);
+                                    const simplifiedNumerator = numerator / gcd;
+                                    const simplifiedDenominator = denominator / gcd;
+                                    
+                                    const answerGcd = findGCD(question.answer.numerator, question.answer.denominator);
+                                    const answerSimplifiedNumerator = question.answer.numerator / answerGcd;
+                                    const answerSimplifiedDenominator = question.answer.denominator / answerGcd;
+                                    
+                                    isCorrect = simplifiedNumerator === answerSimplifiedNumerator && 
+                                              simplifiedDenominator === answerSimplifiedDenominator;
+                                }
+                            }
+                            break;
+
+                        case 'number':
+                            const value = parseFloat(document.getElementById(`${qId}-answer`).value);
+                            isCorrect = !isNaN(value) && Math.abs(value - question.answer) <= question.tolerance;
+                            break;
+
+                        case 'position':
+                            const marker = document.getElementById(`${qId}-marker`);
+                            const left = parseFloat(marker.style.left);
+                            isCorrect = !isNaN(left) && Math.abs(left - question.answer) <= question.tolerance;
+                            break;
+                    }
+
+                    if (feedbackEl) {
+                        feedbackEl.textContent = isCorrect ? '정답입니다!' : '다시 한 번 생각해보세요.';
+                        feedbackEl.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+                    }
+                }
+            }
+
+            // 피드백 표시 함수
+            function showFeedback() {
+                document.querySelectorAll('.feedback').forEach(feedback => {
+                    feedback.style.display = 'block';
+                });
+            }
+
+            // 점수 계산 함수
+            function calculateScore() {
+                let correct = 0;
+                const totalQuestions = Object.keys(answers).length;
+                const categoryScores = {};
+                
+                for (const category in categories) {
+                    categoryScores[category] = { correct: 0, total: categories[category].length };
+                }
+
+                for (const qId in answers) {
+                    const question = answers[qId];
+                    let isCorrect = false;
+
+                    switch (question.type) {
+                        case 'radio':
+                            const selectedRadio = document.querySelector(`input[name=${qId}]:checked`);
+                            isCorrect = selectedRadio && selectedRadio.value === question.answer;
+                            break;
+
+                        case 'checkbox':
+                            const selectedCheckboxes = Array.from(document.querySelectorAll(`input[name=${qId}]:checked`))
+                                .map(cb => cb.value);
+                            isCorrect = arraysEqual(selectedCheckboxes.sort(), question.answer.sort());
+                            break;
+
+                        case 'fraction':
+                            const numerator = parseInt(document.getElementById(`${qId}-numerator`).value);
+                            const denominator = parseInt(document.getElementById(`${qId}-denominator`).value);
+                            
+                            if (!isNaN(numerator) && !isNaN(denominator) && denominator !== 0) {
+                                // 약분 기능 (단, q8은 패턴 문제이므로 약분 검사 안함)
+                                if (qId === 'q8') {
+                                    isCorrect = numerator === question.answer.numerator && 
+                                              denominator === question.answer.denominator;
+                                } else {
+                                    const gcd = findGCD(numerator, denominator);
+                                    const simplifiedNumerator = numerator / gcd;
+                                    const simplifiedDenominator = denominator / gcd;
+                                    
+                                    const answerGcd = findGCD(question.answer.numerator, question.answer.denominator);
+                                    const answerSimplifiedNumerator = question.answer.numerator / answerGcd;
+                                    const answerSimplifiedDenominator = question.answer.denominator / answerGcd;
+                                    
+                                    isCorrect = simplifiedNumerator === answerSimplifiedNumerator && 
+                                              simplifiedDenominator === answerSimplifiedDenominator;
+                                }
+                            }
+                            break;
+
+                        case 'number':
+                            const value = parseFloat(document.getElementById(`${qId}-answer`).value);
+                            isCorrect = !isNaN(value) && Math.abs(value - question.answer) <= question.tolerance;
+                            break;
+
+                        case 'position':
+                            const marker = document.getElementById(`${qId}-marker`);
+                            const left = parseFloat(marker.style.left);
+                            isCorrect = !isNaN(left) && Math.abs(left - question.answer) <= question.tolerance;
+                            break;
+                    }
+
+                    if (isCorrect) {
+                        correct++;
+                        
+                        // 카테고리별 점수 업데이트
+                        for (const category in categories) {
+                            if (categories[category].includes(qId)) {
+                                categoryScores[category].correct++;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                return {
+                    correct: correct,
+                    total: totalQuestions,
+                    percentage: Math.round((correct / totalQuestions) * 100),
+                    categories: categoryScores
+                };
+            }
+
+            // 결과 표시 함수
+            function showResults(score) {
+                document.getElementById('results-container').style.display = 'block';
+                document.getElementById('results-score').textContent = `총점: ${score.percentage}% (${score.correct}/${score.total})`;
+                
+                const breakdownEl = document.getElementById('results-breakdown');
+                breakdownEl.innerHTML = '';
+                
+                for (const category in score.categories) {
+                    const categoryData = score.categories[category];
+                    const percentage = Math.round((categoryData.correct / categoryData.total) * 100);
+                    
+                    const categoryEl = document.createElement('div');
+                    categoryEl.className = 'result-category';
+                    
+                    categoryEl.innerHTML = `
+                        <div class="result-category-title">${category}</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${percentage}%"></div>
+                        </div>
+                        <div class="progress-text">${percentage}% (${categoryData.correct}/${categoryData.total})</div>
+                    `;
+                    
+                    breakdownEl.appendChild(categoryEl);
+                }
+                
+                // 결과로 스크롤
+                document.getElementById('results-container').scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // 배열 비교 함수
+            function arraysEqual(a, b) {
+                if (a.length !== b.length) return false;
+                for (let i = 0; i < a.length; i++) {
+                    if (a[i] !== b[i]) return false;
+                }
+                return true;
+            }
+
+            // 최대공약수 함수
+            function findGCD(a, b) {
+                a = Math.abs(a);
+                b = Math.abs(b);
+                while (b) {
+                    const temp = b;
+                    b = a % b;
+                    a = temp;
+                }
+                return a;
+            }
+
+            // 키보드 접근성 향상
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Tab') {
+                    document.body.classList.add('keyboard-focus');
+                }
+            });
+
+            document.addEventListener('mousedown', function() {
+                document.body.classList.remove('keyboard-focus');
+            });
+        });
+    </script>
+</body>
+</html>
