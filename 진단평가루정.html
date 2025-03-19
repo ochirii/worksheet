@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>수학 진단평가 50문항</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+body {
+font-family: 'Nanum Gothic', Arial, sans-serif;
+line-height: 1.6;
+margin: 0;
+padding: 20px;
+max-width: 210mm;
+margin: 0 auto;
+}
+.container {
+padding: 20px;
+}
+h1 {
+text-align: center;
+margin-bottom: 20px;
+font-size: 24px;
+}
+.info-section {
+display: flex;
+justify-content: space-between;
+margin-bottom: 30px;
+border-bottom: 1px solid #ccc;
+padding-bottom: 10px;
+}
+.info-item {
+display: flex;
+align-items: center;
+}
+.info-label {
+margin-right: 10px;
+font-weight: bold;
+}
+.info-input {
+border-bottom: 1px solid #000;
+min-width: 150px;
+padding: 5px;
+}
+h2 {
+margin-top: 25px;
+margin-bottom: 15px;
+border-left: 5px solid #4169E1;
+padding-left: 10px;
+font-size: 18px;
+background-color: #f5f5f5;
+padding: 8px;
+}
+.question {
+margin-bottom: 20px;
+page-break-inside: avoid;
+}
+.question-title {
+font-weight: bold;
+margin-bottom: 8px;
+}
+.options {
+margin-left: 20px;
+}
+.answer-space {
+border-bottom: 1px solid #999;
+min-width: 100px;
+display: inline-block;
+margin-top: 5px;
+min-height: 16px;
+padding: 2px 5px;
+}
+.answer-space:focus {
+border-bottom: 2px solid #4169E1;
+outline: none;
+background-color: #f0f8ff;
+}
+.correct-answer {
+background-color: #e6ffe6; /* Light green */
+}
+.incorrect-answer {
+background-color: #ffe6e6; /* Light red */
+}
+.question-result {
+display: inline-block;
+margin-left: 10px;
+font-weight: bold;
+font-size: 18px;
+}
+.correct-mark {
+color: green;
+}
+.incorrect-mark {
+color: red;
+}
+.btn-container {
+text-align: center;
+margin: 30px 0;
+position: sticky;
+bottom: 20px;
+}
+.btn {
+background-color: #4169E1;
+color: white;
+border: none;
+padding: 10px 20px;
+font-size: 16px;
+cursor: pointer;
+border-radius: 5px;
+transition: background-color 0.3s;
+margin: 0 5px;
+}
+.btn:hover {
+background-color: #3151b2;
+}
+.hidden-print {
+position: fixed;
+bottom: 20px;
+right: 20px;
+}
+@media print {
+.hidden-print {
+display: none !important;
+}
+.btn-container {
+display: none;
+}
+body {
+padding: 0;
+margin: 0;
+}
+.container {
+padding: 10px;
+}
+@page {
+size: A4;
+margin: 1cm;
+}
+}
+.circle {
+display: inline-block;
+width: 15px;
+height: 15px;
+border-radius: 50%;
+border: 1px solid black;
+margin: 0 2px;
+}
+.shape {
+display: inline-block;
+margin: 0 5px;
+}
+.fraction {
+display: inline-block;
+text-align: center;
+vertical-align: middle;
+}
+.fraction > span {
+display: block;
+padding: 0 5px;
+}
+.numerator {
+border-bottom: 1px solid black;
+}
+.grid-paper {
+width: 200px;
+height: 120px;
+background-image:
+linear-gradient(#ddd 1px, transparent 1px),
+linear-gradient(90deg, #ddd 1px, transparent 1px);
+background-size: 20px 20px;
+border: 1px solid #999;
+margin: 10px 0;
+}
+.highlight {
+background-color: #ffffd0;
+}
+.status-bar {
+position: fixed;
+bottom: 10px;
+left: 10px;
+background-color: #f5f5f5;
+padding: 5px 10px;
+border-radius: 5px;
+box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+font-size: 12px;
+z-index: 100;
+}
+</style>
+</head>
+<body>
+<div class="container" id="content">
+<h1>수학 진단평가 50문항</h1>
+
+    <div class="info-section">
+        <div class="info-item">
+            <span class="info-label">이름:</span>
+            <span class="info-input" contenteditable="true" data-field="name"></span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">날짜:</span>
+            <span class="info-input" contenteditable="true" data-field="date"></span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">점수:</span>
+            <span class="info-input" contenteditable="true" data-field="score"></span>
+        </div>
+    </div>
+
+    <h2>1. 수 개념 영역 (1-12번)</h2>
+
+    <div class="question" data-question-id="1">
+        <div class="question-title">1번. 다음 수를 읽어보세요.</div>
+        <div>27</div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="1"></span></div>
+    </div>
+
+    <div class="question" data-question-id="2">
+        <div class="question-title">2번. 숫자를 쓰세요.</div>
+        <div>삼십오 = <span class="answer-space" contenteditable="true" tabindex="2"></span></div>
+    </div>
+
+    <div class="question" data-question-id="3">
+        <div class="question-title">3번. 다음 수를 크기 순서대로 나열하세요.</div>
+        <div>18, 81, 28, 82</div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="3"></span></div>
+    </div>
+
+    <div class="question" data-question-id="4">
+        <div class="question-title">4번. 다음 빈칸에 알맞은 수를 채우세요.</div>
+        <div>35, 40, 45, <span class="answer-space" style="width: 30px;" contenteditable="true" tabindex="4"></span>, 55, <span class="answer-space" style="width: 30px;" contenteditable="true" tabindex="5"></span></div>
+    </div>
+
+    <div class="question" data-question-id="5">
+        <div class="question-title">5번. 다음 그림에 있는 동그라미의 개수는 몇 개인가요?</div>
+        <div>
+            <span class="circle"></span><span class="circle"></span><span class="circle"></span><span class="circle"></span><span class="circle"></span>
+            <span class="circle"></span><span class="circle"></span><span class="circle"></span><span class="circle"></span><span class="circle"></span>
+            <span class="circle"></span><span class="circle"></span><span class="circle"></span><span class="circle"></span><span class="circle"></span>
+        </div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="6"></span></div>
+    </div>
+
+    <div class="question" data-question-id="6">
+        <div class="question-title">6번. 다음 수의 십의 자리 숫자는 무엇인가요?</div>
+        <div>426</div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="7"></span></div>
+    </div>
+
+    <div class="question" data-question-id="7">
+        <div class="question-title">7번. 다음 수의 백의 자리 숫자는 무엇인가요?</div>
+        <div>538</div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="8"></span></div>
+    </div>
+
+    <div class="question" data-question-id="8">
+        <div class="question-title">8번. 다음 중 가장 큰 수는?</div>
+        <div class="options">
+            ① 234 &nbsp;&nbsp; ② 243 &nbsp;&nbsp; ③ 423 &nbsp;&nbsp; ④ 432
+        </div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="9"></span></div>
+    </div>
+
+    <div class="question" data-question-id="9">
+        <div class="question-title">9번. 숫자 카드를 사용하여 만들 수 있는 가장 작은 세 자리 수는 무엇인가요?</div>
+        <div>[9] [1] [5] [0]</div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="10"></span></div>
+    </div>
+
+    <div class="question" data-question-id="10">
+        <div class="question-title">10번. 도형의 1/4이 색칠되어 있습니다. 맞으면 O, 틀리면 X 하세요.</div>
+        <div>
+            <svg width="100" height="100" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="40" stroke="black" stroke-width="1" fill="none"/>
+                <path d="M 50 50 L 50 10 A 40 40 0 0 1 90 50 Z" fill="#ccc"/>
+                <line x1="50" y1="50" x2="50" y2="10" stroke="black" stroke-width="1"/>
+                <line x1="50" y1="50" x2="90" y2="50" stroke="black" stroke-width="1"/>
+            </svg>
+        </div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="11"></span></div>
+    </div>
+
+    <div class="question" data-question-id="11">
+        <div class="question-title">11번. 다음 수 중에서 짝수를 모두 고르세요.</div>
+        <div>15, 24, 36, 47, 50, 63</div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="12"></span></div>
+    </div>
+
+    <div class="question" data-question-id="12">
+        <div class="question-title">12번. 다음 수열의 규칙을 찾고 빈칸에 들어갈 숫자를 쓰세요.</div>
+        <div>2, 4, 8, 16, <span class="answer-space" style="width: 30px;" contenteditable="true" tabindex="13"></span>, 64</div>
+    </div>
+
+    <h2>2. 연산 영역 (13-28번)</h2>
+
+    <div class="question" data-question-id="13">
+        <div class="question-title">13번. 다음 덧셈을 계산하세요.</div>
+        <div>5 + 3 = <span class="answer-space" contenteditable="true" tabindex="14"></span></div>
+    </div>
+
+    <div class="question" data-question-id="14">
+        <div class="question-title">14번. 다음 덧셈을 계산하세요.</div>
+        <div>12 + 5 = <span class="answer-space" contenteditable="true" tabindex="15"></span></div>
+    </div>
+
+    <div class="question" data-question-id="15">
+        <div class="question-title">15번. 다음 덧셈을 계산하세요.</div>
+        <div>24 + 35 = <span class="answer-space" contenteditable="true" tabindex="16"></span></div>
+    </div>
+
+    <div class="question" data-question-id="16">
+        <div class="question-title">16번. 다음 덧셈을 계산하세요.</div>
+        <div>47 + 56 = <span class="answer-space" contenteditable="true" tabindex="17"></span></div>
+    </div>
+
+    <div class="question" data-question-id="17">
+        <div class="question-title">17번. 다음 뺄셈을 계산하세요.</div>
+        <div>9 - 4 = <span class="answer-space" contenteditable="true" tabindex="18"></span></div>
+    </div>
+
+    <div class="question" data-question-id="18">
+        <div class="question-title">18번. 다음 뺄셈을 계산하세요.</div>
+        <div>17 - 8 = <span class="answer-space" contenteditable="true" tabindex="19"></span></div>
+    </div>
+
+    <div class="question" data-question-id="19">
+        <div class="question-title">19번. 다음 뺄셈을 계산하세요.</div>
+        <div>32 - 15 = <span class="answer-space" contenteditable="true" tabindex="20"></span></div>
+    </div>
+
+    <div class="question" data-question-id="20">
+        <div class="question-title">20번. 다음 뺄셈을 계산하세요.</div>
+        <div>84 - 37 = <span class="answer-space" contenteditable="true" tabindex="21"></span></div>
+    </div>
+
+    <div class="question" data-question-id="21">
+        <div class="question-title">21번. 다음 곱셈을 계산하세요.</div>
+        <div>3 × 4 = <span class="answer-space" contenteditable="true" tabindex="22"></span></div>
+    </div>
+
+    <div class="question" data-question-id="22">
+        <div class="question-title">22번. 다음 곱셈을 계산하세요.</div>
+        <div>6 × 7 = <span class="answer-space" contenteditable="true" tabindex="23"></span></div>
+    </div>
+
+    <div class="question" data-question-id="23">
+        <div class="question-title">23번. 다음 곱셈을 계산하세요.</div>
+        <div>12 × 5 = <span class="answer-space" contenteditable="true" tabindex="24"></span></div>
+    </div>
+
+    <div class="question" data-question-id="24">
+        <div class="question-title">24번. 다음 나눗셈을 계산하세요.</div>
+        <div>10 ÷ 2 = <span class="answer-space" contenteditable="true" tabindex="25"></span></div>
+    </div>
+
+    <div class="question" data-question-id="25">
+        <div class="question-title">25번. 다음 나눗셈을 계산하세요.</div>
+        <div>15 ÷ 3 = <span class="answer-space" contenteditable="true" tabindex="26"></span></div>
+    </div>
+
+    <div class="question" data-question-id="26">
+        <div class="question-title">26번. 다음 나눗셈을 계산하세요.</div>
+        <div>24 ÷ 6 = <span class="answer-space" contenteditable="true" tabindex="27"></span></div>
+    </div>
+
+    <div class="question" data-question-id="27">
+        <div class="question-title">27번. 다음 식의 □에 들어갈 숫자는 무엇인가요?</div>
+        <div>□ + 13 = 30</div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="28"></span></div>
+    </div>
+
+    <div class="question" data-question-id="28">
+        <div class="question-title">28번. 다음 식을 계산하세요.</div>
+        <div>5 + 4 × 2 = <span class="answer-space" contenteditable="true" tabindex="29"></span></div>
+    </div>
+
+    <h2>3. 도형 및 공간 감각 (29-36번)</h2>
+
+    <div class="question" data-question-id="29">
+        <div class="question-title">29번. 다음 중 사각형은 몇 개인가요?</div>
+        <div>
+            <svg width="300" height="120" viewBox="0 0 300 120">
+                <!-- 원 -->
+                <circle cx="40" cy="40" r="25" stroke="black" stroke-width="1" fill="none"/>
+                <!-- 삼각형 -->
+                <polygon points="100,15 80,65 120,65" stroke="black" stroke-width="1" fill="none"/>
+                <!-- 사각형 1 (정사각형) -->
+                <rect x="150" y="15" width="50" height="50" stroke="black" stroke-width="1" fill="none"/>
+                <!-- 사각형 2 (직사각형) -->
+                <rect x="220" y="15" width="70" height="50" stroke="black" stroke-width="1" fill="none"/>
+                <!-- 원 -->
+                <circle cx="40" cy="95" r="20" stroke="black" stroke-width="1" fill="none"/>
+                <!-- 사각형 3 (마름모) -->
+                <polygon points="100,75 120,95 100,115 80,95" stroke="black" stroke-width="1" fill="none"/>
+                <!-- 오각형 -->
+                <polygon points="170,75 190,75 200,95 180,115 160,95" stroke="black" stroke-width="1" fill="none"/>
+            </svg>
+        </div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="30"></span></div>
+    </div>
+
+    <div class="question" data-question-id="30">
+        <div class="question-title">30번. 다음 중 삼각형은 어느 것인가요?</div>
+        <div>
+            <svg width="300" height="80" viewBox="0 0 300 80">
+                <!-- 원 -->
+                <circle cx="30" cy="40" r="20" stroke="black" stroke-width="1" fill="none"/>
+                <text x="30" y="75" text-anchor="middle">①</text>
+
+                <!-- 삼각형 -->
+                <polygon points="90,15 70,65 110,65" stroke="black" stroke-width="1" fill="none"/>
+                <text x="90" y="75" text-anchor="middle">②</text>
+
+                <!-- 사각형 -->
+                <rect x="140" y="15" width="50" height="50" stroke="black" stroke-width="1" fill="none"/>
+                <text x="165" y="75" text-anchor="middle">③</text>
+
+                <!-- 육각형 -->
+                <polygon points="220,30 235,15 265,15 280,30 265,65 235,65" stroke="black" stroke-width="1" fill="none"/>
+                <text x="250" y="75" text-anchor="middle">④</text>
+            </svg>
+        </div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="31"></span></div>
+    </div>
+
+    <div class="question" data-question-id="31">
+        <div class="question-title">31번. 다음 도형의 이름은 무엇인가요?</div>
+        <div>
+            <svg width="100" height="100" viewBox="0 0 100 100">
+                <!-- 정육면체(간단한 표현) -->
+                <polygon points="30,30 70,30 70,70 30,70" stroke="black" stroke-width="1" fill="none"/>
+                <polygon points="20,40 60,40 60,80 20,80" stroke="black" stroke-width="1" fill="none"/>
+                <line x1="30" y1="30" x2="20" y2="40" stroke="black" stroke-width="1"/>
+                <line x1="70" y1="30" x2="60" y2="40" stroke="black" stroke-width="1"/>
+                <line x1="70" y1="70" x2="60" y2="80" stroke="black" stroke-width="1"/>
+                <line x1="30" y1="70" x2="20" y2="80" stroke="black" stroke-width="1"/>
+            </svg>
+        </div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="32"></span></div>
+    </div>
+
+    <div class="question" data-question-id="32">
+        <div class="question-title">32번. 정삼각형의 변은 몇 개인가요?</div>
+        <div>
+            <svg width="100" height="100" viewBox="0 0 100 100">
+                <polygon points="50,20 20,80 80,80" stroke="black" stroke-width="1" fill="none"/>
+            </svg>
+        </div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="33"></span></div>
+    </div>
+
+    <div class="question" data-question-id="33">
+        <div class="question-title">33번. 다음 그림에서 왼쪽에 있는 도형은 무엇인가요?</div>
+        <div>
+            <svg width="200" height="100" viewBox="0 0 200 100">
+                <!-- 삼각형 (왼쪽) -->
+                <polygon points="50,20 20,80 80,80" stroke="black" stroke-width="1" fill="none"/>
+                <!-- 원 (오른쪽) -->
+                <circle cx="150" cy="50" r="30" stroke="black" stroke-width="1" fill="none"/>
+            </svg>
+        </div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="34"></span></div>
+    </div>
+
+    <div class="question" data-question-id="34">
+        <div class="question-title">34번. 다음 그림에서 대칭축을 그려보세요.</div>
+        <div>
+            <svg width="200" height="120" viewBox="0 0 200 120">
+                <!-- 간단한 꽃 모양 (좌우 대칭) -->
+                <ellipse cx="100" cy="60" rx="20" ry="40" stroke="black" stroke-width="1" fill="none"/>
+                <ellipse cx="100" cy="60" rx="40" ry="20" stroke="black" stroke-width="1" fill="none"/>
+                <circle cx="100" cy="60" r="10" stroke="black" stroke-width="1" fill="none"/>
+            </svg>
+        </div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="35"></span></div>
+    </div>
+
+    <div class="question" data-question-id="35">
+        <div class="question-title">35번. 다음 도형을 오른쪽으로 90도 회전하면 어떻게 보이나요?</div>
+        <div>
+            <svg width="100" height="100" viewBox="0 0 100 100">
+                <!-- 'ㄱ' 모양 도형 -->
+                <polygon points="30,30 70,30 70,50 50,50 50,70 30,70" stroke="black" stroke-width="1" fill="none"/>
+            </svg>
+        </div>
+        <div>
+            <svg width="400" height="100" viewBox="0 0 400 100">
+                <!-- 선택지 1 -->
+                <g transform="translate(50, 50)">
+                    <polygon points="-20,-20 20,-20 20,0 0,0 0,20 -20,20" stroke="black" stroke-width="1" fill="none"/>
+                </g>
+                <text x="50" y="90" text-anchor="middle">①</text>
+
+                <!-- 선택지 2 -->
+                <g transform="translate(150, 50)">
+                    <polygon points="-20,-20 20,-20 20,20 0,20 0,0 -20,0" stroke="black" stroke-width="1" fill="none"/>
+                </g>
+                <text x="150" y="90" text-anchor="middle">②</text>
+
+                <!-- 선택지 3 -->
+                <g transform="translate(250, 50)">
+                    <polygon points="-20,-20 0,-20 0,0 20,0 20,20 -20,20" stroke="black" stroke-width="1" fill="none"/>
+                </g>
+                <text x="250" y="90" text-anchor="middle">③</text>
+
+                <!-- 선택지 4 -->
+                <g transform="translate(350, 50)">
+                    <polygon points="-20,-20 20,-20 20,20 0,20 0,0 -20,0" stroke="black" stroke-width="1" fill="none"/>
+                </g>
+                <text x="350" y="90" text-anchor="middle">④</text>
+            </svg>
+        </div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="36"></span></div>
+    </div>
+
+    <div class="question" data-question-id="36">
+        <div class="question-title">36번. 다음 중 입체도형은 어느 것인가요?</div>
+        <div class="options">
+            ① 삼각형 &nbsp;&nbsp; ② 원 &nbsp;&nbsp; ③ 정육면체 &nbsp;&nbsp; ④ 사각형
+        </div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="37"></span></div>
+    </div>
+
+    <h2>4. 측정 영역 (37-44번)</h2>
+
+    <div class="question" data-question-id="37">
+        <div class="question-title">37번. 시계가 가리키는 시각은 몇 시 몇 분인가요?</div>
+        <div>
+            <svg width="150" height="150" viewBox="0 0 150 150">
+                <!-- 시계 테두리 -->
+                <circle cx="75" cy="75" r="60" stroke="black" stroke-width="2" fill="none"/>
+
+                <!-- 시간 표시 -->
+                <text x="75" y="25" text-anchor="middle">12</text>
+                <text x="125" y="75" text-anchor="middle">3</text>
+                <text x="75" y="125" text-anchor="middle">6</text>
+                <text x="25" y="75" text-anchor="middle">9</text>
+
+                <!-- 시침 (4시 방향) -->
+                <line x1="75" y1="75" x2="100" y2="95" stroke="black" stroke-width="3"/>
+
+                <!-- 분침 (3시 방향) -->
+                <line x1="75" y1="75" x2="125" y2="75" stroke="black" stroke-width="2"/>
+            </svg>
+        </div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="38"></span></div>
+    </div>
+
+    <div class="question" data-question-id="38">
+        <div class="question-title">38번. 지금은 오후 3시 30분입니다. 2시간 후는 몇 시 몇 분인가요?</div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="39"></span></div>
+    </div>
+
+    <div class="question" data-question-id="39">
+        <div class="question-title">39번. 다음 물체의 길이를 측정하면 약 몇 cm인가요?</div>
+        <div>
+            <svg width="300" height="60" viewBox="0 0 300 60">
+                <!-- 눈금자 -->
+                <line x1="20" y1="40" x2="260" y2="40" stroke="black" stroke-width="1"/>
+                <line x1="20" y1="35" x2="20" y2="45" stroke="black" stroke-width="1"/>
+                <text x="20" y="55" text-anchor="middle">0</text>
+
+                <line x1="40" y1="37" x2="40" y2="43" stroke="black" stroke-width="1"/>
+                <line x1="60" y1="37" x2="60" y2="43" stroke="black" stroke-width="1"/>
+                <line x1="80" y1="37" x2="80" y2="43" stroke="black" stroke-width="1"/>
+                <line x1="100" y1="37" x2="100" y2="43" stroke="black" stroke-width="1"/>
+
+                <line x1="120" y1="35" x2="120" y2="45" stroke="black" stroke-width="1"/>
+                <text x="120" y="55" text-anchor="middle">10</text>
+
+                <line x1="140" y1="37" x2="140" y2="43" stroke="black" stroke-width="1"/>
+                <line x1="160" y1="37" x2="160" y2="43" stroke="black" stroke-width="1"/>
+                <line x1="180" y1="37" x2="180" y2="43" stroke="black" stroke-width="1"/>
+                <line x1="200" y1="37" x2="200" y2="43" stroke="black" stroke-width="1"/>
+
+                <line x1="220" y1="35" x2="220" y2="45" stroke="black" stroke-width="1"/>
+                <text x="220" y="55" text-anchor="middle">20</text>
+
+                <line x1="240" y1="37" x2="240" y2="43" stroke="black" stroke-width="1"/>
+                <line x1="260" y1="37" x2="260" y2="43" stroke="black" stroke-width="1"/>
+
+                <!-- 연필 그림 -->
+                <line x1="20" y1="20" x2="140" y2="20" stroke="black" stroke-width="2"/>
+                <polygon points="140,15 140,25 152,20" fill="black"/>
+            </svg>
+        </div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="40"></span></div>
+    </div>
+
+    <div class="question" data-question-id="40">
+        <div class="question-title">40번. 1m는 몇 cm인가요?</div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="41"></span></div>
+    </div>
+
+    <div class="question" data-question-id="41">
+        <div class="question-title">41번. 다음 물체의 무게로 알맞은 것은?</div>
+        <div>
+            <svg width="100" height="60" viewBox="0 0 100 60">
+                <!-- 바나나 간단 그림 -->
+                <path d="M 10,50 C 30,0 90,10 90,30 C 90,50 40,60 10,50 Z" stroke="black" stroke-width="1" fill="none"/>
+            </svg>
+        </div>
+        <div class="options">
+            ① 약 2g &nbsp;&nbsp; ② 약 20g &nbsp;&nbsp; ③ 약 200g &nbsp;&nbsp; ④ 약 2kg
+        </div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="42"></span></div>
+    </div>
+
+    <div class="question" data-question-id="42">
+        <div class="question-title">42번. 1kg은 몇 g인가요?</div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="43"></span></div>
+    </div>
+
+    <div class="question" data-question-id="43">
+        <div class="question-title">43번. 다음 물의 양은 약 몇 L인가요?</div>
+        <div>
+            <svg width="100" height="150" viewBox="0 0 100 150">
+                <!-- 물병 그림 -->
+                <rect x="30" y="30" width="40" height="100" stroke="black" stroke-width="1" fill="none"/>
+                <path d="M 30,30 Q 30,10 50,10 Q 70,10 70,30" stroke="black" stroke-width="1" fill="none"/>
+                <!-- 물 표시 -->
+                <rect x="30" y="80" width="40" height="50" fill="#e6f7ff"/>
+                <!-- 500ml 표시 -->
+                <line x1="25" y1="80" x2="35" y2="80" stroke="black" stroke-width="1"/>
+                <text x="20" y="85" text-anchor="end" font-size="12">500ml</text>
+            </svg>
+        </div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="44"></span></div>
+    </div>
+
+    <div class="question" data-question-id="44">
+        <div class="question-title">44번. 아래 도형의 넓이를 구하세요. (한 칸은 1㎠입니다)</div>
+        <div>
+            <svg width="160" height="120" viewBox="0 0 160 120">
+                <!-- 모눈종이 배경 -->
+                <rect x="20" y="20" width="120" height="80" fill="none" stroke="#ddd" stroke-width="1"/>
+
+                <!-- 가로줄 -->
+                <line x1="20" y1="40" x2="140" y2="40" stroke="#ddd" stroke-width="1"/>
+                <line x1="20" y1="60" x2="140" y2="60" stroke="#ddd" stroke-width="1"/>
+                <line x1="20" y1="80" x2="140" y2="80" stroke="#ddd" stroke-width="1"/>
+
+                <!-- 세로줄 -->
+                <line x1="40" y1="20" x2="40" y2="100" stroke="#ddd" stroke-width="1"/>
+                <line x1="60" y1="20" x2="60" y2="100" stroke="#ddd" stroke-width="1"/>
+                <line x1="80" y1="20" x2="80" y2="100" stroke="#ddd" stroke-width="1"/>
+                <line x1="100" y1="20" x2="100" y2="100" stroke="#ddd" stroke-width="1"/>
+                <line x1="120" y1="20" x2="120" y2="100" stroke="#ddd" stroke-width="1"/>
+
+                <!-- 직사각형 (4×3) -->
+                <rect x="40" y="40" width="80" height="60" fill="#ffcccc" stroke="red" stroke-width="2"/>
+            </svg>
+        </div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="45"></span></div>
+    </div>
+
+    <h2>5. 문제 해결 및 응용 (45-50번)</h2>
+
+    <div class="question" data-question-id="45">
+        <div class="question-title">45번. 사과 7개를 3명이 똑같이 나누어 가지려고 합니다. 한 사람당 몇 개씩 가질 수 있을까요? 남는 사과는 몇 개인가요?</div>
+        <div>한 사람당: <span class="answer-space" contenteditable="true" tabindex="46"></span> 개</div>
+        <div>남는 사과: <span class="answer-space" contenteditable="true" tabindex="47"></span> 개</div>
+    </div>
+
+    <div class="question" data-question-id="46">
+        <div class="question-title">46번. 연필 1자루는 100원입니다. 연필 6자루를 사려면 얼마가 필요한가요?</div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="48"></span></div>
+    </div>
+
+    <div class="question" data-question-id="47">
+        <div class="question-title">47번. 1000원으로 200원짜리 공책을 사고 받은 거스름돈은 얼마인가요?</div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="49"></span></div>
+    </div>
+
+    <div class="question" data-question-id="48">
+        <div class="question-title">48번. 민수는 오전 10시에 친구 집에 도착했습니다. 2시간 30분 동안 놀았다면, 몇 시 몇 분에 놀이를 마쳤나요?</div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="50"></span></div>
+    </div>
+
+    <div class="question" data-question-id="49">
+        <div class="question-title">49번. 다음 그래프는 한 학급 학생들이 좋아하는 과일을 조사한 것입니다. 가장 많은 학생이 좋아하는 과일은 무엇인가요?</div>
+        <div>
+            <svg width="300" height="200" viewBox="0 0 300 200">
+                <!-- 막대그래프 -->
+                <line x1="50" y1="30" x2="50" y2="170" stroke="black" stroke-width="1"/> <!-- y축 -->
+                <line x1="50" y1="170" x2="280" y2="170" stroke="black" stroke-width="1"/> <!-- x축 -->
+
+                <!-- 눈금 -->
+                <line x1="45" y1="50" x2="50" y2="50" stroke="black" stroke-width="1"/>
+                <text x="40" y="55" text-anchor="end" font-size="12">10</text>
+
+                <line x1="45" y1="90" x2="50" y2="90" stroke="black" stroke-width="1"/>
+                <text x="40" y="95" text-anchor="end" font-size="12">7</text>
+
+                <line x1="45" y1="130" x2="50" y2="130" stroke="black" stroke-width="1"/>
+                <text x="40" y="135" text-anchor="end" font-size="12">3</text>
+
+                <!-- 막대 -->
+                <rect x="70" y="90" width="30" height="80" fill="#ffcccc"/>
+                <text x="85" y="185" text-anchor="middle" font-size="12">사과</text>
+                <text x="85" y="85" text-anchor="middle" font-size="12">8명</text>
+
+                <rect x="120" y="110" width="30" height="60" fill="#ccffcc"/>
+                <text x="135" y="185" text-anchor="middle" font-size="12">바나나</text>
+                <text x="135" y="105" text-anchor="middle" font-size="12">5명</text>
+
+                <rect x="170" y="50" width="30" height="120" fill="#ccccff"/>
+                <text x="185" y="185" text-anchor="middle" font-size="12">딸기</text>
+                <text x="185" y="45" text-anchor="middle" font-size="12">12명</text>
+
+                <rect x="220" y="100" width="30" height="70" fill="#ffffcc"/>
+                <text x="235" y="185" text-anchor="middle" font-size="12">포도</text>
+                <text x="235" y="95" text-anchor="middle" font-size="12">7명</text>
+            </svg>
+        </div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="51"></span></div>
+    </div>
+
+    <div class="question" data-question-id="50">
+        <div class="question-title">50번. 가로 6cm, 세로 4cm인 직사각형의 둘레는 몇 cm인가요?</div>
+        <div>
+            <svg width="200" height="120" viewBox="0 0 200 120">
+                <rect x="50" y="30" width="120" height="80" stroke="black" stroke-width="1" fill="none"/>
+                <text x="110" y="25" text-anchor="middle" font-size="12">6cm</text>
+                <text x="45" y="70" text-anchor="middle" font-size="12">4cm</text>
+            </svg>
+        </div>
+        <div>답: <span class="answer-space" contenteditable="true" tabindex="52"></span></div>
+    </div>
+</div>
+
+<div class="status-bar" id="status-bar">진행률: 0%</div>
+
+<div class="btn-container">
+    <button class="btn" id="download-pdf">PDF로 저장하기</button>
+    <button class="btn" style="margin-left: 10px;" onclick="window.print()">인쇄하기</button>
+    <button class="btn" id="save-html">HTML로 저장하기</button>
+    <button class="btn" id="grade-test">채점하기</button>
+</div>
+
+<script>
+    // 현재 날짜 설정
+    document.addEventListener('DOMContentLoaded', function() {
+        const today = new Date();
+        const dateString = `${today.getFullYear()}-${(today.getMonth()+1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
+        const dateField = document.querySelector('[data-field="date"]');
+        if (dateField) {
+            dateField.textContent = dateString;
+        }
+        
+        // 로컬 스토리지에서 데이터 로드
+        loadFromLocalStorage();
+        
+        // 진행률 상태바 업데이트
+        updateProgressBar();
+    });
+
+    // 모든 answer-space를 편집 가능하게 설정
+    const answerSpaces = document.querySelectorAll('.answer-space');
+    
+    answerSpaces.forEach(space => {
+        // 포커스를 받았을 때 하이라이트
+        space.addEventListener('focus', function() {
+            this.classList.add('highlight');
+        });
+        
+        // 포커스를 잃었을 때 하이라이트 제거
+        space.addEventListener('blur', function() {
+            this.classList.remove('highlight');
+            saveToLocalStorage(); // 사용자가 답을 입력할 때마다 저장
+            updateProgressBar(); // 진행률 업데이트
+        });
+        
+        // Enter 키를 누르면 다음 input으로 이동
+        space.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const currentTabIndex = parseInt(this.getAttribute('tabindex'));
+                const nextInput = document.querySelector(`[tabindex="${currentTabIndex + 1}"]`);
+                if (nextInput) {
+                    nextInput.focus();
+                }
+            }
+            
+            // 위, 아래 화살표 키로 이동
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                const currentTabIndex = parseInt(this.getAttribute('tabindex'));
+                const nextInput = document.querySelector(`[tabindex="${currentTabIndex + 1}"]`);
+                if (nextInput) {
+                    nextInput.focus();
+                }
+            }
+            
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                const currentTabIndex = parseInt(this.getAttribute('tabindex'));
+                if (currentTabIndex > 1) {
+                    const prevInput = document.querySelector(`[tabindex="${currentTabIndex - 1}"]`);
+                    if (prevInput) {
+                        prevInput.focus();
+                    }
+                }
+            }
+        });
+    });
+
+    // PDF 다운로드 기능
+    document.getElementById('download-pdf').addEventListener('click', function() {
+        const content = document.getElementById('content');
+        const btnContainer = document.querySelector('.btn-container');
+        const statusBar = document.getElementById('status-bar');
+
+        // PDF 생성 전에 버튼과 상태바 숨기기
+        btnContainer.style.display = 'none';
+        statusBar.style.display = 'none';
+
+        // PDF 옵션 설정
+        const options = {
+            margin: [10, 10, 10, 10],
+            filename: '수학_진단평가_50문항.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        // PDF 생성 및 다운로드
+        html2pdf().from(content).set(options).save().then(function() {
+            // PDF 생성 후 버튼과 상태바 다시 표시
+            btnContainer.style.display = 'block';
+            statusBar.style.display = 'block';
+        });
+    });
+
+    // HTML로 저장하기 기능
+    document.getElementById('save-html').addEventListener('click', function() {
+        saveToLocalStorage();
+        
+        // 학생 이름 가져오기
+        const studentName = document.querySelector('[data-field="name"]').textContent.trim() || '학생';
+        
+        // HTML 다운로드 생성 - 새 파일 열기용 파라미터 추가
+        let htmlContent = document.documentElement.outerHTML;
+        
+        // 새 파일로 열리도록 쿼리 파라미터 추가
+        const scriptToAdd = `
+        <script>
+            // 페이지 로드 시 새 파일 모드로 설정
+            if (!window.location.search.includes('new=true')) {
+                window.location.href = window.location.href + (window.location.href.includes('?') ? '&' : '?') + 'new=true';
+            }
+        </script>
+        `;
+        
+        // HTML 헤드에 스크립트 추가
+        htmlContent = htmlContent.replace('</head>', scriptToAdd + '</head>');
+        
+        const blob = new Blob([htmlContent], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        
+        // 다운로드 링크 생성 및 클릭
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = studentName + '_진단평가.html';
+        document.body.appendChild(a);
+        a.click();
+        
+        // 링크 제거
+        setTimeout(function() {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }, 0);
+        
+        alert('HTML 파일이 저장되었습니다. 이 파일을 열어서 작업을 계속할 수 있습니다.');
+    });
+
+    // 로컬 스토리지에 저장
+    function saveToLocalStorage() {
+        const answers = {};
+        
+        // 학생 정보 저장
+        document.querySelectorAll('[data-field]').forEach(field => {
+            answers[field.getAttribute('data-field')] = field.textContent;
+        });
+        
+        // 답변 저장
+        document.querySelectorAll('.question').forEach(question => {
+            const questionId = question.getAttribute('data-question-id');
+            const answerSpaces = question.querySelectorAll('.answer-space');
+            
+            if (answerSpaces.length === 1) {
+                answers[`q${questionId}`] = answerSpaces[0].textContent;
+                
+                // 정답/오답 스타일 저장
+                if (answerSpaces[0].classList.contains('correct-answer')) {
+                    answers[`style${questionId}_0`] = 'correct';
+                } else if (answerSpaces[0].classList.contains('incorrect-answer')) {
+                    answers[`style${questionId}_0`] = 'incorrect';
+                }
+            } else if (answerSpaces.length > 1) {
+                // 여러 답변 필드가 있는 문제의 경우
+                answerSpaces.forEach((space, index) => {
+                    answers[`q${questionId}_${index}`] = space.textContent;
+                    
+                    // 정답/오답 스타일 저장
+                    if (space.classList.contains('correct-answer')) {
+                        answers[`style${questionId}_${index}`] = 'correct';
+                    } else if (space.classList.contains('incorrect-answer')) {
+                        answers[`style${questionId}_${index}`] = 'incorrect';
+                    }
+                });
+            }
+            
+            // 채점 결과 저장
+            const resultMark = question.querySelector('.question-result');
+            if (resultMark) {
+                if (resultMark.classList.contains('correct-mark')) {
+                    answers[`result${questionId}`] = 'correct';
+                } else if (resultMark.classList.contains('incorrect-mark')) {
+                    answers[`result${questionId}`] = 'incorrect';
+                }
+            }
+        });
+        
+        // 로컬 스토리지에 저장
+        localStorage.setItem('mathAssessmentAnswers', JSON.stringify(answers));
+    }
+
+    // 로컬 스토리지에서 로드
+    function loadFromLocalStorage() {
+        // URL에서 쿼리 파라미터 확인 - 새 파일 열기 모드 체크
+        const urlParams = new URLSearchParams(window.location.search);
+        const isNewFile = urlParams.get('new') === 'true';
+        
+        // 새 파일 모드면 로컬 스토리지 사용 안함
+        if (isNewFile) {
+            // URL에서 쿼리 파라미터 제거 (새로고침해도 유지되게)
+            window.history.replaceState({}, document.title, window.location.pathname);
+            return;
+        }
+        
+        const savedAnswers = localStorage.getItem('mathAssessmentAnswers');
+        if (!savedAnswers) return;
+        
+        const answers = JSON.parse(savedAnswers);
+        
+        // 학생 정보 복원
+        document.querySelectorAll('[data-field]').forEach(field => {
+            const fieldName = field.getAttribute('data-field');
+            if (answers[fieldName]) {
+                field.textContent = answers[fieldName];
+            }
+        });
+        
+        // 답변 복원
+        document.querySelectorAll('.question').forEach(question => {
+            const questionId = question.getAttribute('data-question-id');
+            const answerSpaces = question.querySelectorAll('.answer-space');
+            
+            if (answerSpaces.length === 1) {
+                if (answers[`q${questionId}`]) {
+                    answerSpaces[0].textContent = answers[`q${questionId}`];
+                }
+            } else if (answerSpaces.length > 1) {
+                // 여러 답변 필드가 있는 문제의 경우
+                answerSpaces.forEach((space, index) => {
+                    if (answers[`q${questionId}_${index}`]) {
+                        space.textContent = answers[`q${questionId}_${index}`];
+                    }
+                });
+            }
+            
+            // 채점 결과 복원
+            if (answers[`result${questionId}`]) {
+                const questionTitle = question.querySelector('.question-title');
+                const existingMark = questionTitle.querySelector('.question-result');
+                
+                if (!existingMark) {
+                    const resultMark = document.createElement('span');
+                    resultMark.className = 'question-result';
+                    
+                    if (answers[`result${questionId}`] === 'correct') {
+                        resultMark.classList.add('correct-mark');
+                        resultMark.textContent = '⭕';
+                    } else {
+                        resultMark.classList.add('incorrect-mark');
+                        resultMark.textContent = '❌';
+                    }
+                    
+                    questionTitle.appendChild(resultMark);
+                }
+            }
+            
+            // 정답/오답 스타일 복원
+            answerSpaces.forEach((space, index) => {
+                if (answers[`style${questionId}_${index}`] === 'correct') {
+                    space.classList.add('correct-answer');
+                } else if (answers[`style${questionId}_${index}`] === 'incorrect') {
+                    space.classList.add('incorrect-answer');
+                }
+            });
+        });
+    }
+
+    // 진행률 상태바 업데이트
+    function updateProgressBar() {
+        const totalAnswerSpaces = document.querySelectorAll('.answer-space').length;
+        let filledAnswerSpaces = 0;
+        
+        document.querySelectorAll('.answer-space').forEach(space => {
+            if (space.textContent.trim() !== '') {
+                filledAnswerSpaces++;
+            }
+        });
+        
+        const progressPercent = Math.round((filledAnswerSpaces / totalAnswerSpaces) * 100);
+        document.getElementById('status-bar').textContent = `진행률: ${progressPercent}% (${filledAnswerSpaces}/${totalAnswerSpaces})`;
+    }
+
+    // 채점하기 기능
+    document.getElementById('grade-test').addEventListener('click', function() {
+        // 모든 문제가 풀렸는지 확인
+        const totalAnswerSpaces = document.querySelectorAll('.answer-space').length;
+        let filledAnswerSpaces = 0;
+        
+        document.querySelectorAll('.answer-space').forEach(space => {
+            if (space.textContent.trim() !== '') {
+                filledAnswerSpaces++;
+            }
+        });
+        
+        if (filledAnswerSpaces < totalAnswerSpaces) {
+            if (!confirm('아직 모든 문제를 풀지 않았습니다. 그래도 채점하시겠습니까?')) {
+                return;
+            }
+        }
+        
+        // 정답 데이터
+        const correctAnswers = {
+            // 수 개념 영역
+            '1': '이십칠',
+            '2': '35',
+            '3': '18, 28, 81, 82',
+            '4_0': '50',
+            '4_1': '60',
+            '5': '15',
+            '6': '2',
+            '7': '5',
+            '8': '④',
+            '9': '105',
+            '10': 'O',
+            '11': '24, 36, 50',
+            '12': '32',
+            
+            // 연산 영역
+            '13': '8',
+            '14': '17',
+            '15': '59',
+            '16': '103',
+            '17': '5',
+            '18': '9',
+            '19': '17',
+            '20': '47',
+            '21': '12',
+            '22': '42',
+            '23': '60',
+            '24': '5',
+            '25': '5',
+            '26': '4',
+            '27': '17',
+            '28': '13',
+            
+            // 도형 및 공간 감각
+            '29': '3',
+            '30': '②',
+            '31': '정육면체',
+            '32': '3',
+            '33': '삼각형',
+            '34': '수직선',
+            '35': '③',
+            '36': '③',
+            
+            // 측정 영역
+            '37': '4시 15분',
+            '38': '오후 5시 30분',
+            '39': '12cm',
+            '40': '100cm',
+            '41': '③',
+            '42': '1000g',
+            '43': '0.5L',
+            '44': '24㎠',
+            
+            // 문제 해결 및 응용
+            '45_0': '2',
+            '45_1': '1',
+            '46': '600원',
+            '47': '800원',
+            '48': '오후 12시 30분',
+            '49': '딸기',
+            '50': '20cm'
+        };
+        
+        // 채점 실행
+        let correctCount = 0;
+        let incorrectCount = 0;
+        
+        document.querySelectorAll('.question').forEach(question => {
+            const questionId = question.getAttribute('data-question-id');
+            const answerSpaces = question.querySelectorAll('.answer-space');
+            
+            // 기존 결과 마크가 있으면 제거
+            const existingMark = question.querySelector('.question-result');
+            if (existingMark) {
+                existingMark.remove();
+            }
+            
+            let isCorrect = true;
+            
+            if (answerSpaces.length === 1) {
+                const studentAnswer = answerSpaces[0].textContent.trim();
+                const correctAnswer = correctAnswers[questionId];
+                
+                if (correctAnswer) {
+                    const isAnswerCorrect = checkAnswer(studentAnswer, correctAnswer);
+                    isCorrect = isAnswerCorrect;
+                    
+                    // 정답/오답 스타일 적용
+                    if (isAnswerCorrect) {
+                        answerSpaces[0].classList.add('correct-answer');
+                        answerSpaces[0].classList.remove('incorrect-answer');
+                    } else {
+                        answerSpaces[0].classList.add('incorrect-answer');
+                        answerSpaces[0].classList.remove('correct-answer');
+                    }
+                }
+            } else if (answerSpaces.length > 1) {
+                // 여러 답변 필드가 있는 문제의 경우
+                answerSpaces.forEach((space, index) => {
+                    const studentAnswer = space.textContent.trim();
+                    const correctAnswer = correctAnswers[`${questionId}_${index}`];
+                    
+                    if (correctAnswer) {
+                        const isAnswerCorrect = checkAnswer(studentAnswer, correctAnswer);
+                        if (!isAnswerCorrect) {
+                            isCorrect = false;
+                        }
+                        
+                        // 정답/오답 스타일 적용
+                        if (isAnswerCorrect) {
+                            space.classList.add('correct-answer');
+                            space.classList.remove('incorrect-answer');
+                        } else {
+                            space.classList.add('incorrect-answer');
+                            space.classList.remove('correct-answer');
+                        }
+                    }
+                });
+            }
+            
+            // 문제 번호 옆에 정답/오답 표시 추가
+            const questionTitle = question.querySelector('.question-title');
+            const resultMark = document.createElement('span');
+            resultMark.className = 'question-result';
+            
+            if (isCorrect) {
+                resultMark.classList.add('correct-mark');
+                resultMark.textContent = '⭕';
+                correctCount++;
+            } else {
+                resultMark.classList.add('incorrect-mark');
+                resultMark.textContent = '❌';
+                incorrectCount++;
+            }
+            
+            questionTitle.appendChild(resultMark);
+        });
+        
+        // 총점 계산 및 표시
+        const totalScore = Math.round((correctCount / (correctCount + incorrectCount)) * 100);
+        document.querySelector('[data-field="score"]').textContent = totalScore + '점';
+        
+        // 결과 알림
+        alert(`채점이 완료되었습니다!\n정답: ${correctCount}개\n오답: ${incorrectCount}개\n점수: ${totalScore}점`);
+        
+        // 로컬 스토리지에 저장
+        saveToLocalStorage();
+    });
+    
+    // 정답 확인 함수 (대소문자, 공백, 쉼표 등을 고려)
+    function checkAnswer(studentAnswer, correctAnswer) {
+        if (!studentAnswer || !correctAnswer) return false;
+        
+        const normalizedStudentAnswer = studentAnswer.toLowerCase().replace(/\s+/g, '').replace(/，/g, ',');
+        const normalizedCorrectAnswer = correctAnswer.toLowerCase().replace(/\s+/g, '').replace(/，/g, ',');
+        
+        // 여러 값이 있는 정답 처리 (쉼표로 구분된 경우)
+        if (normalizedCorrectAnswer.includes(',')) {
+            const correctItems = normalizedCorrectAnswer.split(',');
+            const studentItems = normalizedStudentAnswer.split(',');
+            
+            if (correctItems.length !== studentItems.length) return false;
+            
+            // 순서가 중요한 문제
+            if (isSequentialQuestion(correctAnswer)) {
+                return correctItems.every((item, index) => item === studentItems[index]);
+            }
+            
+            // 순서가 중요하지 않은 문제 (집합 비교)
+            return correctItems.every(item => studentItems.includes(item)) && 
+                   studentItems.every(item => correctItems.includes(item));
+        }
+        
+        return normalizedStudentAnswer === normalizedCorrectAnswer;
+    }
+    
+    // 순서가 중요한 문제인지 확인
+    function isSequentialQuestion(answer) {
+        // 숫자 순서 또는 특정 유형의 문제에 대해 순서가 중요한지 판단
+        return answer.includes(',') && /\d+,\s*\d+/.test(answer);
+    }
+</script>
+</body>
+</html>
