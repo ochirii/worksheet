@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>약수 배우기</title>
+    <style>
+        body {
+            font-family: 'Nanum Gothic', Arial, sans-serif;
+            background-color: #f9f7f0;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #3498db;
+            text-align: center;
+            font-size: 2.2em;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        h2 {
+            color: #2980b9;
+            margin-top: 25px;
+        }
+        
+        .intro {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .activity {
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            background-color: #f8f9fa;
+        }
+        
+        .activity-title {
+            font-weight: bold;
+            font-size: 1.3em;
+            color: #2980b9;
+            margin-bottom: 10px;
+        }
+        
+        .blocks-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+            justify-content: center;
+        }
+        
+        .block {
+            width: 40px;
+            height: 40px;
+            background-color: #3498db;
+            border: 1px solid #2980b9;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        
+        .block:hover {
+            transform: scale(1.1);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            gap: 10px;
+        }
+        
+        button {
+            background-color: #3498db;
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        input {
+            padding: 10px;
+            border: 2px solid #3498db;
+            border-radius: 5px;
+            font-size: 1em;
+            width: 60px;
+            text-align: center;
+        }
+        
+        .result {
+            margin-top: 20px;
+            min-height: 50px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #e8f4fc;
+            font-size: 1.2em;
+            text-align: center;
+        }
+        
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+            background-color: #f1f9fe;
+        }
+        
+        .candy-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 20px 0;
+            justify-content: center;
+        }
+        
+        .candy {
+            width: 30px;
+            height: 30px;
+            background-color: #e74c3c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .candy-box {
+            border: 2px dashed #3498db;
+            border-radius: 10px;
+            padding: 10px;
+            margin: 5px;
+            display: inline-flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        
+        .rectangle-demo {
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .rectangle {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            border: 2px solid #3498db;
+        }
+        
+        .rectangle-block {
+            width: 30px;
+            height: 30px;
+            background-color: #3498db;
+            border: 1px solid white;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .divisor-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+            justify-content: center;
+        }
+        
+        .divisor-item {
+            padding: 8px 15px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .bounce {
+            animation: bounce 0.5s;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 1s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .success {
+            background-color: #2ecc71;
+        }
+        
+        .error {
+            background-color: #e74c3c;
+        }
+        
+        .celebration {
+            font-size: 1.5em;
+            color: #2ecc71;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        
+        .hint {
+            font-style: italic;
+            color: #7f8c8d;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>약수 배우기</h1>
+        
+        <div class="intro fade-in">
+            <p><strong>약수</strong>란 어떤 수를 나누었을 때 나머지가 0이 되게 하는 수를 말해요. 쉽게 말하면, 어떤 수를 정확하게 나눌 수 있는 수예요.</p>
+            <p>예를 들어, 12의 약수는 1, 2, 3, 4, 6, 12입니다. 왜냐하면 이 숫자들은 모두 12를 나누어 떨어지게 하기 때문이에요!</p>
+        </div>
+        
+        <h2>1. 사탕 나누기로 약수 이해하기</h2>
+        
+        <div class="activity fade-in">
+            <div class="activity-title">사탕 나누기 활동</div>
+            <p>사탕을 친구들에게 똑같이 나눠주려고 해요. 몇 명의 친구에게 나눠줄 수 있을까요?</p>
+            
+            <div class="controls">
+                <label for="candyCount">사탕 개수:</label>
+                <input type="number" id="candyCount" min="1" max="20" value="10">
+                <button id="distributeCandies">사탕 나누기</button>
+            </div>
+            
+            <div class="candy-container" id="candyDisplay"></div>
+            
+            <div id="candyResults" class="fade-in hidden">
+                <h3>나눔 결과:</h3>
+                <div id="candyDistributions"></div>
+                <div class="explanation">
+                    <p><span id="candyNumber"></span>의 약수는 <span id="candyDivisors"></span>입니다.</p>
+                    <p>왜냐하면 이 숫자들은 <span id="candyNumber2"></span>을(를) 정확하게 나눌 수 있기 때문이에요!</p>
+                </div>
+            </div>
+        </div>
+        
+        <h2>2. 직사각형 만들기로 약수 이해하기</h2>
+        
+        <div class="activity fade-in">
+            <div class="activity-title">직사각형 만들기 활동</div>
+            <p>블록으로 직사각형을 만들어 볼까요? 직사각형의 가로와 세로 길이는 그 수의 약수를 나타내요.</p>
+            
+            <div class="controls">
+                <label for="blockCount">블록 개수:</label>
+                <input type="number" id="blockCount" min="1" max="30" value="12">
+                <button id="createRectangles">직사각형 만들기</button>
+            </div>
+            
+            <div id="rectangleResults" class="fade-in hidden">
+                <h3>가능한 직사각형:</h3>
+                <div id="rectangleDisplay"></div>
+                <div class="explanation">
+                    <p><span id="rectangleNumber"></span>의 약수는 <span id="rectangleDivisors"></span>입니다.</p>
+                    <p>위의 직사각형들의 가로와 세로 길이가 바로 약수예요!</p>
+                </div>
+            </div>
+        </div>
+        
+        <h2>3. 약수 찾기 게임</h2>
+        
+        <div class="activity fade-in">
+            <div class="activity-title">약수 찾기 게임</div>
+            <p>숫자를 선택하고 그 숫자의 약수를 모두 찾아보세요!</p>
+            
+            <div class="controls">
+                <label for="gameNumber">숫자:</label>
+                <input type="number" id="gameNumber" min="1" max="30" value="12">
+                <button id="startGame">게임 시작</button>
+            </div>
+            
+            <div id="gameContainer" class="fade-in hidden">
+                <p><span id="gameTarget"></span>의 약수를 모두 찾아보세요:</p>
+                <div class="blocks-container" id="numberBlocks"></div>
+                <div class="result" id="gameResult"></div>
+                <div id="divisorsList" class="divisor-list"></div>
+                <button id="restartGame" class="hidden">다시 시작</button>
+            </div>
+        </div>
+        
+        <div class="explanation fade-in">
+            <h3>약수 정리하기</h3>
+            <p>약수는 어떤 수를 나누어 떨어지게 하는 수입니다.</p>
+            <p>예를 들어:</p>
+            <ul>
+                <li>6의 약수: 1, 2, 3, 6</li>
+                <li>10의 약수: 1, 2, 5, 10</li>
+                <li>12의 약수: 1, 2, 3, 4, 6, 12</li>
+            </ul>
+            <p>약수를 알면 분수, 소인수분해, 최대공약수 등 다양한 수학 개념을 이해하는 데 도움이 됩니다.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 사탕 나누기 활동
+            const candyCountInput = document.getElementById('candyCount');
+            const distributeCandiesBtn = document.getElementById('distributeCandies');
+            const candyDisplay = document.getElementById('candyDisplay');
+            const candyResults = document.getElementById('candyResults');
+            const candyDistributions = document.getElementById('candyDistributions');
+            const candyNumber = document.getElementById('candyNumber');
+            const candyNumber2 = document.getElementById('candyNumber2');
+            const candyDivisors = document.getElementById('candyDivisors');
+            
+            distributeCandiesBtn.addEventListener('click', function() {
+                const count = parseInt(candyCountInput.value);
+                if (count < 1 || count > 20) {
+                    alert('1에서 20 사이의 숫자를 입력해주세요!');
+                    return;
+                }
+                
+                // 사탕 표시
+                candyDisplay.innerHTML = '';
+                for (let i = 0; i < count; i++) {
+                    const candy = document.createElement('div');
+                    candy.className = 'candy';
+                    candy.textContent = i + 1;
+                    candyDisplay.appendChild(candy);
+                }
+                
+                // 약수 찾기
+                const divisors = [];
+                for (let i = 1; i <= count; i++) {
+                    if (count % i === 0) {
+                        divisors.push(i);
+                    }
+                }
+                
+                // 결과 표시
+                candyDistributions.innerHTML = '';
+                divisors.forEach(div => {
+                    const boxContainer = document.createElement('div');
+                    boxContainer.style.textAlign = 'center';
+                    boxContainer.style.margin = '10px 0';
+                    
+                    const boxesRow = document.createElement('div');
+                    boxesRow.style.display = 'flex';
+                    boxesRow.style.justifyContent = 'center';
+                    boxesRow.style.flexWrap = 'wrap';
+                    boxesRow.style.gap = '10px';
+                    
+                    const candiesPerFriend = count / div;
+                    
+                    // 친구 박스 만들기
+                    for (let i = 0; i < div; i++) {
+                        const box = document.createElement('div');
+                        box.className = 'candy-box';
+                        
+                        // 사탕 추가
+                        for (let j = 0; j < candiesPerFriend; j++) {
+                            const candy = document.createElement('div');
+                            candy.className = 'candy';
+                            candy.style.width = '20px';
+                            candy.style.height = '20px';
+                            candy.style.fontSize = '0.8em';
+                            box.appendChild(candy);
+                        }
+                        
+                        boxesRow.appendChild(box);
+                    }
+                    
+                    const explanation = document.createElement('div');
+                    explanation.textContent = `${count}개의 사탕을 ${div}명의 친구에게 나누면 한 명당 ${candiesPerFriend}개씩 받습니다.`;
+                    explanation.style.marginTop = '5px';
+                    
+                    boxContainer.appendChild(boxesRow);
+                    boxContainer.appendChild(explanation);
+                    candyDistributions.appendChild(boxContainer);
+                });
+                
+                candyNumber.textContent = count;
+                candyNumber2.textContent = count;
+                candyDivisors.textContent = divisors.join(', ');
+                candyResults.classList.remove('hidden');
+            });
+            
+            // 직사각형 만들기 활동
+            const blockCountInput = document.getElementById('blockCount');
+            const createRectanglesBtn = document.getElementById('createRectangles');
+            const rectangleResults = document.getElementById('rectangleResults');
+            const rectangleDisplay = document.getElementById('rectangleDisplay');
+            const rectangleNumber = document.getElementById('rectangleNumber');
+            const rectangleDivisors = document.getElementById('rectangleDivisors');
+            
+            createRectanglesBtn.addEventListener('click', function() {
+                const count = parseInt(blockCountInput.value);
+                if (count < 1 || count > 30) {
+                    alert('1에서 30 사이의 숫자를 입력해주세요!');
+                    return;
+                }
+                
+                // 약수 찾기
+                const divisors = [];
+                for (let i = 1; i <= count; i++) {
+                    if (count % i === 0) {
+                        divisors.push(i);
+                    }
+                }
+                
+                // 직사각형 표시
+                rectangleDisplay.innerHTML = '';
+                for (let i = 0; i < divisors.length; i++) {
+                    const width = divisors[i];
+                    const height = count / width;
+                    
+                    const rectDemo = document.createElement('div');
+                    rectDemo.className = 'rectangle-demo';
+                    
+                    const rectangle = document.createElement('div');
+                    rectangle.className = 'rectangle';
+                    rectangle.style.width = `${width * 32}px`;
+                    rectangle.style.height = `${height * 32}px`;
+                    
+                    // 블록 추가
+                    for (let j = 0; j < count; j++) {
+                        const block = document.createElement('div');
+                        block.className = 'rectangle-block';
+                        rectangle.appendChild(block);
+                    }
+                    
+                    const description = document.createElement('div');
+                    description.textContent = `${width} × ${height} = ${count}`;
+                    description.style.marginTop = '5px';
+                    
+                    rectDemo.appendChild(rectangle);
+                    rectDemo.appendChild(description);
+                    rectangleDisplay.appendChild(rectDemo);
+                }
+                
+                rectangleNumber.textContent = count;
+                rectangleDivisors.textContent = divisors.join(', ');
+                rectangleResults.classList.remove('hidden');
+            });
+            
+            // 약수 찾기 게임
+            const gameNumberInput = document.getElementById('gameNumber');
+            const startGameBtn = document.getElementById('startGame');
+            const gameContainer = document.getElementById('gameContainer');
+            const gameTarget = document.getElementById('gameTarget');
+            const numberBlocks = document.getElementById('numberBlocks');
+            const gameResult = document.getElementById('gameResult');
+            const divisorsList = document.getElementById('divisorsList');
+            const restartGameBtn = document.getElementById('restartGame');
+            
+            let currentNumber = 0;
+            let foundDivisors = [];
+            let allDivisors = [];
+            
+            startGameBtn.addEventListener('click', function() {
+                currentNumber = parseInt(gameNumberInput.value);
+                if (currentNumber < 1 || currentNumber > 30) {
+                    alert('1에서 30 사이의 숫자를 입력해주세요!');
+                    return;
+                }
+                
+                // 약수 찾기
+                allDivisors = [];
+                for (let i = 1; i <= currentNumber; i++) {
+                    if (currentNumber % i === 0) {
+                        allDivisors.push(i);
+                    }
+                }
+                
+                foundDivisors = [];
+                gameTarget.textContent = currentNumber;
+                gameResult.textContent = '';
+                divisorsList.innerHTML = '';
+                
+                // 숫자 블록 생성
+                numberBlocks.innerHTML = '';
+                for (let i = 1; i <= currentNumber; i++) {
+                    const block = document.createElement('div');
+                    block.className = 'block';
+                    block.textContent = i;
+                    block.dataset.number = i;
+                    block.addEventListener('click', checkDivisor);
+                    numberBlocks.appendChild(block);
+                }
+                
+                gameContainer.classList.remove('hidden');
+                restartGameBtn.classList.add('hidden');
+            });
+            
+            function checkDivisor(e) {
+                const number = parseInt(e.target.dataset.number);
+                const isDivisor = currentNumber % number === 0;
+                
+                if (isDivisor) {
+                    if (!foundDivisors.includes(number)) {
+                        foundDivisors.push(number);
+                        e.target.classList.add('success');
+                        
+                        const divisorItem = document.createElement('div');
+                        divisorItem.className = 'divisor-item bounce';
+                        divisorItem.textContent = number;
+                        divisorsList.appendChild(divisorItem);
+                        
+                        if (foundDivisors.length === allDivisors.length) {
+                            gameResult.textContent = '축하합니다! 모든 약수를 찾았어요!';
+                            gameResult.className = 'result celebration';
+                            restartGameBtn.classList.remove('hidden');
+                        } else {
+                            gameResult.textContent = `잘했어요! ${number}은(는) ${currentNumber}의 약수입니다.`;
+                            gameResult.className = 'result success';
+                        }
+                    } else {
+                        gameResult.textContent = `이미 찾은 약수입니다.`;
+                        gameResult.className = 'result';
+                    }
+                } else {
+                    e.target.classList.add('error');
+                    setTimeout(() => {
+                        e.target.classList.remove('error');
+                    }, 500);
+                    gameResult.textContent = `${number}은(는) ${currentNumber}의 약수가 아닙니다.`;
+                    gameResult.className = 'result error';
+                }
+            }
+            
+            restartGameBtn.addEventListener('click', function() {
+                startGameBtn.click();
+            });
+        });
+    </script>
+</body>
+</html>
