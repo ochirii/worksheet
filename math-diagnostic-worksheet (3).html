@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>수학 진단평가 학습지</title>
+    <style>
+        /* 기본 페이지 설정 (A4 기준) */
+        @page {
+            size: 210mm 297mm;
+            margin: 20mm;
+        }
+        
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            margin: 0;
+            padding: 20mm;
+            background-color: #ffffff;
+            width: 170mm; /* A4 너비에서 여백 제외 */
+        }
+        
+        /* 헤더 스타일 */
+        .header {
+            margin-bottom: 10mm;
+        }
+        
+        .header h1 {
+            font-size: 18pt;
+            text-align: center;
+            margin-bottom: 5mm;
+        }
+        
+        .student-info {
+            margin-bottom: 10mm;
+            border: 1px solid #000000;
+            padding: 5mm;
+        }
+        
+        .info-row {
+            margin-bottom: 3mm;
+        }
+        
+        /* 문제 스타일 */
+        .question {
+            margin-bottom: 10mm;
+            border: 1px solid #dddddd;
+            padding: 5mm;
+            background-color: #f9f9f9;
+            page-break-inside: avoid;
+        }
+        
+        .question-title {
+            font-weight: bold;
+            margin-bottom: 3mm;
+        }
+        
+        .options {
+            list-style-type: none;
+            padding-left: 5mm;
+        }
+        
+        .options li {
+            margin-bottom: 2mm;
+        }
+        
+        input[type="text"], textarea {
+            width: 150mm;
+            padding: 2mm;
+            border: 1px solid #cccccc;
+        }
+        
+        textarea {
+            height: 20mm;
+        }
+        
+        /* 그래프와 도표용 스타일 */
+        .graph-container {
+            text-align: center;
+            margin: 5mm 0;
+            border: 1px solid #cccccc;
+            padding: 5mm;
+            background-color: #ffffff;
+        }
+        
+        .bar {
+            display: inline-block;
+            background-color: #4472C4;
+            margin-right: 5mm;
+            vertical-align: bottom;
+        }
+        
+        .bar-label {
+            text-align: center;
+            font-size: 10pt;
+        }
+        
+        /* 테이블 스타일 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 5mm 0;
+        }
+        
+        table, th, td {
+            border: 1px solid #cccccc;
+        }
+        
+        th, td {
+            padding: 2mm;
+            text-align: center;
+        }
+        
+        th {
+            background-color: #e6e6e6;
+        }
+        
+        /* 도형용 스타일 */
+        .shape-container {
+            text-align: center;
+            margin: 5mm 0;
+        }
+        
+        .shape {
+            display: inline-block;
+            margin: 0 5mm;
+        }
+        
+        /* 교사용 채점 영역 */
+        .grading-area {
+            margin-top: 5mm;
+            border-top: 1px dashed #999999;
+            padding-top: 3mm;
+            display: none; /* 기본적으로 숨김 */
+        }
+        
+        /* 교사용 버전에서만 보이게 설정 */
+        .teacher-version .grading-area {
+            display: block;
+        }
+        
+        /* 버튼 스타일 */
+        .button-container {
+            margin-bottom: 10mm;
+            text-align: right;
+        }
+        
+        .action-button {
+            background-color: #4472C4;
+            border: none;
+            color: white;
+            padding: 3mm 5mm;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 10pt;
+            margin-left: 2mm;
+            cursor: pointer;
+        }
+        
+        /* 인쇄 설정 */
+        @media print {
+            body {
+                padding: 0;
+            }
+            
+            .no-print {
+                display: none;
+            }
+            
+            /* 학생 버전 인쇄 시 채점 영역 숨김 */
+            .grading-area {
+                display: none;
+            }
+            
+            /* 교사 버전 인쇄 시 채점 영역 표시 */
+            .teacher-version .grading-area {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 문서 버전 전환 및 버튼 컨트롤 (인쇄 시 제외됨) -->
+    <div class="no-print button-container">
+        <button class="action-button" onclick="document.body.classList.toggle('teacher-version')">교사/학생 버전 전환</button>
+        <button class="action-button" onclick="window.print()">인쇄하기</button>
+        <button class="action-button" onclick="saveToPDF()">PDF로 저장</button>
+        <button class="action-button" onclick="saveAsHTML()">HTML로 저장</button>
+    </div>
+
+    <div class="header">
+        <h1>수학 진단평가 학습지</h1>
+        
+        <div class="student-info">
+            <div class="info-row">
+                학생 이름: <input type="text" id="student_name" style="width: 100mm;">
+            </div>
+            <div class="info-row">
+                학급: <input type="text" id="class_name" style="width: 50mm;">
+                번호: <input type="text" id="student_number" style="width: 30mm;">
+            </div>
+            <div class="info-row">
+                제출일: <input type="date" id="submission_date" style="width: 100mm;" value="">
+            </div>
+            <script>
+                // 오늘 날짜를 기본값으로 설정
+                document.addEventListener('DOMContentLoaded', function() {
+                    const today = new Date();
+                    const dateString = today.toISOString().split('T')[0]; // YYYY-MM-DD 형식
+                    document.getElementById('submission_date').value = dateString;
+                });
+            </script>
+        </div>
+    </div>
+
+    <!-- 문제 1: 도형 인식 -->
+    <div class="question" id="q1">
+        <div class="question-title">문제 1: 다음 중 사각형을 모두 고르세요.</div>
+        <div class="shape-container">
+            <div class="shape">
+                <svg width="40" height="40" viewBox="0 0 40 40">
+                    <circle cx="20" cy="20" r="18" fill="none" stroke="black" stroke-width="2"/>
+                </svg>
+                <div>A</div>
+            </div>
+            <div class="shape">
+                <svg width="40" height="40" viewBox="0 0 40 40">
+                    <rect x="5" y="5" width="30" height="30" fill="none" stroke="black" stroke-width="2"/>
+                </svg>
+                <div>B</div>
+            </div>
+            <div class="shape">
+                <svg width="40" height="40" viewBox="0 0 40 40">
+                    <polygon points="20,5 35,35 5,35" fill="none" stroke="black" stroke-width="2"/>
+                </svg>
+                <div>C</div>
+            </div>
+            <div class="shape">
+                <svg width="40" height="40" viewBox="0 0 40 40">
+                    <polygon points="5,10 35,10 30,30 10,30" fill="none" stroke="black" stroke-width="2"/>
+                </svg>
+                <div>D</div>
+            </div>
+        </div>
+        <div style="margin-top: 5mm;">
+            <input type="checkbox" name="q1_answer_a" value="A"> A
+            <input type="checkbox" name="q1_answer_b" value="B"> B
+            <input type="checkbox" name="q1_answer_c" value="C"> C
+            <input type="checkbox" name="q1_answer_d" value="D"> D
+        </div>
+        
+        <!-- 교사용 채점 영역 -->
+        <div class="grading-area">
+            <div>정답: <span class="correct_answer">B, D</span></div>
+            <div>
+                채점 결과: 
+                <select class="grading">
+                    <option value="">선택하세요</option>
+                    <option value="correct">정답</option>
+                    <option value="partial">부분 정답</option>
+                    <option value="incorrect">오답</option>
+                </select>
+            </div>
+            <div>교사 메모: <input type="text" class="teacher_notes" style="width: 130mm;"></div>
+        </div>
+    </div>
+
+    <!-- 문제 2: 막대그래프 읽기 -->
+    <div class="question" id="q2">
+        <div class="question-title">문제 2: 다음 그래프는 학생들이 좋아하는 과일을 조사한 결과입니다. 질문에 답하세요.</div>
+        <div class="graph-container">
+            <table style="width: 100%; border-collapse: collapse; margin: 10px 0;">
+                <tr style="height: 40px;">
+                    <td style="width: 80px; text-align: right; padding-right: 10px; border: none;">10 -</td>
+                    <td colspan="4" style="border-top: 1px solid #ccc;"></td>
+                </tr>
+                <tr style="height: 40px;">
+                    <td style="width: 80px; text-align: right; padding-right: 10px; border: none;">8 -</td>
+                    <td colspan="4" style="border-top: 1px solid #ccc;"></td>
+                </tr>
+                <tr style="height: 40px;">
+                    <td style="width: 80px; text-align: right; padding-right: 10px; border: none;">6 -</td>
+                    <td colspan="4" style="border-top: 1px solid #ccc;"></td>
+                </tr>
+                <tr style="height: 40px;">
+                    <td style="width: 80px; text-align: right; padding-right: 10px; border: none;">4 -</td>
+                    <td colspan="4" style="border-top: 1px solid #ccc;"></td>
+                </tr>
+                <tr style="height: 40px;">
+                    <td style="width: 80px; text-align: right; padding-right: 10px; border: none;">2 -</td>
+                    <td colspan="4" style="border-top: 1px solid #ccc;"></td>
+                </tr>
+                <tr style="height: 20px; border-top: 2px solid #000;">
+                    <td style="border: none;"></td>
+                    <td style="width: 25%; text-align: center; border: none;">사과<br>(5명)</td>
+                    <td style="width: 25%; text-align: center; border: none;">바나나<br>(8명)</td>
+                    <td style="width: 25%; text-align: center; border: none;">딸기<br>(3명)</td>
+                    <td style="width: 25%; text-align: center; border: none;">포도<br>(6명)</td>
+                </tr>
+                <tr>
+                    <td style="border: none;"></td>
+                    <td style="text-align: center; vertical-align: bottom; border: none; padding: 0;">
+                        <div style="background-color: #4472C4; width: 30px; height: 100px; margin: 0 auto;"></div>
+                    </td>
+                    <td style="text-align: center; vertical-align: bottom; border: none; padding: 0;">
+                        <div style="background-color: #4472C4; width: 30px; height: 160px; margin: 0 auto;"></div>
+                    </td>
+                    <td style="text-align: center; vertical-align: bottom; border: none; padding: 0;">
+                        <div style="background-color: #4472C4; width: 30px; height: 60px; margin: 0 auto;"></div>
+                    </td>
+                    <td style="text-align: center; vertical-align: bottom; border: none; padding: 0;">
+                        <div style="background-color: #4472C4; width: 30px; height: 120px; margin: 0 auto;"></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+        <div style="margin-top: 5mm;">
+            <div>1) 가장 많은 학생이 좋아하는 과일은 무엇인가요?</div>
+            <input type="text" name="q2_answer1" style="width: 100mm;">
+            
+            <div style="margin-top: 3mm;">2) 사과를 좋아하는 학생은 몇 명인가요?</div>
+            <input type="text" name="q2_answer2" style="width: 100mm;">
+            
+            <div style="margin-top: 3mm;">3) 딸기를 좋아하는 학생과 포도를 좋아하는 학생의 합은 몇 명인가요?</div>
+            <input type="text" name="q2_answer3" style="width: 100mm;">
+        </div>
+        
+        <!-- 교사용 채점 영역 -->
+        <div class="grading-area">
+            <div>정답: 
+                <div>1) 바나나</div>
+                <div>2) 5명</div>
+                <div>3) 9명 (3+6)</div>
+            </div>
+            <div>
+                채점 결과: 
+                <select class="grading">
+                    <option value="">선택하세요</option>
+                    <option value="correct">정답</option>
+                    <option value="partial">부분 정답</option>
+                    <option value="incorrect">오답</option>
+                </select>
+            </div>
+            <div>교사 메모: <input type="text" class="teacher_notes" style="width: 130mm;"></div>
+        </div>
+    </div>
+
+    <!-- 문제 3: 나눗셈 기초 -->
+    <div class="question" id="q3">
+        <div class="question-title">문제 3: 다음 나눗셈을 풀어보세요.</div>
+        <div style="margin-top: 5mm;">
+            <div style="font-size: 14pt; margin-bottom: 5mm;">1) 10 ÷ 2 = <input type="text" name="q3_answer1" style="width: 30mm;"></div>
+            <div style="font-size: 14pt; margin-bottom: 5mm;">2) 15 ÷ 3 = <input type="text" name="q3_answer2" style="width: 30mm;"></div>
+            <div style="font-size: 14pt; margin-bottom: 5mm;">3) 18 ÷ 6 = <input type="text" name="q3_answer3" style="width: 30mm;"></div>
+            <div style="font-size: 14pt; margin-bottom: 5mm;">4) 20 ÷ 4 = <input type="text" name="q3_answer4" style="width: 30mm;"></div>
+        </div>
+        
+        <!-- 교사용 채점 영역 -->
+        <div class="grading-area">
+            <div>정답: 
+                <div>1) 5</div>
+                <div>2) 5</div>
+                <div>3) 3</div>
+                <div>4) 5</div>
+            </div>
+            <div>
+                채점 결과: 
+                <select class="grading">
+                    <option value="">선택하세요</option>
+                    <option value="correct">정답</option>
+                    <option value="partial">부분 정답</option>
+                    <option value="incorrect">오답</option>
+                </select>
+            </div>
+            <div>교사 메모: <input type="text" class="teacher_notes" style="width: 130mm;"></div>
+        </div>
+    </div>
+
+    <!-- 문제 4: 표 읽기 -->
+    <div class="question" id="q4">
+        <div class="question-title">문제 4: 다음 표는 5일 동안 지역별 날씨를 나타낸 것입니다. 문제에 답하세요.</div>
+        <table>
+            <tr>
+                <th>지역</th>
+                <th>월요일</th>
+                <th>화요일</th>
+                <th>수요일</th>
+                <th>목요일</th>
+                <th>금요일</th>
+            </tr>
+            <tr>
+                <td>서울</td>
+                <td>맑음</td>
+                <td>비</td>
+                <td>맑음</td>
+                <td>흐림</td>
+                <td>맑음</td>
+            </tr>
+            <tr>
+                <td>부산</td>
+                <td>흐림</td>
+                <td>맑음</td>
+                <td>맑음</td>
+                <td>비</td>
+                <td>맑음</td>
+            </tr>
+            <tr>
+                <td>제주</td>
+                <td>비</td>
+                <td>비</td>
+                <td>흐림</td>
+                <td>맑음</td>
+                <td>비</td>
+            </tr>
+        </table>
+        
+        <div style="margin-top: 5mm;">
+            <div>1) 서울에서 맑은 날은 몇 일인가요?</div>
+            <input type="text" name="q4_answer1" style="width: 100mm;">
+            
+            <div style="margin-top: 3mm;">2) 제주에서 비가 온 날은 몇 일인가요?</div>
+            <input type="text" name="q4_answer2" style="width: 100mm;">
+            
+            <div style="margin-top: 3mm;">3) 수요일에 맑은 지역은 어디인가요? (모두 쓰세요)</div>
+            <input type="text" name="q4_answer3" style="width: 100mm;">
+        </div>
+        
+        <!-- 교사용 채점 영역 -->
+        <div class="grading-area">
+            <div>정답: 
+                <div>1) 3일</div>
+                <div>2) 3일</div>
+                <div>3) 서울, 부산</div>
+            </div>
+            <div>
+                채점 결과: 
+                <select class="grading">
+                    <option value="">선택하세요</option>
+                    <option value="correct">정답</option>
+                    <option value="partial">부분 정답</option>
+                    <option value="incorrect">오답</option>
+                </select>
+            </div>
+            <div>교사 메모: <input type="text" class="teacher_notes" style="width: 130mm;"></div>
+        </div>
+    </div>
+
+    <!-- 문제 5: 나눗셈과 나머지 -->
+    <div class="question" id="q5">
+        <div class="question-title">문제 5: 다음 나눗셈을 몫과 나머지로 표현하세요.</div>
+        <div style="margin-top: 5mm;">
+            <div style="font-size: 14pt; margin-bottom: 8mm;">
+                1) 7 ÷ 2 = 몫 <input type="text" name="q5_answer1_quotient" style="width: 30mm;"> 
+                나머지 <input type="text" name="q5_answer1_remainder" style="width: 30mm;">
+            </div>
+            <div style="font-size: 14pt; margin-bottom: 8mm;">
+                2) 13 ÷ 4 = 몫 <input type="text" name="q5_answer2_quotient" style="width: 30mm;"> 
+                나머지 <input type="text" name="q5_answer2_remainder" style="width: 30mm;">
+            </div>
+            <div style="font-size: 14pt; margin-bottom: 8mm;">
+                3) 17 ÷ 5 = 몫 <input type="text" name="q5_answer3_quotient" style="width: 30mm;"> 
+                나머지 <input type="text" name="q5_answer3_remainder" style="width: 30mm;">
+            </div>
+        </div>
+        
+        <!-- 교사용 채점 영역 -->
+        <div class="grading-area">
+            <div>정답: 
+                <div>1) 몫 3, 나머지 1</div>
+                <div>2) 몫 3, 나머지 1</div>
+                <div>3) 몫 3, 나머지 2</div>
+            </div>
+            <div>
+                채점 결과: 
+                <select class="grading">
+                    <option value="">선택하세요</option>
+                    <option value="correct">정답</option>
+                    <option value="partial">부분 정답</option>
+                    <option value="incorrect">오답</option>
+                </select>
+            </div>
+            <div>교사 메모: <input type="text" class="teacher_notes" style="width: 130mm;"></div>
+        </div>
+    </div>
+
+    <!-- 문제 6: 길이 측정과 나눗셈 -->
+    <div class="question" id="q6">
+        <div class="question-title">문제 6: 다음 그림에서 길이를 측정하고 나눗셈을 해보세요.</div>
+        <div style="text-align: center; margin: 5mm 0;">
+            <svg width="300" height="50">
+                <line x1="0" y1="25" x2="300" y2="25" stroke="black" stroke-width="2"/>
+                <line x1="0" y1="20" x2="0" y2="30" stroke="black" stroke-width="2"/>
+                <line x1="300" y1="20" x2="300" y2="30" stroke="black" stroke-width="2"/>
+                <text x="150" y="45" text-anchor="middle">30cm</text>
+            </svg>
+        </div>
+        
+        <div>1) 위 선의 길이를 3등분하면 한 부분의 길이는 얼마인가요?</div>
+        <input type="text" name="q6_answer1" style="width: 100mm;">
+        
+        <div style="margin-top: 3mm;">2) 위 선의 길이를 5등분하면 한 부분의 길이는 얼마인가요?</div>
+        <input type="text" name="q6_answer2" style="width: 100mm;">
+        
+        <!-- 교사용 채점 영역 -->
+        <div class="grading-area">
+            <div>정답: 
+                <div>1) 10cm (30 ÷ 3 = 10)</div>
+                <div>2) 6cm (30 ÷ 5 = 6)</div>
+            </div>
+            <div>
+                채점 결과: 
+                <select class="grading">
+                    <option value="">선택하세요</option>
+                    <option value="correct">정답</option>
+                    <option value="partial">부분 정답</option>
+                    <option value="incorrect">오답</option>
+                </select>
+            </div>
+            <div>교사 메모: <input type="text" class="teacher_notes" style="width: 130mm;"></div>
+        </div>
+    </div>
+
+    <!-- 문제 7: 그림과 나눗셈 -->
+    <div class="question" id="q7">
+        <div class="question-title">문제 7: 다음 그림을 보고 나눗셈 문제를 풀어보세요.</div>
+        <div style="text-align: center; margin: 5mm 0;">
+            <div style="margin-bottom: 5mm;">
+                <svg width="300" height="60">
+                    <circle cx="30" cy="30" r="20" fill="#FFD700" stroke="black"/>
+                    <circle cx="80" cy="30" r="20" fill="#FFD700" stroke="black"/>
+                    <circle cx="130" cy="30" r="20" fill="#FFD700" stroke="black"/>
+                    <circle cx="180" cy="30" r="20" fill="#FFD700" stroke="black"/>
+                    <circle cx="230" cy="30" r="20" fill="#FFD700" stroke="black"/>
+                    <circle cx="280" cy="30" r="20" fill="#FFD700" stroke="black"/>
+                </svg>
+            </div>
+        </div>
+        
+        <div>1) 위 사과 6개를 2명이 똑같이 나누어 가진다면, 한 명당 몇 개를 가지게 되나요?</div>
+        <input type="text" name="q7_answer1" style="width: 100mm;">
+        
+        <div style="margin-top: 3mm;">2) 위 사과 6개를 3명이 똑같이 나누어 가진다면, 한 명당 몇 개를 가지게 되나요?</div>
+        <input type="text" name="q7_answer2" style="width: 100mm;">
+        
+        <div style="margin-top: 3mm;">3) 위 사과 6개를 4명이 똑같이 나누어 가진다면, 한 명당 몇 개를 가지게 되고, 몇 개가 남나요?</div>
+        <input type="text" name="q7_answer3" style="width: 100mm;">
+        
+        <!-- 교사용 채점 영역 -->
+        <div class="grading-area">
+            <div>정답: 
+                <div>1) 3개 (6 ÷ 2 = 3)</div>
+                <div>2) 2개 (6 ÷ 3 = 2)</div>
+                <div>3) 한 명당 1개, 2개 남음 (6 ÷ 4 = 1 나머지 2)</div>
+            </div>
+            <div>
+                채점 결과: 
+                <select class="grading">
+                    <option value="">선택하세요</option>
+                    <option value="correct">정답</option>
+                    <option value="partial">부분 정답</option>
+                    <option value="incorrect">오답</option>
+                </select>
+            </div>
+            <div>교사 메모: <input type="text" class="teacher_notes" style="width: 130mm;"></div>
+        </div>
+    </div>
+
+    <!-- 문제 8: 시계 읽기 -->
+    <div class="question" id="q8">
+        <div class="question-title">문제 8: 다음 시계가 가리키는 시간을 쓰세요.</div>
+        <div style="text-align: center; margin: 5mm 0;">
+            <svg width="120" height="120" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="55" fill="white" stroke="black" stroke-width="2"/>
+                
+                <!-- 시계 눈금 -->
+                <line x1="60" y1="10" x2="60" y2="20" stroke="black" stroke-width="2"/>
+                <line x1="110" y1="60" x2="100" y2="60" stroke="black" stroke-width="2"/>
+                <line x1="60" y1="110" x2="60" y2="100" stroke="black" stroke-width="2"/>
+                <line x1="10" y1="60" x2="20" y2="60" stroke="black" stroke-width="2"/>
+                
+                <!-- 숫자 -->
+                <text x="60" y="30" text-anchor="middle" font-size="12">12</text>
+                <text x="90" y="63" text-anchor="middle" font-size="12">3</text>
+                <text x="60" y="95" text-anchor="middle" font-size="12">6</text>
+                <text x="30" y="63" text-anchor="middle" font-size="12">9</text>
+                
+                <!-- 시침과 분침 -->
+                <line x1="60" y1="60" x2="45" y2="35" stroke="black" stroke-width="3"/>
+                <line x1="60" y1="60" x2="90" y2="75" stroke="black" stroke-width="2"/>
+            </svg>
+        </div>
+        
+        <div>시계가 가리키는 시간: <input type="text" name="q8_answer" style="width: 100mm;"></div>
+        
+        <!-- 교사용 채점 영역 -->
+        <div class="grading-area">
+            <div>정답: <span class="correct_answer">10시 30분</span></div>
+            <div>
+                채점 결과: 
+                <select class="grading">
+                    <option value="">선택하세요</option>
+                    <option value="correct">정답</option>
+                    <option value="incorrect">오답</option>
+                </select>
+            </div>
+            <div>교사 메모: <input type="text" class="teacher_notes" style="width: 130mm;"></div>
+        </div>
+    </div>
+
+    <!-- 문제 9: 도형의 변 개수 -->
+    <div class="question" id="q9">
+        <div class="question-title">문제 9: 다음 도형의 변의 개수를 세어보세요.</div>
+        <div class="shape-container">
+            <div class="shape">
+                <svg width="60" height="60" viewBox="0 0 60 60">
+                    <polygon points="30,5 55,55 5,55" fill="none" stroke="black" stroke-width="2"/>
+                </svg>
+                <div>A</div>
+            </div>
+            <div class="shape">
+                <svg width="60" height="60" viewBox="0 0 60 60">
+                    <rect x="10" y="10" width="40" height="40" fill="none" stroke="black" stroke-width="2"/>
+                </svg>
+                <div>B</div>
+            </div>
+            <div class="shape">
+                <svg width="60" height="60" viewBox="0 0 60 60">
+                    <polygon points="5,20 30,5 55,20 55,45 30,60 5,45" fill="none" stroke="black" stroke-width="2"/>
+                </svg>
+                <div>C</div>
+            </div>
+            <div class="shape">
+                <svg width="60" height="60" viewBox="0 0 60 60">
+                    <polygon points="5,15 55,15 45,55 15,55" fill="none" stroke="black" stroke-width="2"/>
+                </svg>
+                <div>D</div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 5mm;">
+            <div>A의 변의 개수: <input type="text" name="q9_answer_a" style="width: 50mm;"></div>
+            <div style="margin-top: 2mm;">B의 변의 개수: <input type="text" name="q9_answer_b" style="width: 50mm;"></div>
+            <div style="margin-top: 2mm;">C의 변의 개수: <input type="text" name="q9_answer_c" style="width: 50mm;"></div>
+            <div style="margin-top: 2mm;">D의 변의 개수: <input type="text" name="q9_answer_d" style="width: 50mm;"></div>
+        </div>
+        
+        <!-- 교사용 채점 영역 -->
+        <div class="grading-area">
+            <div>정답: 
+                <div>A: 3개 (삼각형)</div>
+                <div>B: 4개 (사각형)</div>
+                <div>C: 6개 (육각형)</div>
+                <div>D: 4개 (사각형)</div>
+            </div>
+            <div>
+                채점 결과: 
+                <select class="grading">
+                    <option value="">선택하세요</option>
+                    <option value="correct">정답</option>
+                    <option value="partial">부분 정답</option>
+                    <option value="incorrect">오답</option>
+                </select>
+            </div>
+            <div>교사 메모: <input type="text" class="teacher_notes" style="width: 130mm;"></div>
+        </div>
+    </div>
+
+    <!-- 문제 10: 그래프와 나눗셈 -->
+    <div class="question" id="q10">
+        <div class="question-title">문제 10: 다음 그래프는 학급 학생들의 좋아하는 운동을 조사한 결과입니다. 문제에 답하세요.</div>
+        <div class="graph-container">
+            <table style="width: 100%; border-collapse: collapse; margin: 10px 0;">
+                <tr style="height: 40px;">
+                    <td style="width: 80px; text-align: right; padding-right: 10px; border: none;">20 -</td>
+                    <td colspan="4" style="border-top: 1px solid #ccc;"></td>
+                </tr>
+                <tr style="height: 40px;">
+                    <td style="width: 80px; text-align: right; padding-right: 10px; border: none;">15 -</td>
+                    <td colspan="4" style="border-top: 1px solid #ccc;"></td>
+                </tr>
+                <tr style="height: 40px;">
+                    <td style="width: 80px; text-align: right; padding-right: 10px; border: none;">10 -</td>
+                    <td colspan="4" style="border-top: 1px solid #ccc;"></td>
+                </tr>
+                <tr style="height: 40px;">
+                    <td style="width: 80px; text-align: right; padding-right: 10px; border: none;">5 -</td>
+                    <td colspan="4" style="border-top: 1px solid #ccc;"></td>
+                </tr>
+                <tr style="height: 20px; border-top: 2px solid #000;">
+                    <td style="border: none;"></td>
+                    <td style="width: 25%; text-align: center; border: none;">축구<br>(10명)</td>
+                    <td style="width: 25%; text-align: center; border: none;">농구<br>(5명)</td>
+                    <td style="width: 25%; text-align: center; border: none;">수영<br>(15명)</td>
+                    <td style="width: 25%; text-align: center; border: none;">달리기<br>(10명)</td>
+                </tr>
+                <tr>
+                    <td style="border: none;"></td>
+                    <td style="text-align: center; vertical-align: bottom; border: none; padding: 0;">
+                        <div style="background-color: #4472C4; width: 30px; height: 90px; margin: 0 auto;"></div>
+                    </td>
+                    <td style="text-align: center; vertical-align: bottom; border: none; padding: 0;">
+                        <div style="background-color: #4472C4; width: 30px; height: 45px; margin: 0 auto;"></div>
+                    </td>
+                    <td style="text-align: center; vertical-align: bottom; border: none; padding: 0;">
+                        <div style="background-color: #4472C4; width: 30px; height: 135px; margin: 0 auto;"></div>
+                    </td>
+                    <td style="text-align: center; vertical-align: bottom; border: none; padding: 0;">
+                        <div style="background-color: #4472C4; width: 30px; height: 70px; margin: 0 auto;"></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+        <div style="margin-top: 5mm;">
+            <div>1) 모든 학생은 총 몇 명인가요?</div>
+            <input type="text" name="q10_answer1" style="width: 100mm;">
+            
+            <div style="margin-top: 3mm;">2) 수영을 좋아하는 학생이 전체의 몇 분의 1인지 분수로 표현하세요.</div>
+            <input type="text" name="q10_answer2" style="width: 100mm;">
+            
+            <div style="margin-top: 3mm;">3) 농구를 좋아하는 학생 5명을 한 팀으로 만들려면, 총 몇 팀을 만들 수 있나요?</div>
+            <input type="text" name="q10_answer3" style="width: 100mm;">
+        </div>
+        
+        <!-- 교사용 채점 영역 -->
+        <div class="grading-area">
+            <div>정답: 
+                <div>1) 40명 (10+5+15+10)</div>
+                <div>2) 3/8 (15/40 = 3/8)</div>
+                <div>3) 1팀 (5 ÷ 5 = 1)</div>
+            </div>
+            <div>
+                채점 결과: 
+                <select class="grading">
+                    <option value="">선택하세요</option>
+                    <option value="correct">정답</option>
+                    <option value="partial">부분 정답</option>
+                    <option value="incorrect">오답</option>
+                </select>
+            </div>
+            <div>교사 메모: <input type="text" class="teacher_notes" style="width: 130mm;"></div>
+        </div>
+    </div>
+
+    <!-- 문제 11: 표와 나눗셈 -->
+    <div class="question" id="q11">
+        <div class="question-title">문제 11: 다음 표를 보고 질문에 답하세요.</div>
+        <table>
+            <tr>
+                <th>과일</th>
+                <th>개수</th>
+                <th>가격(원)</th>
+            </tr>
+            <tr>
+                <td>사과</td>
+                <td>8</td>
+                <td>16,000</td>
+            </tr>
+            <tr>
+                <td>바나나</td>
+                <td>10</td>
+                <td>5,000</td>
+            </tr>
+            <tr>
+                <td>오렌지</td>
+                <td>6</td>
+                <td>12,000</td>
+            </tr>
+        </table>
+        
+        <div style="margin-top: 5mm;">
+            <div>1) 사과 한 개의 가격은 얼마인가요?</div>
+            <input type="text" name="q11_answer1" style="width: 100mm;">
+            
+            <div style="margin-top: 3mm;">2) 바나나 한 개의 가격은 얼마인가요?</div>
+            <input type="text" name="q11_answer2" style="width: 100mm;">
+            
+            <div style="margin-top: 3mm;">3) 오렌지 한 개의 가격은 얼마인가요?</div>
+            <input type="text" name="q11_answer3" style="width: 100mm;">
+            
+            <div style="margin-top: 3mm;">4) 과일 중 한 개당 가격이 가장 비싼 것은 무엇인가요?</div>
+            <input type="text" name="q11_answer4" style="width: 100mm;">
+        </div>
+        
+        <!-- 교사용 채점 영역 -->
+        <div class="grading-area">
+            <div>정답: 
+                <div>1) 2,000원 (16,000 ÷ 8 = 2,000)</div>
+                <div>2) 500원 (5,000 ÷ 10 = 500)</div>
+                <div>3) 2,000원 (12,000 ÷ 6 = 2,000)</div>
+                <div>4) 사과, 오렌지 (둘 다 2,000원으로 같음)</div>
+            </div>
+            <div>
+                채점 결과: 
+                <select class="grading">
+                    <option value="">선택하세요</option>
+                    <option value="correct">정답</option>
+                    <option value="partial">부분 정답</option>
+                    <option value="incorrect">오답</option>
+                </select>
+            </div>
+            <div>교사 메모: <input type="text" class="teacher_notes" style="width: 130mm;"></div>
+        </div>
+    </div>
+
+    <!-- 문제 12: 맥락이 있는 나눗셈 -->
+    <div class="question" id="q12">
+        <div class="question-title">문제 12: 다음 문제를 풀어보세요.</div>
+        <div style="margin: 5mm 0;">
+            <div>1) 24개의 사탕을 6명에게 똑같이 나누어 주려고 합니다. 한 명당 몇 개씩 받게 되나요?</div>
+            <input type="text" name="q12_answer1" style="width: 100mm;">
+            
+            <div style="margin-top: 3mm;">2) 45개의 연필을 한 상자에 5개씩 담으려고 합니다. 몇 개의 상자가 필요한가요?</div>
+            <input type="text" name="q12_answer2" style="width: 100mm;">
+            
+            <div style="margin-top: 3mm;">3) 32명의 학생을 4명씩 모둠으로 나누려고 합니다. 몇 개의 모둠이 만들어지나요?</div>
+            <input type="text" name="q12_answer3" style="width: 100mm;">
+        </div>
+        
+        <!-- 교사용 채점 영역 -->
+        <div class="grading-area">
+            <div>정답: 
+                <div>1) 4개 (24 ÷ 6 = 4)</div>
+                <div>2) 9상자 (45 ÷ 5 = 9)</div>
+                <div>3) 8모둠 (32 ÷ 4 = 8)</div>
+            </div>
+            <div>
+                채점 결과: 
+                <select class="grading">
+                    <option value="">선택하세요</option>
+                    <option value="correct">정답</option>
+                    <option value="partial">부분 정답</option>
+                    <option value="incorrect">오답</option>
+                </select>
+            </div>
+            <div>교사 메모: <input type="text" class="teacher_notes" style="width: 130mm;"></div>
+        </div>
+    </div>
+
+    <!-- 문제 13: 원그래프 읽기 -->
+    <div class="question" id="q13">
+        <div class="question-title">문제 13: 다음 원그래프는 학생들이 좋아하는 색깔을 조사한 결과입니다. 문제에 답하세요.</div>
+        <div style="text-align: center; margin: 5mm 0;">
+            <table style="width: 100%; border-collapse: collapse; margin: 10px 0;">
+                <tr>
+                    <td style="width: 50%; text-align: center; border: none;">
+                        <div style="width: 200px; height: 200px; margin: 0 auto; position: relative; border: 1px solid #ccc; border-radius: 50%;">
+                            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 50%);" style="background-color: #4472C4;"></div>
+                            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; clip-path: polygon(50% 50%, 100% 50%, 100% 100%, 50% 100%);" style="background-color: #FF5252;"></div>
+                            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; clip-path: polygon(50% 50%, 50% 100%, 0% 100%, 0% 50%);" style="background-color: #4CAF50;"></div>
+                            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; clip-path: polygon(50% 50%, 0% 50%, 0% 0%, 50% 0%);" style="background-color: #FFD700;"></div>
+                        </div>
+                    </td>
+                    <td style="width: 50%; vertical-align: middle; border: none;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="width: 20px; height: 20px; background-color: #4472C4; border: 1px solid #000;"></td>
+                                <td style="padding-left: 10px; border: none;">파란색 (40%)</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 20px; height: 20px; background-color: #FF5252; border: 1px solid #000;"></td>
+                                <td style="padding-left: 10px; border: none;">빨간색 (20%)</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 20px; height: 20px; background-color: #4CAF50; border: 1px solid #000;"></td>
+                                <td style="padding-left: 10px; border: none;">녹색 (25%)</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 20px; height: 20px; background-color: #FFD700; border: 1px solid #000;"></td>
+                                <td style="padding-left: 10px; border: none;">노란색 (15%)</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+        <div style="margin-top: 5mm;">
+            <div>1) 가장 많은 학생이 좋아하는 색깔은 무엇인가요?</div>
+            <input type="text" name="q13_answer1" style="width: 100mm;">
+            
+            <div style="margin-top: 3mm;">2) 전체 학생이 100명일 때, 녹색을 좋아하는 학생은 몇 명인가요?</div>
+            <input type="text" name="q13_answer2" style="width: 100mm;">
+            
+            <div style="margin-top: 3mm;">3) 전체 학생이 200명일 때, 빨간색과 노란색을 좋아하는 학생의 합은 몇 명인가요?</div>
+            <input type="text" name="q13_answer3" style="width: 100mm;">
+        </div>
+        
+        <!-- 교사용 채점 영역 -->
+        <div class="grading-area">
+            <div>정답: 
+                <div>1) 파란색</div>
+                <div>2) 25명 (100 × 25% = 25)</div>
+                <div>3) 70명 (200 × (20% + 15%) = 200 × 35% = 70)</div>
+            </div>
+            <div>
+                채점 결과: 
+                <select class="grading">
+                    <option value="">선택하세요</option>
+                    <option value="correct">정답</option>
+                    <option value="partial">부분 정답</option>
+                    <option value="incorrect">오답</option>
+                </select>
+            </div>
+            <div>교사 메모: <input type="text" class="teacher_notes" style="width: 130mm;"></div>
+        </div>
+    </div>
+
+    <!-- 문제 14: 3D 도형 식별 -->
+    <div class="question" id="q14">
+        <div class="question-title">문제 14: 다음 입체 도형의 이름을 쓰세요.</div>
+        <div class="shape-container">
+            <div class="shape">
+                <svg width="80" height="80" viewBox="0 0 80 80">
+                    <!-- 직육면체 -->
+                    <polygon points="10,30 50,30 50,70 10,70" fill="none" stroke="black" stroke-width="2"/>
+                    <polygon points="30,10 70,10 70,50 30,50" fill="none" stroke="black" stroke-width="2"/>
+                    <line x1="10" y1="30" x2="30" y2="10" stroke="black" stroke-width="2"/>
+                    <line x1="50" y1="30" x2="70" y2="10" stroke="black" stroke-width="2"/>
+                    <line x1="50" y1="70" x2="70" y2="50" stroke="black" stroke-width="2"/>
+                    <line x1="10" y1="70" x2="30" y2="50" stroke="black" stroke-width="2"/>
+                </svg>
+                <div>A</div>
+            </div>
+            <div class="shape">
+                <svg width="80" height="80" viewBox="0 0 80 80">
+                    <!-- 원기둥 -->
+                    <ellipse cx="40" cy="20" rx="25" ry="10" fill="none" stroke="black" stroke-width="2"/>
+                    <ellipse cx="40" cy="60" rx="25" ry="10" fill="none" stroke="black" stroke-width="2"/>
+                    <line x1="15" y1="20" x2="15" y2="60" stroke="black" stroke-width="2"/>
+                    <line x1="65" y1="20" x2="65" y2="60" stroke="black" stroke-width="2"/>
+                </svg>
+                <div>B</div>
+            </div>
+            <div class="shape">
+                <svg width="80" height="80" viewBox="0 0 80 80">
+                    <!-- 구 -->
+                    <circle cx="40" cy="40" r="30" fill="none" stroke="black" stroke-width="2"/>
+                    <ellipse cx="40" cy="40" rx="30" ry="10" fill="none" stroke="black" stroke-width="2"/>
+                    <ellipse cx="40" cy="40" rx="10" ry="30" fill="none" stroke="black" stroke-width="2"/>
+                </svg>
+                <div>C</div>
+            </div>
+            <div class="shape">
+                <svg width="80" height="80" viewBox="0 0 80 80">
+                    <!-- 원뿔 -->
+                    <ellipse cx="40" cy="60" rx="25" ry="10" fill="none" stroke="black" stroke-width="2"/>
+                    <line x1="40" y1="10" x2="15" y2="60" stroke="black" stroke-width="2"/>
+                    <line x1="40" y1="10" x2="65" y2="60" stroke="black" stroke-width="2"/>
+                </svg>
+                <div>D</div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 5mm;">
+            <div>A: <input type="text" name="q14_answer_a" style="width: 50mm;"></div>
+            <div style="margin-top: 2mm;">B: <input type="text" name="q14_answer_b" style="width: 50mm;"></div>
+            <div style="margin-top: 2mm;">C: <input type="text" name="q14_answer_c" style="width: 50mm;"></div>
+            <div style="margin-top: 2mm;">D: <input type="text" name="q14_answer_d" style="width: 50mm;"></div>
+        </div>
+        
+        <!-- 교사용 채점 영역 -->
+        <div class="grading-area">
+            <div>정답: 
+                <div>A: 직육면체</div>
+                <div>B: 원기둥</div>
+                <div>C: 구</div>
+                <div>D: 원뿔</div>
+            </div>
+            <div>
+                채점 결과: 
+                <select class="grading">
+                    <option value="">선택하세요</option>
+                    <option value="correct">정답</option>
+                    <option value="partial">부분 정답</option>
+                    <option value="incorrect">오답</option>
+                </select>
+            </div>
+            <div>교사 메모: <input type="text" class="teacher_notes" style="width: 130mm;"></div>
+        </div>
+    </div>
+
+    <!-- 문제 15: 나눗셈의 응용 (확률과 가능성) -->
+    <div class="question" id="q15">
+        <div class="question-title">문제 15: 다음 문제를 풀어보세요.</div>
+        <div style="margin: 5mm 0;">
+            <div style="text-align: center; margin-bottom: 5mm;">
+                <svg width="120" height="120" viewBox="0 0 120 120">
+                    <rect x="10" y="10" width="100" height="100" fill="none" stroke="black" stroke-width="2"/>
+                    <circle cx="35" cy="35" r="15" fill="red"/>
+                    <circle cx="85" cy="35" r="15" fill="blue"/>
+                    <circle cx="35" cy="85" r="15" fill="green"/>
+                    <circle cx="85" cy="85" r="15" fill="yellow"/>
+                </svg>
+            </div>
+            
+            <div>1) 위 그림에서 색깔 공은 총 몇 개인가요?</div>
+            <input type="text" name="q15_answer1" style="width: 100mm;">
+            
+            <div style="margin-top: 3mm;">2) 파란색 공은 전체 공의 몇 분의 1인가요?</div>
+            <input type="text" name="q15_answer2" style="width: 100mm;">
+            
+            <div style="margin-top: 3mm;">3) 빨간색이나 노란색 공을 뽑을 확률은 얼마인가요?</div>
+            <input type="text" name="q15_answer3" style="width: 100mm;">
+        </div>
+        
+        <!-- 교사용 채점 영역 -->
+        <div class="grading-area">
+            <div>정답: 
+                <div>1) 4개</div>
+                <div>2) 1/4 (4분의 1)</div>
+                <div>3) 2/4 = 1/2 (2분의 1)</div>
+            </div>
+            <div>
+                채점 결과: 
+                <select class="grading">
+                    <option value="">선택하세요</option>
+                    <option value="correct">정답</option>
+                    <option value="partial">부분 정답</option>
+                    <option value="incorrect">오답</option>
+                </select>
+            </div>
+            <div>교사 메모: <input type="text" class="teacher_notes" style="width: 130mm;"></div>
+        </div>
+    </div>
+
+    <!-- 문제 16: 위치 관계 -->
+    <div class="question" id="q16">
+        <div class="question-title">문제 16: 다음 그림에서 위치 관계를 파악하여 답하세요.</div>
+        <div style="text-align: center; margin: 5mm 0;">
+            <svg width="200" height="150" viewBox="0 0 200 150">
+                <!-- 집 -->
+                <rect x="20" y="60" width="50" height="50" fill="none" stroke="black" stroke-width="2"/>
+                <polygon points="20,60 45,30 70,60" fill="none" stroke="black" stroke-width="2"/>
+                <rect x="35" y="80" width="20" height="30" fill="none" stroke="black" stroke-width="2"/>
+                
+                <!-- 나무 -->
+                <rect x="100" y="80" width="10" height="30" fill="brown"/>
+                <polygon points="90,80 105,40 120,80" fill="green"/>
+                
+                <!-- 연못 -->
+                <ellipse cx="150" cy="100" rx="30" ry="15" fill="none" stroke="blue" stroke-width="2"/>
+                
+                <!-- 태양 -->
+                <circle cx="170" cy="30" r="15" fill="none" stroke="orange" stroke-width="2"/>
+                <line x1="170" y1="10" x2="170" y2="0" stroke="orange" stroke-width="2"/>
+                <line x1="170" y1="50" x2="170" y2="60" stroke="orange" stroke-width="2"/>
+                <line x1="150" y1="30" x2="140" y2="30" stroke="orange" stroke-width="2"/>
+                <line x1="190" y1="30" x2="200" y2="30" stroke="orange" stroke-width="2"/>
+                
+                <!-- 레이블 -->
+                <text x="45" y="130" text-anchor="middle" font-size="12">A</text>
+                <text x="105" y="130" text-anchor="middle" font-size="12">B</text>
+                <text x="150" y="130" text-anchor="middle" font-size="12">C</text>
+                <text x="170" y="20" text-anchor="middle" font-size="12">D</text>
+            </svg>
+        </div>
+        
+        <div style="margin-top: 5mm;">
+            <div>1) 집(A)의 오른쪽에 있는 것들을 모두 쓰세요.</div>
+            <input type="text" name="q16_answer1" style="width: 100mm;">
+            
+            <div style="margin-top: 3mm;">2) 태양(D)의 아래에 있는 것들을 모두 쓰세요.</div>
+            <input type="text" name="q16_answer2" style="width: 100mm;">
+            
+            <div style="margin-top: 3mm;">3) 연못(C)의 왼쪽에 있는 것은 무엇인가요?</div>
+            <input type="text" name="q16_answer3" style="width: 100mm;">
+        </div>
+        
+        <!-- 교사용 채점 영역 -->
+        <div class="grading-area">
+            <div>정답: 
+                <div>1) 나무(B), 연못(C)</div>
+                <div>2) 나무(B), 연못(C)</div>
+                <div>3) 나무(B)</div>
+            </div>
+            <div>
+                채점 결과: 
+                <select class="grading">
+                    <option value="">선택하세요</option>
+                    <option value="correct">정답</option>
+                    <option value="partial">부분 정답</option>
+                    <option value="incorrect">오답</option>
+                </select>
+            </div>
+            <div>교사 메모: <input type="text" class="teacher_notes" style="width: 130mm;"></div>
+        </div>
+    </div>
+
+    <!-- 문제 17: 나눗셈과 비 -->
+    <div class="question" id="q17">
+        <div class="question-title">문제 17: 다음 문제를 풀어보세요.</div>
+        <div style="margin: 5mm 0;">
+            <div>1) 12명의 학생 중 4명이 남학생입니다. 남학생과 여학생의 비율은 얼마인가요?</div>
+            <input type="text" name="q17_answer1" style="width: 100mm;">
+            
+            <div style="margin-top: 3mm;">2) 20개의 구슬 중 빨간 구슬이 5개 있습니다. 빨간 구슬과 그 외 구슬의 비율은 얼마인가요?</div>
+            <input type="text" name="q17_answer2" style="width: 100mm;">
+            
+            <div style="margin-top: 3mm;">3) 책상 3개에 의자 9개가 있습니다. 책상과 의자의 비율은 얼마인가요?</div>
+            <input type="text" name="q17_answer3" style="width: 100mm;">
+        </div>
+        
+        <!-- 교사용 채점 영역 -->
+        <div class="grading-area">
+            <div>정답: 
+                <div>1) 1:2 (남학생 4명, 여학생 8명)</div>
+                <div>2) 1:3 (빨간 구슬 5개, 그 외 구슬 15개)</div>
+                <div>3) 1:3 (책상 3개, 의자 9개)</div>
+            </div>
+            <div>
+                채점 결과: 
+                <select class="grading">
+                    <option value="">선택하세요</option>
+                    <option value="correct">정답</option>
+                    <option value="partial">부분 정답</option>
+                    <option value="incorrect">오답</option>
+                </select>
+            </div>
+            <div>교사 메모: <input type="text" class="teacher_notes" style="width: 130mm;"></div>
+        </div>
+    </div>
+
+    <!-- 문제 18: 꺾은선 그래프 읽기 -->
+    <div class="question" id="q18">
+        <div class="question-title">문제 18: 다음 꺾은선 그래프는 일주일 동안의 기온 변화를 나타낸 것입니다. 문제에 답하세요.</div>
+        <div style="text-align: center; margin: 5mm 0;">
+            <table style="width: 100%; border-collapse: collapse; margin: 10px 0;">
+                <tr>
+                    <td style="width: 50px; border: none; text-align: right; padding-right: 5px;">30°-</td>
+                    <td colspan="7" style="border-top: 1px solid #ccc; height: 40px;"></td>
+                </tr>
+                <tr>
+                    <td style="text-align: right; padding-right: 5px; border: none;">25°-</td>
+                    <td colspan="7" style="border-top: 1px solid #ccc; height: 40px;"></td>
+                </tr>
+                <tr>
+                    <td style="text-align: right; padding-right: 5px; border: none;">20°-</td>
+                    <td colspan="7" style="border-top: 1px solid #ccc; height: 40px;"></td>
+                </tr>
+                <tr>
+                    <td style="text-align: right; padding-right: 5px; border: none;">15°-</td>
+                    <td colspan="7" style="border-top: 1px solid #ccc; height: 40px;"></td>
+                </tr>
+                <tr style="height: 20px; border-top: 2px solid #000;">
+                    <td style="border: none;"></td>
+                    <td style="text-align: center; border: none;">월</td>
+                    <td style="text-align: center; border: none;">화</td>
+                    <td style="text-align: center; border: none;">수</td>
+                    <td style="text-align: center; border: none;">목</td>
+                    <td style="text-align: center; border: none;">금</td>
+                    <td style="text-align: center; border: none;">토</td>
+                    <td style="text-align: center; border: none;">일</td>
+                </tr>
+                <tr style="height: 20px;">
+                    <td style="border: none;"></td>
+                    <td style="text-align: center; border: none; vertical-align: top;">20°</td>
+                    <td style="text-align: center; border: none; vertical-align: top;">25°</td>
+                    <td style="text-align: center; border: none; vertical-align: top;">28°</td>
+                    <td style="text-align: center; border: none; vertical-align: top;">23°</td>
+                    <td style="text-align: center; border: none; vertical-align: top;">18°</td>
+                    <td style="text-align: center; border: none; vertical-align: top;">20°</td>
+                    <td style="text-align: center; border: none; vertical-align: top;">25°</td>
+                </tr>
+                <tr>
+                    <td colspan="8" style="text-align: center; border: none;">
+                        <div style="height: 2px; background-color: blue; margin: 20px 0 5px 0;"></div>
+                        <div>꺾은선 그래프: 파란색 선은 온도의 변화를 나타냅니다</div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+        <div style="margin-top: 5mm;">
+            <div>1) 일주일 중 기온이 가장 높은 날은 무슨 요일인가요?</div>
+            <input type="text" name="q18_answer1" style="width: 100mm;">
+            
+            <div style="margin-top: 3mm;">2) 금요일의 기온은 몇 도인가요?</div>
+            <input type="text" name="q18_answer2" style="width: 100mm;">
+            
+            <div style="margin-top: 3mm;">3) 수요일과 일요일의 기온차는 몇 도인가요?</div>
+            <input type="text" name="q18_answer3" style="width: 100mm;">
+        </div>
+        
+        <!-- 교사용 채점 영역 -->
+        <div class="grading-area">
+            <div>정답: 
+                <div>1) 수요일</div>
+                <div>2) 18도 (그래프상 130 지점)</div>
+                <div>3) 0도 (둘 다 25도)</div>
+            </div>
+            <div>
+                채점 결과: 
+                <select class="grading">
+                    <option value="">선택하세요</option>
+                    <option value="correct">정답</option>
+                    <option value="partial">부분 정답</option>
+                    <option value="incorrect">오답</option>
+                </select>
+            </div>
+            <div>교사 메모: <input type="text" class="teacher_notes" style="width: 130mm;"></div>
+        </div>
+    </div>
+
+    <!-- 문제 19: 단위와 나눗셈 -->
+    <div class="question" id="q19">
+        <div class="question-title">문제 19: 다음 단위 변환 문제를 풀어보세요.</div>
+        <div style="margin: 5mm 0;">
+            <div>1) 1 미터는 100 센티미터입니다. 3 미터는 몇 센티미터인가요?</div>
+            <input type="text" name="q19_answer1" style="width: 100mm;">
+            
+            <div style="margin-top: 3mm;">2) 1 킬로그램은 1000 그램입니다. 5 킬로그램은 몇 그램인가요?</div>
+            <input type="text" name="q19_answer2" style="width: 100mm;">
+            
+            <div style="margin-top: 3mm;">3) 600 센티미터를 미터로 바꾸면 몇 미터인가요?</div>
+            <input type="text" name="q19_answer3" style="width: 100mm;">
+        </div>
+        
+        <!-- 교사용 채점 영역 -->
+        <div class="grading-area">
+            <div>정답: 
+                <div>1) 300 센티미터 (3 × 100)</div>
+                <div>2) 5000 그램 (5 × 1000)</div>
+                <div>3) 6 미터 (600 ÷ 100)</div>
+            </div>
+            <div>
+                채점 결과: 
+                <select class="grading">
+                    <option value="">선택하세요</option>
+                    <option value="correct">정답</option>
+                    <option value="partial">부분 정답</option>
+                    <option value="incorrect">오답</option>
+                </select>
+            </div>
+            <div>교사 메모: <input type="text" class="teacher_notes" style="width: 130mm;"></div>
+        </div>
+    </div>
+
+    <!-- 문제 20: 문장제 나눗셈 -->
+    <div class="question" id="q20">
+        <div class="question-title">문제 20: 다음 문장제를 풀어보세요.</div>
+        <div style="margin: 5mm 0;">
+            <div>민수네 학급에 학생이 30명 있습니다. 체육 시간에 6명씩 팀을 만들면 몇 팀이 만들어지나요?</div>
+            <input type="text" name="q20_answer1" style="width: 100mm;">
+            
+            <div style="margin-top: 3mm;">미술 시간에 색종이 48장을 8명의 학생에게 똑같이 나누어 주려고 합니다. 학생 한 명당 몇 장씩 받게 되나요?</div>
+            <input type="text" name="q20_answer2" style="width: 100mm;">
+            
+            <div style="margin-top: 3mm;">지훈이는 28개의 사탕을 4명의 친구와 함께 똑같이 나누어 먹으려고 합니다. 한 명당 몇 개의 사탕을 먹을 수 있나요? (지훈이도 포함)</div>
+            <input type="text" name="q20_answer3" style="width: 100mm;">
+        </div>
+        
+        <!-- 교사용 채점 영역 -->
+        <div class="grading-area">
+            <div>정답: 
+                <div>1) 5팀 (30 ÷ 6 = 5)</div>
+                <div>2) 6장 (48 ÷ 8 = 6)</div>
+                <div>3) 5개 사탕 (5명이 28개를 나누면 → 28 ÷ 5 = 5 나머지 3 → 한 명당 5개, 3개 남음)</div>
+            </div>
+            <div>
+                채점 결과: 
+                <select class="grading">
+                    <option value="">선택하세요</option>
+                    <option value="correct">정답</option>
+                    <option value="partial">부분 정답</option>
+                    <option value="incorrect">오답</option>
+                </select>
+            </div>
+            <div>교사 메모: <input type="text" class="teacher_notes" style="width: 130mm;"></div>
+        </div>
+    </div>
+
+    <script>
+        // 고유한 워크시트 ID를 생성하거나 가져오는 함수
+        function getWorksheetId() {
+            // 현재 HTML에 worksheetId가 이미 있는지 확인
+            if (window.worksheetId) {
+                return window.worksheetId;
+            }
+            
+            // URL에서 worksheetId 파라미터 확인
+            const urlParams = new URLSearchParams(window.location.search);
+            const paramId = urlParams.get('worksheetId');
+            if (paramId) {
+                window.worksheetId = paramId;
+                return paramId;
+            }
+            
+            // 새 ID 생성 (타임스탬프 + 랜덤 문자열)
+            const newId = Date.now() + '-' + Math.random().toString(36).substring(2, 10);
+            window.worksheetId = newId;
+            return newId;
+        }
+        
+        // 페이지 로드 시 워크시트 데이터 복원
+        window.addEventListener('DOMContentLoaded', function() {
+            const worksheetId = getWorksheetId();
+            const savedData = localStorage.getItem('worksheet_' + worksheetId);
+            
+            if (savedData) {
+                try {
+                    console.log('저장된 데이터 발견, 복원 중...');
+                    restoreFormData(JSON.parse(savedData));
+                } catch (error) {
+                    console.error('데이터 복원 중 오류 발생:', error);
+                }
+            }
+        });
+        
+        // 폼 데이터를 자동으로 저장하는 이벤트 설정
+        function setupAutoSave() {
+            // 모든 입력 필드에 변경 이벤트 리스너 추가
+            const inputs = document.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    // 데이터 저장
+                    const formData = collectFormData();
+                    const worksheetId = getWorksheetId();
+                    localStorage.setItem('worksheet_' + worksheetId, JSON.stringify(formData));
+                    console.log('데이터 자동 저장됨');
+                });
+            });
+        }
+        
+        // 자동 저장 설정 실행
+        setupAutoSave();
+        
+        // 양식 데이터 수집 함수
+        function collectFormData() {
+            const data = {
+                answers: {},
+                grading: {}
+            };
+            
+            // 학생 정보 수집
+            data.student_name = document.getElementById('student_name').value;
+            data.class_name = document.getElementById('class_name').value;
+            data.student_number = document.getElementById('student_number').value;
+            data.submission_date = document.getElementById('submission_date').value;
+            
+            // 모든 입력 필드 수집
+            const inputs = document.querySelectorAll('input[type="text"], input[type="radio"]:checked, input[type="checkbox"]:checked, textarea');
+            inputs.forEach(input => {
+                if (input.name && input.name !== 'student_name' && input.name !== 'class_name' && 
+                    input.name !== 'student_number' && input.name !== 'submission_date') {
+                    data.answers[input.name] = input.value;
+                }
+            });
+            
+            // 교사용 채점 데이터 수집
+            if (document.body.classList.contains('teacher-version')) {
+                document.querySelectorAll('.question').forEach((question) => {
+                    const questionId = question.id;
+                    const gradingSelect = question.querySelector('.grading');
+                    const notes = question.querySelector('.teacher_notes');
+                    
+                    if (gradingSelect && notes) {
+                        data.grading[questionId] = {
+                            result: gradingSelect.value,
+                            notes: notes.value
+                        };
+                    }
+                });
+                
+                data.teacher_version = true;
+            }
+            
+            return data;
+        }
+        
+        // 양식 데이터 복원 함수
+        function restoreFormData(data) {
+            if (!data) return;
+            
+            // 학생 정보 복원
+            if (data.student_name) document.getElementById('student_name').value = data.student_name;
+            if (data.class_name) document.getElementById('class_name').value = data.class_name;
+            if (data.student_number) document.getElementById('student_number').value = data.student_number;
+            if (data.submission_date) document.getElementById('submission_date').value = data.submission_date;
+            
+            // 답변 복원
+            if (data.answers) {
+                Object.keys(data.answers).forEach(name => {
+                    const value = data.answers[name];
+                    const elements = document.getElementsByName(name);
+                    
+                    if (elements.length > 0) {
+                        if (elements[0].type === 'radio') {
+                            elements.forEach(radio => {
+                                if (radio.value === value) radio.checked = true;
+                            });
+                        } else if (elements[0].type === 'checkbox') {
+                            elements.forEach(checkbox => {
+                                if (checkbox.value === value) checkbox.checked = true;
+                            });
+                        } else {
+                            elements[0].value = value;
+                        }
+                    }
+                });
+            }
+            
+            // 교사용 채점 데이터 복원
+            if (data.teacher_version) {
+                document.body.classList.add('teacher-version');
+                
+                if (data.grading) {
+                    Object.keys(data.grading).forEach(questionId => {
+                        const question = document.getElementById(questionId);
+                        if (question) {
+                            const gradingData = data.grading[questionId];
+                            const gradingSelect = question.querySelector('.grading');
+                            const notes = question.querySelector('.teacher_notes');
+                            
+                            if (gradingSelect && gradingData.result) gradingSelect.value = gradingData.result;
+                            if (notes && gradingData.notes) notes.value = gradingData.notes;
+                        }
+                    });
+                }
+            }
+        }
+        
+        // PDF로 저장하기 함수
+        function saveToPDF() {
+            // 현재 날짜 포함하여 파일명 생성
+            const today = new Date();
+            const dateStr = today.getFullYear() + '-' + 
+                           String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                           String(today.getDate()).padStart(2, '0');
+            const studentName = document.getElementById('student_name').value || '학생';
+            
+            // 파일명 힌트 알림
+            alert(`PDF로 저장하려면 인쇄 버튼을 클릭한 후, 프린터 대신 "PDF로 저장" 옵션을 선택하세요.\n\n파일명 제안: 수학진단평가_${studentName}_${dateStr}.pdf`);
+            window.print();
+        }
+        
+        // HTML로 저장하기 함수
+        function saveAsHTML() {
+            try {
+                // 양식 데이터 수집
+                const formData = collectFormData();
+                
+                // 데이터를 저장하는 스크립트 생성
+                const dataScript = '<script>\n' +
+                    '// 학생 입력 데이터를 전역 변수로 저장\n' +
+                    'window._savedData = ' + JSON.stringify(formData, null, 2) + ';\n' +
+                    '\n' +
+                    '// 페이지 로드 시 저장된 데이터 복원\n' +
+                    'document.addEventListener("DOMContentLoaded", function() {\n' +
+                    '    console.log("저장된 데이터 발견, 복원 중...");\n' +
+                    '    if (window._savedData) {\n' +
+                    '        restoreFormData(window._savedData);\n' +
+                    '    }\n' +
+                    '});\n' +
+                    '</' + 'script>';
+                
+                // HTML 내용 가져오기
+                let htmlContent = document.documentElement.outerHTML;
+                
+                // 새 데이터 스크립트 추가 (</head> 태그 바로 앞에)
+                htmlContent = htmlContent.replace('</head>', dataScript + '\n</head>');
+                
+                // Blob 생성
+                const blob = new Blob([htmlContent], {type: 'text/html;charset=utf-8'});
+                
+                // 파일명 설정 (날짜 형식 수정)
+                const studentName = formData.student_name || '학생';
+                const today = new Date();
+                const dateStr = today.getFullYear() + '-' + 
+                              String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                              String(today.getDate()).padStart(2, '0');
+                const fileName = '수학진단평가_' + studentName + '_' + dateStr + '.html';
+                
+                // 다운로드 링크 생성
+                const a = document.createElement('a');
+                a.download = fileName;
+                a.href = URL.createObjectURL(blob);
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
+                
+                // 메모리 정리
+                setTimeout(function() {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(a.href);
+                }, 100);
+                
+                alert('학습지가 저장되었습니다: ' + fileName);
+            } catch (error) {
+                console.error('HTML 저장 중 오류 발생:', error);
+                alert('HTML 저장 중 오류가 발생했습니다. 오류 내용: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
