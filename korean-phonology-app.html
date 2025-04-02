@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>한국어 음운체계 학습</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Malgun Gothic', sans-serif;
+        }
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #3f51b5;
+            text-align: center;
+        }
+        .tab-container {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+        }
+        .tab.active {
+            background-color: white;
+            border-bottom: 1px solid white;
+            font-weight: bold;
+            color: #3f51b5;
+        }
+        .content {
+            display: none;
+            padding: 15px;
+        }
+        .content.active {
+            display: block;
+        }
+        .flex-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        .sound-card {
+            width: 120px;
+            height: 120px;
+            margin: 10px;
+            padding: 10px;
+            background-color: #e3f2fd;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .sound-card:hover {
+            transform: scale(1.05);
+            background-color: #bbdefb;
+        }
+        .sound-card.active {
+            background-color: #90caf9;
+            transform: scale(1.05);
+        }
+        .sound-char {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .sound-desc {
+            font-size: 14px;
+            text-align: center;
+        }
+        .info-box {
+            background-color: #e8eaf6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .quiz-container {
+            background-color: #e8f5e9;
+            border-radius: 5px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .quiz-question {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+        }
+        .quiz-option {
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #c8e6c9;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .quiz-option:hover {
+            background-color: #a5d6a7;
+        }
+        .quiz-option.correct {
+            background-color: #81c784;
+            color: white;
+        }
+        .quiz-option.wrong {
+            background-color: #ef9a9a;
+        }
+        .quiz-feedback {
+            margin-top: 15px;
+            font-weight: bold;
+            min-height: 20px;
+        }
+        .quiz-next {
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .quiz-next:hover {
+            background-color: #388e3c;
+        }
+        .highlight {
+            background-color: #ffecb3;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .practice-container {
+            margin-top: 20px;
+        }
+        .practice-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .practice-button {
+            padding: 10px 20px;
+            background-color: #3f51b5;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .practice-result {
+            margin-top: 15px;
+            min-height: 100px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #e3f2fd;
+        }
+        .change-rule {
+            background-color: #fff3e0;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .change-rule-title {
+            font-weight: bold;
+            color: #e65100;
+        }
+        .change-rule-example {
+            margin-top: 5px;
+            font-style: italic;
+        }
+        .interaction-area {
+            background-color: #f1f8e9;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .scoreboard {
+            text-align: right;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>한국어 음운체계 학습</h1>
+        
+        <div class="tab-container">
+            <div class="tab active" onclick="openTab('intro')">소개</div>
+            <div class="tab" onclick="openTab('consonants')">자음</div>
+            <div class="tab" onclick="openTab('vowels')">모음</div>
+            <div class="tab" onclick="openTab('syllables')">음절</div>
+            <div class="tab" onclick="openTab('quiz')">퀴즈</div>
+            <div class="tab" onclick="openTab('practice')">실습</div>
+        </div>
+        
+        <div id="intro" class="content active">
+            <h2>한국어 음운체계 소개</h2>
+            
+            <div class="info-box">
+                <p>음운체계란 한 언어에서 사용되는 음운의 종류와 그들 간의 관계를 체계적으로 정리한 것입니다.</p>
+                <p>한국어의 음운체계는 크게 <span class="highlight">자음(19개)</span>과 <span class="highlight">모음(21개)</span>으로 구성됩니다.</p>
+                <p>이 학습 앱에서는 다음과 같은 내용을 배울 수 있습니다:</p>
+                <ul>
+                    <li>자음과 모음의 종류와 특징</li>
+                    <li>음절의 구조</li>
+                    <li>음운 변동 현상</li>
+                </ul>
+            </div>
+            
+            <div class="interaction-area">
+                <h3>학습 시작하기</h3>
+                <p>위의 탭을 클릭하여 원하는 주제를 학습할 수 있습니다.</p>
+                <p>각 섹션에서는 인터랙티브한 활동을 통해 한국어 음운체계를 쉽게 이해할 수 있습니다.</p>
+                <p>학습을 완료한 후 퀴즈를 풀어보며 자신의 이해도를 확인해보세요!</p>
+            </div>
+        </div>
+        
+        <div id="consonants" class="content">
+            <h2>자음 (19개)</h2>
+            
+            <div class="info-box">
+                <p>자음은 발음 시 공기의 흐름이 방해를 받는 소리입니다.</p>
+                <p>한국어의 자음은 <span class="highlight">조음 방법</span>과 <span class="highlight">조음 위치</span>에 따라 분류됩니다.</p>
+                <p>또한 <span class="highlight">평음, 경음, 격음</span>의 삼지적 대립을 이루는 특징이 있습니다.</p>
+            </div>
+            
+            <h3>조음 방법에 따른 분류</h3>
+            <div class="info-box">
+                <p><strong>파열음(Plosive)</strong>: 공기의 흐름을 완전히 막았다가 순간적으로 터뜨려 내는 소리</p>
+                <ul>
+                    <li>평음: ㄱ, ㄷ, ㅂ - 성대 진동이 약하고 긴장이 적음</li>
+                    <li>경음: ㄲ, ㄸ, ㅃ - 성대 진동이 없고 긴장이 강함</li>
+                    <li>격음: ㅋ, ㅌ, ㅍ - 성대 진동이 없고 강한 기류를 동반</li>
+                </ul>
+                
+                <p><strong>파찰음(Affricate)</strong>: 파열음으로 시작해 마찰음으로 끝나는 복합적인 소리</p>
+                <ul>
+                    <li>평음: ㅈ - 성대 진동이 약하고 긴장이 적음</li>
+                    <li>경음: ㅉ - 성대 진동이 없고 긴장이 강함</li>
+                    <li>격음: ㅊ - 성대 진동이 없고 강한 기류를 동반</li>
+                </ul>
+                
+                <p><strong>마찰음(Fricative)</strong>: 공기 흐름이 좁은 틈을 통과하며 마찰을 일으키는 소리</p>
+                <ul>
+                    <li>평음: ㅅ - 성대 진동이 없음</li>
+                    <li>경음: ㅆ - 성대 진동이 없고 긴장이 강함</li>
+                    <li>격음: ㅎ - 성대 진동이 없고 강한 기류를 동반</li>
+                </ul>
+                
+                <p><strong>비음(Nasal)</strong>: 공기가 구강이 아닌 비강을 통해 나오는 소리</p>
+                <ul>
+                    <li>ㅁ, ㄴ, ㅇ - 모두 성대 진동을 동반</li>
+                </ul>
+                
+                <p><strong>유음(Liquid)</strong>: 혀가 입천장에 닿았다 떨어지거나 떨리면서 만들어지는 소리</p>
+                <ul>
+                    <li>ㄹ - 한국어에서는 상황에 따라 탄설음[ɾ]이나 설측음[l]으로 발음</li>
+                </ul>
+            </div>
+            
+            <h3>조음 위치에 따른 분류</h3>
+            <div class="info-box">
+                <p><strong>양순음(Bilabial)</strong>: 두 입술이 맞닿아 소리를 내는 자음</p>
+                <ul>
+                    <li>ㅂ(평음), ㅃ(경음), ㅍ(격음), ㅁ(비음)</li>
+                    <li>예: 바다, 빨리, 파도, 마음</li>
+                </ul>
+                
+                <p><strong>치조음/치경음(Alveolar)</strong>: 혀끝이 윗잇몸에 닿아 소리를 내는 자음</p>
+                <ul>
+                    <li>ㄷ(평음), ㄸ(경음), ㅌ(격음), ㄴ(비음), ㄹ(유음), ㅅ(평음), ㅆ(경음)</li>
+                    <li>예: 다리, 따라, 타다, 나무, 라면, 사과, 싸움</li>
+                </ul>
+                
+                <p><strong>경구개음(Palatal)</strong>: 혀의 앞부분이 경구개(딱딱한 입천장)에 닿아 소리를 내는 자음</p>
+                <ul>
+                    <li>ㅈ(평음), ㅉ(경음), ㅊ(격음)</li>
+                    <li>예: 자다, 짜다, 차다</li>
+                </ul>
+                
+                <p><strong>연구개음(Velar)</strong>: 혀의 뒷부분이 연구개(부드러운 입천장)에 닿아 소리를 내는 자음</p>
+                <ul>
+                    <li>ㄱ(평음), ㄲ(경음), ㅋ(격음), ㅇ(비음, 종성에서만)</li>
+                    <li>예: 가다, 까맣다, 커피, 창가[창:가]</li>
+                </ul>
+                
+                <p><strong>후두음(Glottal)</strong>: 성대 사이에서 소리를 내는 자음</p>
+                <ul>
+                    <li>ㅎ(격음)</li>
+                    <li>예: 하다, 하늘</li>
+                </ul>
+            </div>
+            
+            <h3>자음 분류표</h3>
+            <table>
+                <tr>
+                    <th>구분</th>
+                    <th>양순음</th>
+                    <th>치(알)베올라음</th>
+                    <th>경구개음</th>
+                    <th>연구개음</th>
+                    <th>후두음</th>
+                </tr>
+                <tr>
+                    <td>파열음</td>
+                    <td>ㅂ ㅃ ㅍ</td>
+                    <td>ㄷ ㄸ ㅌ</td>
+                    <td></td>
+                    <td>ㄱ ㄲ ㅋ</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>파찰음</td>
+                    <td></td>
+                    <td></td>
+                    <td>ㅈ ㅉ ㅊ</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>마찰음</td>
+                    <td></td>
+                    <td>ㅅ ㅆ</td>
+                    <td></td>
+                    <td></td>
+                    <td>ㅎ</td>
+                </tr>
+                <tr>
+                    <td>비음</td>
+                    <td>ㅁ</td>
+                    <td>ㄴ</td>
+                    <td></td>
+                    <td>ㅇ</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>유음</td>
+                    <td></td>
+                    <td>ㄹ</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+            
+            <h3>자음의 특징</h3>
+            <div class="info-box">
+                <p><strong>음절 초성과 종성의 발음 차이</strong></p>
+                <ul>
+                    <li>초성에서는 모든 자음이 그대로 발음됩니다.</li>
+                    <li>종성에서는 7개의 대표음([ㄱ], [ㄴ], [ㄷ], [ㄹ], [ㅁ], [ㅂ], [ㅇ])으로 발음됩니다. (종성 중화)</li>
+                    <li>예: 밖[박], 낮[낟], 앞[압]</li>
+                </ul>
+                
+                <p><strong>자음의 강약 대립</strong></p>
+                <ul>
+                    <li>평음(ㄱ, ㄷ, ㅂ, ㅈ, ㅅ): 약한 소리, 후행하는 모음이 저음조로 시작</li>
+                    <li>경음(ㄲ, ㄸ, ㅃ, ㅉ, ㅆ): 강한 소리, 성대를 강하게 긴장시켜 발음</li>
+                    <li>격음(ㅋ, ㅌ, ㅍ, ㅊ, ㅎ): 강한 기류를 동반한 소리</li>
+                </ul>
+            </div>
+            
+            <h3>자음을 클릭하여 자세히 알아보세요</h3>
+            <div class="flex-container" id="consonant-container">
+                <!-- 자음 카드들이 자바스크립트로 생성됩니다 -->
+            </div>
+            
+            <div id="consonant-info" class="info-box" style="display: none;">
+                <h3 id="selected-consonant-title">자음 정보</h3>
+                <p id="selected-consonant-desc">자음을 클릭하면 자세한 정보가 표시됩니다.</p>
+                <div id="selected-consonant-examples"></div>
+            </div>
+        </div>
+        
+        <div id="vowels" class="content">
+            <h2>모음 (21개)</h2>
+            
+            <div class="info-box">
+                <p>모음은 발음 시 공기의 흐름이 방해를 받지 않는 소리입니다.</p>
+                <p>한국어의 모음은 <span class="highlight">단모음(10개)</span>과 <span class="highlight">이중모음(11개)</span>으로 나뉩니다.</p>
+                <p>단모음은 <span class="highlight">혀의 위치, 입술 모양, 혀의 높이</span>에 따라 분류됩니다.</p>
+            </div>
+            
+            <h3>단모음의 분류</h3>
+            <div class="info-box">
+                <p><strong>혀의 위치에 따른 분류</strong></p>
+                <ul>
+                    <li><strong>전설 모음</strong>: 혀가 앞쪽에 위치 - ㅣ, ㅔ, ㅐ, ㅟ, ㅚ</li>
+                    <li><strong>후설 모음</strong>: 혀가 뒤쪽에 위치 - ㅡ, ㅓ, ㅏ, ㅜ, ㅗ</li>
+                </ul>
+                
+                <p><strong>혀의 높이에 따른 분류</strong></p>
+                <ul>
+                    <li><strong>고모음</strong>: 혀가 높게 위치 - ㅣ, ㅟ, ㅡ, ㅜ</li>
+                    <li><strong>중모음</strong>: 혀가 중간에 위치 - ㅔ, ㅚ, ㅓ, ㅗ</li>
+                    <li><strong>저모음</strong>: 혀가 낮게 위치 - ㅐ, ㅏ</li>
+                </ul>
+                
+                <p><strong>입술 모양에 따른 분류</strong></p>
+                <ul>
+                    <li><strong>평순 모음</strong>: 입술이 평평하게 벌어짐 - ㅣ, ㅔ, ㅐ, ㅡ, ㅓ, ㅏ</li>
+                    <li><strong>원순 모음</strong>: 입술이 둥글게 오므라짐 - ㅟ, ㅚ, ㅜ, ㅗ</li>
+                </ul>
+            </div>
+            
+            <h3>단모음 분류표</h3>
+            <table>
+                <tr>
+                    <th rowspan="2">혀의 높이</th>
+                    <th colspan="2">전설 모음</th>
+                    <th colspan="2">후설 모음</th>
+                </tr>
+                <tr>
+                    <th>평순</th>
+                    <th>원순</th>
+                    <th>평순</th>
+                    <th>원순</th>
+                </tr>
+                <tr>
+                    <td>고모음</td>
+                    <td>ㅣ</td>
+                    <td>ㅟ</td>
+                    <td>ㅡ</td>
+                    <td>ㅜ</td>
+                </tr>
+                <tr>
+                    <td>중모음</td>
+                    <td>ㅔ</td>
+                    <td>ㅚ</td>
+                    <td>ㅓ</td>
+                    <td>ㅗ</td>
+                </tr>
+                <tr>
+                    <td>저모음</td>
+                    <td>ㅐ</td>
+                    <td></td>
+                    <td>ㅏ</td>
+                    <td></td>
+                </tr>
+            </table>
+            
+            <h3>단모음의 특징과 예시</h3>
+            <div class="info-box">
+                <p><strong>ㅏ [a]</strong>: 후설 저모음 평순 - 아버지, 사랑, 가다</p>
+                <p><strong>ㅐ [ɛ]</strong>: 전설 저모음 평순 - 개구리, 매미, 해변</p>
+                <p><strong>ㅓ [ʌ]</strong>: 후설 중모음 평순 - 어머니, 서점, 머리</p>
+                <p><strong>ㅔ [e]</strong>: 전설 중모음 평순 - 세수, 베개, 레몬</p>
+                <p><strong>ㅗ [o]</strong>: 후설 중모음 원순 - 오리, 소금, 코끼리</p>
+                <p><strong>ㅚ [ø]</strong>: 전설 중모음 원순 - 외국, 괴물, 되다</p>
+                <p><strong>ㅜ [u]</strong>: 후설 고모음 원순 - 우유, 수박, 구름</p>
+                <p><strong>ㅟ [y]</strong>: 전설 고모음 원순 - 귀, 뒤, 쥐</p>
+                <p><strong>ㅡ [ɯ]</strong>: 후설 고모음 평순 - 으악, 긍정, 슬픔</p>
+                <p><strong>ㅣ [i]</strong>: 전설 고모음 평순 - 이빨, 지도, 비누</p>
+            </div>
+            
+            <h3>이중모음의 분류</h3>
+            <div class="info-box">
+                <p>이중모음은 활음(반모음)과 단모음의 결합으로 이루어집니다.</p>
+                
+                <p><strong>ㅣ[j]계 이중모음</strong>: 활음 [j]와 단모음의 결합</p>
+                <ul>
+                    <li><strong>ㅑ [ja]</strong>: 야구, 냐옹, 샤워</li>
+                    <li><strong>ㅒ [jɛ]</strong>: 얘기, 냬, 걔</li>
+                    <li><strong>ㅕ [jʌ]</strong>: 여자, 겨울, 셔츠</li>
+                    <li><strong>ㅖ [je]</strong>: 예절, 계란, 혜택</li>
+                    <li><strong>ㅛ [jo]</strong>: 요리, 교실, 효도</li>
+                    <li><strong>ㅠ [ju]</strong>: 유리, 규칙, 휴가</li>
+                </ul>
+                
+                <p><strong>ㅗ/ㅜ[w]계 이중모음</strong>: 활음 [w]와 단모음의 결합</p>
+                <ul>
+                    <li><strong>ㅘ [wa]</strong>: 와인, 과일, 화장</li>
+                    <li><strong>ㅙ [wɛ]</strong>: 왜, 꽤, 쇠고기</li>
+                    <li><strong>ㅝ [wʌ]</strong>: 워터, 궤도, 훼손</li>
+                    <li><strong>ㅞ [we]</strong>: 웨이터, 궤짝, 뒤</li>
+                </ul>
+                
+                <p><strong>기타 이중모음</strong></p>
+                <ul>
+                    <li><strong>ㅢ [ɯi]</strong>: 의사, 희망, 늬</li>
+                </ul>
+            </div>
+            
+            <h3>현대 한국어 모음의 변화</h3>
+            <div class="info-box">
+                <p><strong>모음의 단순화 현상</strong></p>
+                <ul>
+                    <li>ㅐ와 ㅔ의 발음 구별이 모호해짐 (합류 현상)</li>
+                    <li>ㅚ와 ㅞ의 발음 구별이 모호해짐</li>
+                    <li>ㅟ는 이중모음 [wi]로 발음되는 경향이 있음</li>
+                    <li>ㅢ는 문맥에 따라 [이], [에], [의]로 발음됨</li>
+                </ul>
+            </div>
+            
+            <h3>모음을 클릭하여 자세히 알아보세요</h3>
+            <div class="flex-container" id="vowel-container">
+                <!-- 모음 카드들이 자바스크립트로 생성됩니다 -->
+            </div>
+            
+            <div id="vowel-info" class="info-box" style="display: none;">
+                <h3 id="selected-vowel-title">모음 정보</h3>
+                <p id="selected-vowel-desc">모음을 클릭하면 자세한 정보가 표시됩니다.</p>
+                <div id="selected-vowel-examples"></div>
+            </div>
+        </div>
+        
+        <div id="syllables" class="content">
+            <h2>음절 구조</h2>
+            
+            <div class="info-box">
+                <p>한국어의 음절은 <span class="highlight">초성, 중성, 종성</span>의 3가지 요소로 구성됩니다.</p>
+                <p>초성에는 자음이, 중성에는 모음이, 종성에는 자음 또는 없음이 올 수 있습니다.</p>
+                <p>한국어의 음절 구조: (C)V(C) - C는 자음, V는 모음</p>
+            </div>
+            
+            <h3>음절의 유형</h3>
+            <table>
+                <tr>
+                    <th>유형</th>
+                    <th>구조</th>
+                    <th>예시</th>
+                </tr>
+                <tr>
+                    <td>1. 모음 음절</td>
+                    <td>V</td>
+                    <td>아, 어, 오</td>
+                </tr>
+                <tr>
+                    <td>2. 자음+모음 음절</td>
+                    <td>CV</td>
+                    <td>가, 나, 다</td>
+                </tr>
+                <tr>
+                    <td>3. 모음+자음 음절</td>
+                    <td>VC</td>
+                    <td>안, 인, 운</td>
+                </tr>
+                <tr>
+                    <td>4. 자음+모음+자음 음절</td>
+                    <td>CVC</td>
+                    <td>감, 밥, 숲</td>
+                </tr>
+            </table>
+            
+            <h3>음절 만들기 실습</h3>
+            <div class="interaction-area">
+                <p>아래 요소들을 조합하여 한국어 음절을 만들어보세요:</p>
+                <div class="flex-container">
+                    <div>
+                        <h4>초성 선택</h4>
+                        <select id="initial-consonant">
+                            <option value="">없음</option>
+                            <option value="ㄱ">ㄱ</option>
+                            <option value="ㄲ">ㄲ</option>
+                            <option value="ㄴ">ㄴ</option>
+                            <option value="ㄷ">ㄷ</option>
+                            <option value="ㄸ">ㄸ</option>
+                            <option value="ㄹ">ㄹ</option>
+                            <option value="ㅁ">ㅁ</option>
+                            <option value="ㅂ">ㅂ</option>
+                            <option value="ㅃ">ㅃ</option>
+                            <option value="ㅅ">ㅅ</option>
+                            <option value="ㅆ">ㅆ</option>
+                            <option value="ㅇ">ㅇ</option>
+                            <option value="ㅈ">ㅈ</option>
+                            <option value="ㅉ">ㅉ</option>
+                            <option value="ㅊ">ㅊ</option>
+                            <option value="ㅋ">ㅋ</option>
+                            <option value="ㅌ">ㅌ</option>
+                            <option value="ㅍ">ㅍ</option>
+                            <option value="ㅎ">ㅎ</option>
+                        </select>
+                    </div>
+                    <div>
+                        <h4>중성 선택</h4>
+                        <select id="vowel">
+                            <option value="ㅏ">ㅏ</option>
+                            <option value="ㅐ">ㅐ</option>
+                            <option value="ㅑ">ㅑ</option>
+                            <option value="ㅒ">ㅒ</option>
+                            <option value="ㅓ">ㅓ</option>
+                            <option value="ㅔ">ㅔ</option>
+                            <option value="ㅕ">ㅕ</option>
+                            <option value="ㅖ">ㅖ</option>
+                            <option value="ㅗ">ㅗ</option>
+                            <option value="ㅘ">ㅘ</option>
+                            <option value="ㅙ">ㅙ</option>
+                            <option value="ㅚ">ㅚ</option>
+                            <option value="ㅛ">ㅛ</option>
+                            <option value="ㅜ">ㅜ</option>
+                            <option value="ㅝ">ㅝ</option>
+                            <option value="ㅞ">ㅞ</option>
+                            <option value="ㅟ">ㅟ</option>
+                            <option value="ㅠ">ㅠ</option>
+                            <option value="ㅡ">ㅡ</option>
+                            <option value="ㅢ">ㅢ</option>
+                            <option value="ㅣ">ㅣ</option>
+                        </select>
+                    </div>
+                    <div>
+                        <h4>종성 선택</h4>
+                        <select id="final-consonant">
+                            <option value="">없음</option>
+                            <option value="ㄱ">ㄱ</option>
+                            <option value="ㄲ">ㄲ</option>
+                            <option value="ㄳ">ㄳ</option>
+                            <option value="ㄴ">ㄴ</option>
+                            <option value="ㄵ">ㄵ</option>
+                            <option value="ㄶ">ㄶ</option>
+                            <option value="ㄷ">ㄷ</option>
+                            <option value="ㄹ">ㄹ</option>
+                            <option value="ㄺ">ㄺ</option>
+                            <option value="ㄻ">ㄻ</option>
+                            <option value="ㄼ">ㄼ</option>
+                            <option value="ㄽ">ㄽ</option>
+                            <option value="ㄾ">ㄾ</option>
+                            <option value="ㄿ">ㄿ</option>
+                            <option value="ㅀ">ㅀ</option>
+                            <option value="ㅁ">ㅁ</option>
+                            <option value="ㅂ">ㅂ</option>
+                            <option value="ㅄ">ㅄ</option>
+                            <option value="ㅅ">ㅅ</option>
+                            <option value="ㅆ">ㅆ</option>
+                            <option value="ㅇ">ㅇ</option>
+                            <option value="ㅈ">ㅈ</option>
+                            <option value="ㅊ">ㅊ</option>
+                            <option value="ㅋ">ㅋ</option>
+                            <option value="ㅌ">ㅌ</option>
+                            <option value="ㅍ">ㅍ</option>
+                            <option value="ㅎ">ㅎ</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button class="practice-button" onclick="createSyllable()">음절 만들기</button>
+                
+                <div class="practice-result">
+                    <h3>결과:</h3>
+                    <div id="syllable-result" style="font-size: 48px; text-align: center; margin: 20px 0;"></div>
+                    <p id="syllable-info"></p>
+                </div>
+            </div>
+        </div>
+        
+
+        
+        <div id="quiz" class="content">
+            <h2>음운체계 퀴즈</h2>
+            
+            <div class="scoreboard">
+                점수: <span id="quiz-score">0</span> / <span id="quiz-total">0</span>
+            </div>
+            
+            <div class="quiz-container">
+                <div class="quiz-question" id="quiz-question">퀴즈를 시작하려면 아래 버튼을 클릭하세요.</div>
+                <div class="quiz-options" id="quiz-options" style="display: none;"></div>
+                <div class="quiz-feedback" id="quiz-feedback"></div>
+                <button class="quiz-next" id="quiz-next" onclick="startQuiz()">퀴즈 시작하기</button>
+            </div>
+        </div>
+        
+        <div id="practice" class="content">
+            <h2>음운체계 실습</h2>
+            
+            <div class="info-box">
+                <p>단어를 입력하면 음운체계를 분석하고 시각화합니다.</p>
+            </div>
+            
+            <div class="interaction-area">
+                <p>한국어 단어를 입력하세요:</p>
+                <input type="text" id="practice-input" class="practice-input" placeholder="예: 학교, 사랑, 한글">
+                <button class="practice-button" onclick="analyzePractice()">분석하기</button>
+                
+                <div class="practice-result">
+                    <h3>분석 결과:</h3>
+                    <div id="practice-result"></div>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            // 탭 전환 함수
+            function openTab(tabName) {
+                // 모든 콘텐츠 숨기기
+                var contents = document.getElementsByClassName("content");
+                for (var i = 0; i < contents.length; i++) {
+                    contents[i].classList.remove("active");
+                }
+                
+                // 모든 탭 비활성화
+                var tabs = document.getElementsByClassName("tab");
+                for (var i = 0; i < tabs.length; i++) {
+                    tabs[i].classList.remove("active");
+                }
+                
+                // 선택한 탭과 콘텐츠 활성화
+                document.getElementById(tabName).classList.add("active");
+                
+                // 탭 버튼 활성화
+                var tabButtons = document.getElementsByClassName("tab");
+                for (var i = 0; i < tabButtons.length; i++) {
+                    if (tabButtons[i].getAttribute("onclick") === "openTab('" + tabName + "')") {
+                        tabButtons[i].classList.add("active");
+                    }
+                }
+                
+                // 탭에 따른 초기화 작업
+                if (tabName === "consonants") {
+                    initConsonants();
+                } else if (tabName === "vowels") {
+                    initVowels();
+                } else if (tabName === "quiz") {
+                    // 퀴즈가 이미 시작되었다면 아무것도 하지 않음
+                    if (document.getElementById("quiz-options").style.display === "none") {
+                        document.getElementById("quiz-next").innerHTML = "퀴즈 시작하기";
+                    }
+                }
+            }
+            
+            // 자음 정보 초기화
+            function initConsonants() {
+                const consonantData = [
+                    { char: "ㄱ", desc: "연구개음, 파열음, 평음", examples: "예: 가다, 고기, 국수" },
+                    { char: "ㄲ", desc: "연구개음, 파열음, 경음", examples: "예: 까치, 꼬마, 꾸중" },
+                    { char: "ㄴ", desc: "치조음, 비음", examples: "예: 나무, 노래, 눈물" },
+                    { char: "ㄷ", desc: "치조음, 파열음, 평음", examples: "예: 다리, 도시, 두부" },
+                    { char: "ㄸ", desc: "치조음, 파열음, 경음", examples: "예: 따라, 또래, 뚜껑" },
+                    { char: "ㄹ", desc: "치조음, 유음 (탄설음/설측음)", examples: "예: 라면, 로봇, 루프" },
+                    { char: "ㅁ", desc: "양순음, 비음", examples: "예: 마을, 모자, 무릎" },
+                    { char: "ㅂ", desc: "양순음, 파열음, 평음", examples: "예: 바다, 보자기, 북극" },
+                    { char: "ㅃ", desc: "양순음, 파열음, 경음", examples: "예: 빠르다, 뽀뽀, 뿌리" },
+                    { char: "ㅅ", desc: "치조음, 마찰음, 평음", examples: "예: 사과, 소금, 수박" },
+                    { char: "ㅆ", desc: "치조음, 마찰음, 경음", examples: "예: 싸움, 쏘다, 쑥쑥" },
+                    { char: "ㅇ", desc: "연구개음, 비음 (종성) / 음가 없음 (초성)", examples: "예: 아이(초성), 강(종성), 영화(초성)" },
+                    { char: "ㅈ", desc: "경구개음, 파찰음, 평음", examples: "예: 자다, 조각, 주먹" },
+                    { char: "ㅉ", desc: "경구개음, 파찰음, 경음", examples: "예: 짜다, 쪼개다, 쭈그리다" },
+                    { char: "ㅊ", desc: "경구개음, 파찰음, 격음", examples: "예: 차다, 초록, 추석" },
+                    { char: "ㅋ", desc: "연구개음, 파열음, 격음", examples: "예: 카드, 코끼리, 쿠키" },
+                    { char: "ㅌ", desc: "치조음, 파열음, 격음", examples: "예: 타다, 토끼, 튀기다" },
+                    { char: "ㅍ", desc: "양순음, 파열음, 격음", examples: "예: 파다, 포도, 풀이" },
+                    { char: "ㅎ", desc: "후두음, 마찰음", examples: "예: 하다, 호수, 흐름" }
+                ];
+                
+                const container = document.getElementById("consonant-container");
+                container.innerHTML = "";
+                
+                consonantData.forEach(consonant => {
+                    const card = document.createElement("div");
+                    card.className = "sound-card";
+                    card.onclick = function() { showConsonantInfo(consonant); };
+                    
+                    const charElem = document.createElement("div");
+                    charElem.className = "sound-char";
+                    charElem.textContent = consonant.char;
+                    
+                    card.appendChild(charElem);
+                    container.appendChild(card);
+                });
+            }
+            
+            // 자음 정보 표시
+            function showConsonantInfo(consonant) {
+                // 이전에 선택된 카드 비활성화
+                const cards = document.querySelectorAll("#consonant-container .sound-card");
+                cards.forEach(card => card.classList.remove("active"));
+                
+                // 클릭된 카드 활성화
+                event.currentTarget.classList.add("active");
+                
+                // 정보 표시
+                document.getElementById("selected-consonant-title").textContent = consonant.char;
+                document.getElementById("selected-consonant-desc").textContent = consonant.desc;
+                document.getElementById("selected-consonant-examples").textContent = consonant.examples;
+                document.getElementById("consonant-info").style.display = "block";
+            }
+            
+            // 모음 정보 초기화
+            function initVowels() {
+                const vowelData = [
+                    { char: "ㅏ", desc: "후설 저모음, 평순 모음", examples: "예: 아침, 사과, 바다" },
+                    { char: "ㅐ", desc: "전설 저모음, 평순 모음", examples: "예: 개미, 새끼, 매미" },
+                    { char: "ㅑ", desc: "후설 저모음, 평순 모음의 이중모음(j계열)", examples: "예: 야구, 샤워, 캬라멜" },
+                    { char: "ㅒ", desc: "전설 저모음, 평순 모음의 이중모음(j계열)", examples: "예: 얘기, 냬, 걔" },
+                    { char: "ㅓ", desc: "후설 중모음, 평순 모음", examples: "예: 어깨, 서점, 버스" },
+                    { char: "ㅔ", desc: "전설 중모음, 평순 모음", examples: "예: 에너지, 세탁, 케이크" },
+                    { char: "ㅕ", desc: "후설 중모음, 평순 모음의 이중모음(j계열)", examples: "예: 여자, 셔츠, 겨울" },
+                    { char: "ㅖ", desc: "전설 중모음, 평순 모음의 이중모음(j계열)", examples: "예: 예의, 계단, 혜택" },
+                    { char: "ㅗ", desc: "후설 중모음, 원순 모음", examples: "예: 오이, 소금, 포도" },
+                    { char: "ㅘ", desc: "ㅗ와 ㅏ의 결합인 이중모음", examples: "예: 와인, 과일, 화분" },
+                    { char: "ㅙ", desc: "ㅗ와 ㅐ의 결합인 이중모음", examples: "예: 왜, 꽤, 쇠" },
+                    { char: "ㅚ", desc: "전설 중모음, 원순 모음", examples: "예: 외국, 괴물, 뇌" },
+                    { char: "ㅛ", desc: "후설 중모음, 원순 모음의 이중모음(j계열)", examples: "예: 요리, 쇼핑, 교실" },
+                    { char: "ㅜ", desc: "후설 고모음, 원순 모음", examples: "예: 우산, 수박, 무지개" },
+                    { char: "ㅝ", desc: "ㅜ와 ㅓ의 결합인 이중모음", examples: "예: 워터, 권리, 훤하다" },
+                    { char: "ㅞ", desc: "ㅜ와 ㅔ의 결합인 이중모음", examples: "예: 웨이터, 궤도, 훼손" },
+                    { char: "ㅟ", desc: "전설 고모음, 원순 모음", examples: "예: 위층, 뒤, 쥐" },
+                    { char: "ㅠ", desc: "후설 고모음, 원순 모음의 이중모음(j계열)", examples: "예: 유리, 슈퍼, 규칙" },
+                    { char: "ㅡ", desc: "후설 고모음, 평순 모음", examples: "예: 으악, 그림, 흐름" },
+                    { char: "ㅢ", desc: "ㅡ와 ㅣ의 결합인 이중모음", examples: "예: 의사, 희망, 의자" },
+                    { char: "ㅣ", desc: "전설 고모음, 평순 모음", examples: "예: 이빨, 시계, 미래" }
+                ];
+                
+                const container = document.getElementById("vowel-container");
+                container.innerHTML = "";
+                
+                vowelData.forEach(vowel => {
+                    const card = document.createElement("div");
+                    card.className = "sound-card";
+                    card.onclick = function() { showVowelInfo(vowel); };
+                    
+                    const charElem = document.createElement("div");
+                    charElem.className = "sound-char";
+                    charElem.textContent = vowel.char;
+                    
+                    card.appendChild(charElem);
+                    container.appendChild(card);
+                });
+            }
+            
+            // 모음 정보 표시
+            function showVowelInfo(vowel) {
+                // 이전에 선택된 카드 비활성화
+                const cards = document.querySelectorAll("#vowel-container .sound-card");
+                cards.forEach(card => card.classList.remove("active"));
+                
+                // 클릭된 카드 활성화
+                event.currentTarget.classList.add("active");
+                
+                // 정보 표시
+                document.getElementById("selected-vowel-title").textContent = vowel.char;
+                document.getElementById("selected-vowel-desc").textContent = vowel.desc;
+                document.getElementById("selected-vowel-examples").textContent = vowel.examples;
+                document.getElementById("vowel-info").style.display = "block";
+            }
+            
+            // 음절 만들기 함수
+            function createSyllable() {
+                const initial = document.getElementById("initial-consonant").value;
+                const vowel = document.getElementById("vowel").value;
+                const final = document.getElementById("final-consonant").value;
+                
+                // 한글 음절 계산 (유니코드 활용)
+                let syllable = "";
+                
+                if (initial === "" && vowel && final === "") {
+                    // 모음만 있는 경우 (예: 아, 어, 오)
+                    syllable = vowel;
+                } else {
+                    // 초성, 중성, 종성 조합
+                    const initialCode = initial ? getJamoCode(initial, "initial") : 0;
+                    const vowelCode = getJamoCode(vowel, "vowel");
+                    const finalCode = final ? getJamoCode(final, "final") : 0;
+                    
+                    if (initialCode !== null && vowelCode !== null && finalCode !== null) {
+                        const syllableCode = 0xAC00 + (initialCode * 21 * 28) + (vowelCode * 28) + finalCode;
+                        syllable = String.fromCharCode(syllableCode);
+                    }
+                }
+                
+                // 결과 표시
+                document.getElementById("syllable-result").textContent = syllable;
+                
+                let info = "음절 구조: ";
+                if (initial) info += "초성(" + initial + ") + ";
+                info += "중성(" + vowel + ")";
+                if (final) info += " + 종성(" + final + ")";
+                
+                document.getElementById("syllable-info").textContent = info;
+            }
+            
+            // 자모 코드 계산 함수
+            function getJamoCode(jamo, type) {
+                const initialOrder = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ";
+                const vowelOrder = "ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ";
+                const finalOrder = " ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ";
+                
+                if (type === "initial") {
+                    return initialOrder.indexOf(jamo);
+                } else if (type === "vowel") {
+                    return vowelOrder.indexOf(jamo);
+                } else if (type === "final") {
+                    return finalOrder.indexOf(jamo);
+                }
+                return null;
+            }
+            
+            // 음운 변동 분석 함수
+            function analyzePhonologicalChange() {
+                const word = document.getElementById("word-input").value;
+                let result = "";
+                
+                if (!word) {
+                    result = "단어를 입력해주세요.";
+                } else {
+                    const changes = [
+                        { pattern: /밥물/, pronunciation: "밤물", type: "비음화", desc: "'ㅂ'이 'ㅁ' 앞에서 'ㅁ'으로 변함" },
+                        { pattern: /국물/, pronunciation: "궁물", type: "비음화", desc: "'ㄱ'이 'ㅁ' 앞에서 'ㅇ'으로 변함" },
+                        { pattern: /꽃말/, pronunciation: "꼰말", type: "비음화", desc: "'ㅊ'이 'ㅁ' 앞에서 'ㄴ'으로 변함" },
+                        { pattern: /굳이/, pronunciation: "구지", type: "구개음화", desc: "'ㄷ'이 'ㅣ' 앞에서 'ㅈ'으로 변함" },
+                        { pattern: /같이/, pronunciation: "가치", type: "구개음화", desc: "'ㅌ'이 'ㅣ' 앞에서 'ㅊ'으로 변함" },
+                        { pattern: /학교/, pronunciation: "학꾜", type: "경음화", desc: "'ㄱ' 뒤에 오는 'ㄱ'이 'ㄲ'으로 변함" },
+                        { pattern: /옷장/, pronunciation: "옫짱", type: "경음화", desc: "'ㅅ' 뒤에 오는 'ㅈ'이 'ㅉ'으로 변함" },
+                        { pattern: /맑은/, pronunciation: "말근", type: "음운 탈락", desc: "'ㄹ' 뒤의 'ㄱ'이 탈락함" },
+                        { pattern: /넓다/, pronunciation: "널따", type: "음운 탈락", desc: "'ㄼ'에서 'ㅂ'이 탈락함" },
+                        { pattern: /좋아/, pronunciation: "조아", type: "음운 축약", desc: "'ㅎ'과 'ㅇ'이.축약됨" }
+                    ];
+                    
+                    let found = false;
+                    for (const change of changes) {
+                        if (change.pattern.test(word)) {
+                            result += `<div class="change-rule">
+                                <p class="change-rule-title">${change.type}</p>
+                                <p>발음: ${change.pronunciation}</p>
+                                <p>설명: ${change.desc}</p>
+                            </div>`;
+                            found = true;
+                        }
+                    }
+                    
+                    if (!found) {
+                        result = "입력한 단어에 대한 음운 변동 정보가 없습니다. 다른 단어를 시도해보세요. (예: 밥물, 국물, 옷장, 굳이, 같이, 학교)";
+                    }
+                }
+                
+                document.getElementById("change-result").innerHTML = result;
+            }
+            
+            // 퀴즈 관련 변수
+            let quizQuestions = [
+                {
+                    question: "다음 중 양순음이 아닌 것은?",
+                    options: ["ㅁ", "ㅂ", "ㅍ", "ㄴ"],
+                    answer: 3,
+                    explanation: "양순음은 두 입술이 맞닿아 소리를 내는 자음으로, ㅁ, ㅂ, ㅃ, ㅍ이 해당합니다. ㄴ은 혀끝이 윗잇몸에 닿는 치조음입니다."
+                },
+                {
+                    question: "다음 중 경음이 아닌 것은?",
+                    options: ["ㄲ", "ㅉ", "ㅆ", "ㅋ"],
+                    answer: 3,
+                    explanation: "경음은 ㄲ, ㄸ, ㅃ, ㅆ, ㅉ 등 쌍자음으로 표기되는 자음입니다. ㅋ은 격음으로, 강한 기류를 동반하는 자음입니다."
+                },
+                {
+                    question: "다음 중 이중모음이 아닌 것은?",
+                    options: ["ㅒ", "ㅙ", "ㅚ", "ㅓ"],
+                    answer: 3,
+                    explanation: "이중모음은 두 개의 모음이 결합한 형태로, ㅒ(ㅑ+ㅣ), ㅙ(ㅗ+ㅐ), ㅚ(ㅗ+ㅣ) 등이 있습니다. ㅓ는 단모음으로, 하나의 모음 소리만을 가집니다."
+                },
+                {
+                    question: "다음 중 전설 모음이 아닌 것은?",
+                    options: ["ㅣ", "ㅔ", "ㅐ", "ㅏ"],
+                    answer: 3,
+                    explanation: "전설 모음은 혀가 입 앞쪽에 위치하여 발음되는 모음으로, ㅣ, ㅔ, ㅐ 등이 있습니다. ㅏ는 혀가 입 뒤쪽에 위치하는 후설 모음입니다."
+                },
+                {
+                    question: "다음 중 비음이 아닌 것은?",
+                    options: ["ㅁ", "ㄴ", "ㅇ", "ㄹ"],
+                    answer: 3,
+                    explanation: "비음은 공기가 코로 나가면서 발음되는 자음으로, ㅁ, ㄴ, ㅇ이 있습니다. ㄹ은 유음으로, 혀가 입천장에 닿았다 떨어지면서 발음됩니다."
+                },
+                {
+                    question: "다음 중 원순 모음이 아닌 것은?",
+                    options: ["ㅗ", "ㅜ", "ㅚ", "ㅡ"],
+                    answer: 3,
+                    explanation: "원순 모음은 입술을 동그랗게 오므리고 발음하는 모음으로, ㅗ, ㅜ, ㅚ 등이 있습니다. ㅡ는 입술을 평평하게 하고 발음하는 평순 모음입니다."
+                },
+                {
+                    question: "다음 중 고모음이 아닌 것은?",
+                    options: ["ㅣ", "ㅟ", "ㅡ", "ㅓ"],
+                    answer: 3,
+                    explanation: "고모음은 혀의 위치가 높은 모음으로, ㅣ, ㅟ, ㅡ, ㅜ가 있습니다. ㅓ는 혀의 위치가 중간인 중모음입니다."
+                },
+                {
+                    question: "다음 중 격음이 아닌 것은?",
+                    options: ["ㅋ", "ㅌ", "ㅍ", "ㅆ"],
+                    answer: 3,
+                    explanation: "격음은 강한 기류를 동반하는 자음으로, ㅋ, ㅌ, ㅍ, ㅊ, ㅎ이 있습니다. ㅆ은 경음으로, 강한 긴장을 동반하지만 기류는 약합니다."
+                },
+                {
+                    question: "다음 중 한국어의 음절 구조로 올바른 것은?",
+                    options: ["초성+중성+종성", "중성+종성+초성", "초성+종성+중성", "종성+초성+중성"],
+                    answer: 0,
+                    explanation: "한국어의 음절 구조는 '초성+중성+종성'으로, 초성과 종성은 자음, 중성은 모음이 옵니다. 초성과 종성은 생략될 수 있지만, 중성은 필수적입니다."
+                },
+                {
+                    question: "다음 중 파열음이 아닌 것은?",
+                    options: ["ㄱ", "ㄷ", "ㅂ", "ㅅ"],
+                    answer: 3,
+                    explanation: "파열음은 공기의 흐름을 완전히 막았다가 순간적으로 터뜨려 내는 소리로, ㄱ/ㄲ/ㅋ, ㄷ/ㄸ/ㅌ, ㅂ/ㅃ/ㅍ이 있습니다. ㅅ은 마찰음으로, 공기가 좁은 틈을 통과하며 마찰을 일으키는 소리입니다."
+                }
+            ];
+            
+            let currentQuiz = 0;
+            let quizScore = 0;
+            
+            // 퀴즈 시작 함수
+            function startQuiz() {
+                currentQuiz = 0;
+                quizScore = 0;
+                document.getElementById("quiz-score").textContent = quizScore;
+                document.getElementById("quiz-total").textContent = quizQuestions.length;
+                
+                document.getElementById("quiz-options").style.display = "flex";
+                document.getElementById("quiz-next").innerHTML = "다음 문제";
+                document.getElementById("quiz-next").onclick = nextQuiz;
+                document.getElementById("quiz-feedback").textContent = "";
+                
+                showQuiz(currentQuiz);
+            }
+            
+            // 퀴즈 표시 함수
+            function showQuiz(index) {
+                const quiz = quizQuestions[index];
+                document.getElementById("quiz-question").textContent = `${index + 1}. ${quiz.question}`;
+                
+                const optionsContainer = document.getElementById("quiz-options");
+                optionsContainer.innerHTML = "";
+                
+                quiz.options.forEach((option, i) => {
+                    const optionElem = document.createElement("div");
+                    optionElem.className = "quiz-option";
+                    optionElem.textContent = option;
+                    optionElem.onclick = function() { checkAnswer(i); };
+                    optionsContainer.appendChild(optionElem);
+                });
+                
+                document.getElementById("quiz-next").style.display = "none";
+            }
+            
+            // 답변 확인 함수
+            function checkAnswer(selected) {
+                const quiz = quizQuestions[currentQuiz];
+                const options = document.getElementsByClassName("quiz-option");
+                
+                // 모든 옵션 비활성화
+                for (let i = 0; i < options.length; i++) {
+                    options[i].onclick = null;
+                    
+                    if (i === quiz.answer) {
+                        options[i].classList.add("correct");
+                    } else if (i === selected) {
+                        options[i].classList.add("wrong");
+                    }
+                }
+                
+                // 점수 계산 및 피드백
+                if (selected === quiz.answer) {
+                    quizScore++;
+                    document.getElementById("quiz-score").textContent = quizScore;
+                    document.getElementById("quiz-feedback").innerHTML = "<p style='color:green;'>정답입니다!</p><p>" + quiz.explanation + "</p>";
+                } else {
+                    document.getElementById("quiz-feedback").innerHTML = "<p style='color:red;'>틀렸습니다. 정답은 " + quiz.options[quiz.answer] + " 입니다.</p><p>" + quiz.explanation + "</p>";
+                }
+                
+                document.getElementById("quiz-next").style.display = "block";
+            }
+            
+            // 다음 퀴즈 이동 함수
+            function nextQuiz() {
+                currentQuiz++;
+                
+                if (currentQuiz < quizQuestions.length) {
+                    document.getElementById("quiz-feedback").textContent = "";
+                    showQuiz(currentQuiz);
+                } else {
+                    // 퀴즈 완료
+                    document.getElementById("quiz-question").textContent = `퀴즈 완료! 점수: ${quizScore}/${quizQuestions.length}`;
+                    document.getElementById("quiz-options").style.display = "none";
+                    document.getElementById("quiz-feedback").textContent = quizScore === quizQuestions.length ? 
+                        "모든 문제를 맞혔습니다! 훌륭합니다!" : 
+                        "다시 도전해보세요!";
+                    document.getElementById("quiz-next").innerHTML = "다시 시작";
+                    document.getElementById("quiz-next").onclick = startQuiz;
+                }
+            }
+            
+            // 실습 분석 함수
+            function analyzePractice() {
+                const word = document.getElementById("practice-input").value;
+                let result = "";
+                
+                if (!word) {
+                    result = "단어를 입력해주세요.";
+                } else {
+                    result = "<h4>음운 분석</h4>";
+                    
+                    // 자모 분리
+                    let jamoAnalysis = "<p><strong>자모 분리:</strong> ";
+                    for (let i = 0; i < word.length; i++) {
+                        const charCode = word.charCodeAt(i);
+                        
+                        // 한글 음절 범위 (가-힣)
+                        if (charCode >= 0xAC00 && charCode <= 0xD7A3) {
+                            const syllableIndex = charCode - 0xAC00;
+                            const initialIndex = Math.floor(syllableIndex / (21 * 28));
+                            const vowelIndex = Math.floor((syllableIndex % (21 * 28)) / 28);
+                            const finalIndex = syllableIndex % 28;
+                            
+                            const initialOrder = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ";
+                            const vowelOrder = "ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ";
+                            const finalOrder = " ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ";
+                            
+                            const initial = initialOrder[initialIndex];
+                            const vowel = vowelOrder[vowelIndex];
+                            const final = finalIndex > 0 ? finalOrder[finalIndex] : "";
+                            
+                            jamoAnalysis += `[${word[i]}→${initial}${vowel}${final}] `;
+                        } else {
+                            jamoAnalysis += word[i];
+                        }
+                    }
+                    jamoAnalysis += "</p>";
+                    result += jamoAnalysis;
+                    
+                    // 음운 변동 확인
+                    const changes = [
+                        { pattern: /밥물/, pronunciation: "밤물", type: "비음화", desc: "'ㅂ'이 'ㅁ' 앞에서 'ㅁ'으로 변함" },
+                        { pattern: /국물/, pronunciation: "궁물", type: "비음화", desc: "'ㄱ'이 'ㅁ' 앞에서 'ㅇ'으로 변함" },
+                        { pattern: /꽃말/, pronunciation: "꼰말", type: "비음화", desc: "'ㅊ'이 'ㅁ' 앞에서 'ㄴ'으로 변함" },
+                        { pattern: /굳이/, pronunciation: "구지", type: "구개음화", desc: "'ㄷ'이 'ㅣ' 앞에서 'ㅈ'으로 변함" },
+                        { pattern: /같이/, pronunciation: "가치", type: "구개음화", desc: "'ㅌ'이 'ㅣ' 앞에서 'ㅊ'으로 변함" },
+                        { pattern: /학교/, pronunciation: "학꾜", type: "경음화", desc: "'ㄱ' 뒤에 오는 'ㄱ'이 'ㄲ'으로 변함" },
+                        { pattern: /옷장/, pronunciation: "옫짱", type: "경음화", desc: "'ㅅ' 뒤에 오는 'ㅈ'이 'ㅉ'으로 변함" },
+                        { pattern: /맑은/, pronunciation: "말근", type: "음운 탈락", desc: "'ㄹ' 뒤의 'ㄱ'이 탈락함" },
+                        { pattern: /넓다/, pronunciation: "널따", type: "음운 탈락", desc: "'ㄼ'에서 'ㅂ'이 탈락함" },
+                        { pattern: /좋아/, pronunciation: "조아", type: "음운 축약", desc: "'ㅎ'과 'ㅇ'이 축약됨" }
+                    ];
+                    
+                    let changesFound = false;
+                    result += "<h4>음운 변동:</h4>";
+                    
+                    for (const change of changes) {
+                        if (change.pattern.test(word)) {
+                            result += `<div class="change-rule">
+                                <p class="change-rule-title">${change.type}</p>
+                                <p>발음: ${change.pronunciation}</p>
+                                <p>설명: ${change.desc}</p>
+                            </div>`;
+                            changesFound = true;
+                        }
+                    }
+                    
+                    if (!changesFound) {
+                        result += "<p>발견된 음운 변동이 없습니다.</p>";
+                    }
+                }
+                
+                document.getElementById("practice-result").innerHTML = result;
+            }
+            
+            // 페이지 로드 시 초기화
+            window.onload = function() {
+                // 자음 초기화
+                initConsonants();
+                
+                // 모음 초기화
+                initVowels();
+            };
+        </script>
