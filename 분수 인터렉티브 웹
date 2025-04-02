@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>분모 분자 개념 학습</title>
+    <style>
+        /* === CSS 스타일 시작 === */
+        :root {
+            --primary-color: #007bff; /* 파란색 계열 */
+            --secondary-color: #6c757d; /* 회색 계열 */
+            --success-color: #28a745; /* 초록색 */
+            --danger-color: #dc3545; /* 빨간색 */
+            --warning-color: #ffc107; /* 노란색 */
+            --light-bg: #f8f9fa; /* 밝은 배경색 */
+            --border-color: #dee2e6; /* 테두리 색 */
+            --shaded-color: #a9d0ff; /* 채워진 부분 색 */
+            --font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #eef5ff; /* 연한 파란 배경 */
+            margin: 0;
+            padding: 20px 0;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 600px; /* 최대 너비 조정 */
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        h2 {
+            color: var(--secondary-color);
+            font-size: 1.2em;
+            margin-bottom: 25px;
+            font-weight: normal;
+        }
+
+        .problem-area {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: var(--light-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+        }
+
+        .instruction {
+             margin-bottom: 20px;
+             font-size: 1.1em;
+             color: #333;
+        }
+
+        /* 분수 시각화 영역 */
+        .fraction-visual-container {
+            width: 80%; /* 너비 조정 */
+            max-width: 400px; /* 최대 너비 */
+            height: 50px; /* 높이 고정 */
+            border: 2px solid var(--secondary-color);
+            margin: 0 auto 25px auto; /* 가운데 정렬 및 하단 여백 */
+            display: flex; /* 내부 요소를 가로로 배열 */
+            overflow: hidden; /* 넘치는 부분 숨김 */
+            border-radius: 5px; /* 약간 둥글게 */
+        }
+
+        .fraction-part {
+            flex-grow: 1; /* 각 부분이 동일한 너비를 가지도록 함 */
+            height: 100%;
+            border-right: 1px dashed var(--secondary-color); /* 각 부분을 구분하는 점선 */
+            box-sizing: border-box; /* 테두리를 포함하여 크기 계산 */
+            transition: background-color 0.3s ease; /* 부드러운 색상 변화 */
+        }
+
+        .fraction-part:last-child {
+            border-right: none; /* 마지막 부분은 오른쪽 테두리 없음 */
+        }
+
+        .fraction-part.shaded {
+            background-color: var(--shaded-color); /* 채워진 부분 색상 */
+        }
+
+        /* 입력 영역 */
+        .input-area {
+            display: flex;
+            flex-direction: column; /* 세로로 배치 */
+            align-items: center; /* 가운데 정렬 */
+            margin-bottom: 30px;
+        }
+        
+        .fraction-input-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin: 8px 0; /* 위아래 여백 */
+        }
+
+        .input-group label {
+            font-size: 1.1em;
+            width: 50px; /* 라벨 너비 고정 */
+            text-align: right;
+            margin-right: 10px;
+            color: #555;
+        }
+
+        .input-group input[type="number"] {
+            width: 70px; /* 입력 필드 너비 */
+            padding: 10px;
+            font-size: 1.2em;
+            text-align: center;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+            -moz-appearance: textfield;
+        }
+        .input-group input[type="number"]::-webkit-outer-spin-button,
+        .input-group input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .fraction-line {
+            width: 80px; /* 분수 선 너비 */
+            height: 3px; /* 분수 선 두께 */
+            background-color: var(--secondary-color);
+            margin: 2px 0; /* 위아래 약간의 여백 */
+            border-radius: 2px;
+        }
+
+        /* 버튼 영역 */
+        .button-area {
+            margin-bottom: 25px;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: white;
+            background-color: var(--success-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px 10px;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button:active {
+            transform: scale(0.97);
+        }
+
+        #new-button {
+            background-color: var(--warning-color);
+            color: #333; /* 주황색 배경에 어두운 글씨 */
+        }
+
+        /* 피드백 영역 */
+        .feedback {
+            margin-top: 20px;
+            font-size: 1.15em;
+            font-weight: bold;
+            min-height: 40px; /* 최소 높이 확보 */
+            padding: 15px;
+            border-radius: 8px;
+            line-height: 1.5; /* 줄 간격 */
+            display: none; /* 초기에는 숨김 */
+        }
+
+        .feedback.correct {
+            color: var(--success-color);
+            background-color: #e9f7ef;
+            border: 1px solid #c3e6cb;
+            display: block; /* 보이기 */
+        }
+
+        .feedback.incorrect {
+            color: var(--danger-color);
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            display: block; /* 보이기 */
+        }
+        
+         .feedback.info {
+            color: #0c5460;
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            display: block; /* 보이기 */
+        }
+
+        /* 미디어 쿼리: 작은 화면 대응 */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 15px;
+            }
+            h1 {
+                font-size: 1.6em;
+            }
+            h2 {
+                font-size: 1.1em;
+            }
+            .fraction-visual-container {
+                width: 95%;
+                height: 40px;
+            }
+             .input-group label {
+                width: 40px;
+                font-size: 1em;
+            }
+            .input-group input[type="number"] {
+                width: 60px;
+                font-size: 1.1em;
+            }
+             .button-area button {
+                 padding: 10px 20px;
+                 font-size: 1em;
+            }
+            .feedback {
+                font-size: 1.05em;
+            }
+        }
+        /* === CSS 스타일 끝 === */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>분수 친구들: 분모와 분자</h1>
+        <h2>전체를 똑같이 나눈 것 중 몇 개인지 알아봐요!</h2>
+
+        <div class="problem-area">
+            <p class="instruction">아래 그림이 나타내는 분수를 입력해보세요.</p>
+            <div id="fraction-visual" class="fraction-visual-container">
+                </div>
+        </div>
+
+        <div class="input-area">
+             <div class="fraction-input-wrapper">
+                <div class="input-group">
+                    <label for="numerator">분자:</label>
+                    <input type="number" id="numerator" min="0" inputmode="numeric" pattern="[0-9]*">
+                </div>
+                <div class="fraction-line"></div>
+                <div class="input-group">
+                    <label for="denominator">분모:</label>
+                    <input type="number" id="denominator" min="1" inputmode="numeric" pattern="[0-9]*">
+                </div>
+            </div>
+        </div>
+
+        <div class="button-area">
+            <button id="check-button">정답 확인!</button>
+            <button id="new-button">새 문제</button>
+        </div>
+
+        <div id="feedback" class="feedback">
+            </div>
+    </div>
+
+    <script>
+        // === JavaScript 시작 ===
+
+        // HTML 요소 가져오기
+        const fractionVisual = document.getElementById('fraction-visual');
+        const numeratorInput = document.getElementById('numerator');
+        const denominatorInput = document.getElementById('denominator');
+        const checkButton = document.getElementById('check-button');
+        const newButton = document.getElementById('new-button');
+        const feedbackDiv = document.getElementById('feedback');
+
+        let currentNumerator = 0;
+        let currentDenominator = 0;
+
+        // 새 문제 생성 함수
+        function generateNewProblem() {
+            // 분모 생성 (2 ~ 10 사이의 무작위 정수)
+            currentDenominator = Math.floor(Math.random() * 9) + 2;
+            // 분자 생성 (1 ~ 분모 사이의 무작위 정수)
+            currentNumerator = Math.floor(Math.random() * currentDenominator) + 1;
+
+            // 시각화 업데이트
+            updateFractionVisual();
+
+            // 입력 필드 및 피드백 초기화
+            numeratorInput.value = '';
+            denominatorInput.value = '';
+            feedbackDiv.textContent = '';
+            feedbackDiv.className = 'feedback'; // 클래스 리셋 (숨김 상태로)
+            feedbackDiv.style.display = 'none'; // 확실히 숨김 처리
+
+            // 분자 입력 필드에 포커스
+            numeratorInput.focus();
+        }
+
+        // 분수 시각화 업데이트 함수
+        function updateFractionVisual() {
+            fractionVisual.innerHTML = ''; // 이전 시각화 내용 삭제
+
+            for (let i = 0; i < currentDenominator; i++) {
+                const part = document.createElement('div');
+                part.classList.add('fraction-part');
+                // i가 (현재 분자 - 1) 보다 작으면 색칠
+                if (i < currentNumerator) {
+                    part.classList.add('shaded');
+                }
+                fractionVisual.appendChild(part);
+            }
+        }
+
+        // 정답 확인 함수
+        function checkAnswer() {
+            // 사용자 입력 값 가져오기
+            const userNumeratorStr = numeratorInput.value.trim();
+            const userDenominatorStr = denominatorInput.value.trim();
+
+            // 입력 값 유효성 검사 (빈칸 확인)
+            if (userNumeratorStr === '' || userDenominatorStr === '') {
+                 feedbackDiv.textContent = '⚠️ 분자와 분모를 모두 입력해주세요!';
+                 feedbackDiv.className = 'feedback info'; // 정보 피드백 스타일
+                 feedbackDiv.style.display = 'block';
+                 return;
+            }
+            
+            const userNumerator = parseInt(userNumeratorStr);
+            const userDenominator = parseInt(userDenominatorStr);
+
+            // 입력 값 유효성 검사 (숫자 확인 및 분모 0 확인)
+            if (isNaN(userNumerator) || isNaN(userDenominator)) {
+                 feedbackDiv.textContent = '⚠️ 숫자를 정확히 입력해주세요!';
+                 feedbackDiv.className = 'feedback info';
+                 feedbackDiv.style.display = 'block';
+                 return;
+            }
+            if (userDenominator === 0) {
+                feedbackDiv.textContent = '⚠️ 분모는 0이 될 수 없어요!';
+                feedbackDiv.className = 'feedback info';
+                feedbackDiv.style.display = 'block';
+                denominatorInput.focus(); // 분모 입력칸으로 포커스 이동
+                return;
+            }
+             if (userDenominator < 1) {
+                feedbackDiv.textContent = '⚠️ 분모는 1보다 작을 수 없어요!';
+                feedbackDiv.className = 'feedback info';
+                feedbackDiv.style.display = 'block';
+                denominatorInput.focus(); 
+                return;
+            }
+
+
+            // 정답 비교
+            if (userNumerator === currentNumerator && userDenominator === currentDenominator) {
+                feedbackDiv.textContent = `딩동댕! 🎉 정답입니다! ${currentDenominator}개로 똑같이 나눈 것 중 ${currentNumerator}개를 나타내는 분수는 ${currentDenominator}분의 ${currentNumerator} (${currentNumerator}/${currentDenominator}) 맞아요!`;
+                feedbackDiv.className = 'feedback correct';
+            } else {
+                feedbackDiv.textContent = `아쉬워요. 🤔 그림은 ${currentDenominator}개로 똑같이 나눈 것 중 ${currentNumerator}개를 색칠했어요. 따라서 정답은 ${currentDenominator}분의 ${currentNumerator} (${currentNumerator}/${currentDenominator}) 입니다. 다시 시도해보세요!`;
+                feedbackDiv.className = 'feedback incorrect';
+            }
+            feedbackDiv.style.display = 'block'; // 피드백 보이기
+        }
+
+        // --- 이벤트 리스너 설정 ---
+
+        // '정답 확인!' 버튼 클릭 시 checkAnswer 함수 실행
+        checkButton.addEventListener('click', checkAnswer);
+
+        // '새 문제' 버튼 클릭 시 generateNewProblem 함수 실행
+        newButton.addEventListener('click', generateNewProblem);
+
+        // Enter 키 입력 시 정답 확인 (분모 입력 칸에서)
+        denominatorInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                 event.preventDefault(); // 기본 동작(폼 제출 등) 방지
+                 checkAnswer();
+            }
+        });
+         // Enter 키 입력 시 정답 확인 (분자 입력 칸에서) - 분모로 포커스 이동 또는 바로 확인
+         numeratorInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                 event.preventDefault(); 
+                 denominatorInput.focus(); // 분모 칸으로 이동
+                 // 또는 여기서 바로 checkAnswer()를 호출해도 됨
+                 // checkAnswer(); 
+            }
+        });
+
+        // --- 페이지 로드 시 초기화 ---
+        // 페이지가 처음 로드될 때 새 문제를 생성하여 보여줌
+        generateNewProblem();
+
+        // === JavaScript 끝 ===
+    </script>
+</body>
+</html>
