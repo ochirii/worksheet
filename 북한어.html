@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>남북한 언어 차이 학습지</title>
+    <style>
+        :root {
+            --primary-color: #4d8cdb;
+            --secondary-color: #e63946;
+            --light-color: #f1faee;
+            --dark-color: #1d3557;
+            --accent-color: #a8dadc;
+            --success-color: #2a9d8f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Nanum Gothic', sans-serif; /* '맑은 고딕' 대신 웹 폰트나 시스템 기본 글꼴 사용 권장 */
+        }
+
+        body {
+            background-color: #f5f5f7;
+            color: var(--dark-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 28px;
+            margin-bottom: 10px;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1:after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 10%;
+            right: 10%;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        }
+
+        h2 {
+            color: var(--dark-color);
+            font-size: 22px;
+            margin: 25px 0 15px;
+            padding-left: 15px;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            font-size: 18px;
+            margin: 20px 0 10px;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        .tab-container {
+            margin: 30px 0;
+        }
+
+        .tabs {
+            display: flex;
+            background-color: var(--light-color);
+            border-radius: 8px 8px 0 0;
+            overflow: hidden;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            background-color: #e9ecef;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            border: none;
+            flex: 1;
+            text-align: center;
+            font-size: 16px; /* 탭 버튼 글자 크기 조정 */
+        }
+
+        .tab:hover {
+             background-color: #dee2e6; /* 호버 효과 추가 */
+        }
+
+        .tab.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+            border: 1px solid #e9ecef; /* 카드 테두리 추가 */
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-title {
+            font-weight: bold;
+            margin-bottom: 15px; /* 간격 조정 */
+            color: var(--primary-color);
+            font-size: 18px;
+        }
+
+        .example-box {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .definition-box {
+            background-color: #e9f2f5;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0 15px 0; /* 아래쪽 마진 추가 */
+            border-left: 4px solid #74b9e8;
+            font-size: 0.95em;
+        }
+
+        .south {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .north {
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px; /* 버튼 글자 크기 통일 */
+            transition: all 0.3s ease;
+            margin-top: 5px; /* 위쪽 여백 추가 */
+        }
+
+        .btn:hover {
+            background-color: #3a6ea5;
+            transform: translateY(-2px);
+        }
+
+        .quiz-container {
+            margin-top: 30px; /* 위쪽 여백 증가 */
+        }
+
+        .quiz-question {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.05em; /* 질문 글자 살짝 키움 */
+        }
+
+        .quiz-options {
+            margin-bottom: 20px;
+        }
+
+        .quiz-option {
+            display: block;
+            padding: 10px 15px; /* 패딩 조정 */
+            margin: 8px 0; /* 옵션 간 간격 조정 */
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .quiz-option:hover {
+            background-color: #e9ecef;
+        }
+
+        .quiz-option.selected {
+            background-color: var(--accent-color);
+            border-color: var(--primary-color);
+            font-weight: bold; /* 선택된 옵션 강조 */
+        }
+
+        .quiz-option.correct {
+            background-color: #d4edda !important; /* important 추가 */
+            border-color: var(--success-color) !important;
+            color: #155724;
+            font-weight: bold;
+        }
+
+        .quiz-option.incorrect {
+            background-color: #f8d7da !important; /* important 추가 */
+            border-color: var(--secondary-color) !important;
+            color: #721c24;
+            font-weight: bold;
+        }
+
+        .feedback {
+            padding: 12px; /* 패딩 조정 */
+            border-radius: 5px;
+            margin-top: 10px;
+            font-weight: bold; /* 피드백 텍스트 강조 */
+            display: none;
+        }
+
+        .feedback.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid var(--success-color); /* 테두리 추가 */
+        }
+
+        .feedback.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid var(--secondary-color); /* 테두리 추가 */
+        }
+
+        .matching-game {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-top: 20px;
+            gap: 10px; /* 카드 사이 간격 */
+        }
+
+        .matching-card {
+            width: calc(50% - 10px); /* gap 고려하여 너비 조정 */
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            display: flex; /* Flexbox 사용 */
+            justify-content: center; /* 가로 중앙 정렬 */
+            align-items: center; /* 세로 중앙 정렬 */
+            min-height: 60px; /* 최소 높이 지정 */
+        }
+
+        .matching-card:hover {
+            background-color: #e9ecef;
+            transform: scale(1.03); /* 호버 시 살짝 커짐 */
+        }
+
+        .matching-card.selected {
+            background-color: var(--accent-color);
+            border-color: var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        .matching-card.correct {
+            background-color: #d4edda;
+            border-color: var(--success-color);
+            color: #155724;
+            cursor: default;
+            opacity: 0.7; /* 맞춘 카드 약간 투명하게 */
+            transform: scale(1); /* 크기 복원 */
+        }
+
+        .completion-message {
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #d4edda;
+            color: #155724;
+            border-radius: 8px;
+            display: none;
+            font-weight: bold;
+        }
+
+        .writing-activity {
+            margin-top: 20px;
+        }
+
+        textarea, input[type="text"] { /* input 필드 스타일 추가 */
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            margin: 10px 0;
+            resize: vertical;
+            min-height: 120px;
+            font-size: 16px;
+            font-family: inherit; /* 부모 폰트 상속 */
+        }
+        input[type="text"] {
+             min-height: auto; /* input 높이 자동 조절 */
+             padding: 10px 15px; /* input 패딩 조정 */
+        }
+
+
+        .flipcard {
+            perspective: 1000px;
+            width: 100%;
+            height: 100px; /* 높이 조정 */
+            margin: 20px 0;
+            cursor: pointer; /* 마우스 커서 변경 */
+        }
+
+        .flipcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* 그림자 추가 */
+            border-radius: 8px; /* 모서리 둥글게 */
+        }
+
+        /* active 클래스가 추가되면 카드 뒤집기 */
+        .flipcard.active .flipcard-inner {
+            transform: rotateY(180deg);
+        }
+        /* 호버 효과 제거: .flipcard:hover .flipcard-inner { transform: rotateY(180deg); } */
+
+
+        .flipcard-front, .flipcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; /* Safari */
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+        .flipcard-front {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            font-size: 18px; /* 글자 크기 조정 */
+        }
+
+        .flipcard-back {
+            background-color: var(--secondary-color);
+            color: white;
+            transform: rotateY(180deg);
+            font-weight: bold;
+            font-size: 18px; /* 글자 크기 조정 */
+            padding: 15px; /* 내용 많을 경우 대비 */
+        }
+
+        .instructions {
+            font-style: italic;
+            color: #6c757d;
+            margin-bottom: 15px;
+            font-size: 0.9em; /* 약간 작게 */
+        }
+
+        .hint {
+            color: #6c757d;
+            font-style: italic;
+            font-size: 0.9em;
+            margin-top: 5px;
+            background-color: #f8f9fa;
+            padding: 8px;
+            border-radius: 4px;
+            display: none; /* 기본 숨김 */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0; /* 테이블 여백 */
+        }
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 8px 10px; /* 셀 패딩 조정 */
+            text-align: center;
+        }
+        th {
+            background-color: #e9ecef; /* 헤더 배경색 */
+            font-weight: bold;
+        }
+
+
+        footer {
+            text-align: center;
+            margin-top: 40px; /* 위쪽 여백 증가 */
+            padding-top: 20px; /* 위쪽 패딩 추가 */
+            border-top: 1px solid #dee2e6; /* 구분선 추가 */
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px; /* 모바일 패딩 조정 */
+            }
+             h1 { font-size: 24px; }
+             h2 { font-size: 20px; }
+             h3 { font-size: 17px; }
+
+             .tabs { flex-direction: column; border-radius: 8px; } /* 탭 세로 정렬 */
+             .tab { border-radius: 0; border-bottom: 1px solid #ccc; }
+             .tab:last-child { border-bottom: none; }
+             .tab.active { border-radius: 0; } /* 활성 탭 모서리 제거 */
+             .tab-content { border-radius: 0 0 8px 8px; }
+
+            .matching-card {
+                width: 100%; /* 모바일에서는 카드 한 줄에 하나씩 */
+                 min-height: 50px;
+            }
+             .flipcard { height: 120px; } /* 플립카드 높이 조정 */
+             .flipcard-front, .flipcard-back { font-size: 16px; }
+        }
+         @media (max-width: 480px) {
+             body { padding: 10px; }
+             .container { padding: 15px; }
+             h1 { font-size: 22px; }
+             h2 { font-size: 18px; }
+             .btn { font-size: 13px; padding: 8px 12px; }
+             textarea, input[type="text"] { font-size: 14px; padding: 10px; }
+         }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>남북한 언어 차이 학습지</h1>
+            <p>중학교 3학년용 한국어 학습자료</p>
+        </header>
+
+        <div class="tab-container">
+            <div class="tabs">
+                <button class="tab active" onclick="openTab(event, 'concept')">개념 학습</button>
+                <button class="tab" onclick="openTab(event, 'activity')">체험 학습</button>
+            </div>
+
+            <div id="concept" class="tab-content active">
+                <h2>남북한 언어의 차이 이해하기</h2>
+
+                <div class="card">
+                    <div class="card-title">1. 맞춤법의 차이</div>
+
+                    <h3>1.1 사이시옷</h3>
+                    <div class="definition-box">
+                        <strong>사이시옷이란?</strong> 합성어에서 앞말이 모음으로 끝나고 뒷말의 첫소리가 된소리이거나, 뒷말의 첫소리 'ㄴ, ㅁ' 앞에서 'ㄴ' 소리가 덧나는 경우, 또는 뒷말의 첫소리 모음 앞에서 'ㄴㄴ' 소리가 덧나는 경우에, 앞말의 받침으로 쓰는 'ㅅ'을 말합니다. (남한 기준 설명)
+                    </div>
+                    <p>남한은 특정 조건에서 사이시옷을 사용하지만, 북한은 원칙적으로 사용하지 않습니다.</p>
+                    <div class="example-box">
+                        <p><span class="south">남한</span>: 나무 + 잎 → <strong>나뭇잎</strong> (사이시옷 사용)</p>
+                        <p><span class="north">북한</span>: 나무 + 잎 → <strong>나무잎</strong> (사이시옷 미사용)</p>
+                        <hr style="border: none; border-top: 1px dashed #ccc; margin: 10px 0;">
+                        <p><span class="south">남한</span>: 아래 + 집 → <strong>아랫집</strong></p>
+                        <p><span class="north">북한</span>: 아래 + 집 → <strong>아래집</strong></p>
+                    </div>
+
+                    <h3>1.2 두음법칙</h3>
+                    <div class="definition-box">
+                        <strong>두음법칙이란?</strong> 단어의 첫머리(두음)에 특정 자음(주로 'ㄹ'이나 'ㄴ' 계열)이 오는 것을 꺼려 다른 자음('ㅇ'이나 'ㄴ' 등)으로 발음하거나 표기하는 규칙입니다. (남한 기준 설명)
+                    </div>
+                    <p>남한은 한자어에서 두음법칙을 적용하지만, 북한은 적용하지 않아 원음대로 표기합니다.</p>
+                    <div class="example-box">
+                        <p><span class="south">남한</span>: <strong>여자</strong>(女子), <strong>역사</strong>(歷史), <strong>이용</strong>(利用), <strong>노동</strong>(勞動)</p>
+                        <p><span class="north">북한</span>: <strong>녀자</strong>, <strong>력사</strong>, <strong>리용</strong>, <strong>로동</strong></p>
+                    </div>
+
+                    <h3>1.3 띄어쓰기 차이</h3>
+                    <p>남북한은 의존 명사, 보조 용언 등에서 띄어쓰기 방식에 차이가 있습니다.</p>
+                    <div class="example-box">
+                        <p><strong>의존 명사</strong><br>
+                        <span class="south">남한</span>: 하는 <strong>것</strong>이 좋다, 먹을 <strong>수</strong> 있다 (앞말과 띄어 씀)<br>
+                        <span class="north">북한</span>: 하는<strong>것</strong>이 좋다, 먹을<strong>수</strong> 있다 (앞말에 붙여 씀)</p>
+                        <hr style="border: none; border-top: 1px dashed #ccc; margin: 10px 0;">
+                        <p><strong>단위를 나타내는 명사</strong><br>
+                        <span class="south">남한</span>: 열 <strong>살</strong>, 다섯 <strong>개</strong> (앞말과 띄어 씀)<br>
+                        <span class="north">북한</span>: 열<strong>살</strong>, 다섯<strong>개</strong> (앞말에 붙여 씀)</p>
+                        <hr style="border: none; border-top: 1px dashed #ccc; margin: 10px 0;">
+                        <p><strong>보조 용언</strong><br>
+                        <span class="south">남한</span>: 읽어 <strong>보다</strong>, 도와 <strong>주다</strong> ('-아/-어' 뒤 보조 용언 띄어쓰기 원칙, 붙여 쓰기 허용)<br>
+                        <span class="north">북한</span>: 읽어<strong>보다</strong>, 도와<strong>주다</strong> (붙여 씀)</p>
+                    </div>
+                    <div class="definition-box">
+                        <strong>보조 용언이란?</strong> 주로 다른 용언 뒤에 붙어서 의미를 더해주는 용언입니다. '보다', '주다', '버리다', '싶다' 등이 있습니다. 남한에서는 본용언과 보조 용언을 띄어 쓰는 것이 원칙이나, 경우에 따라 붙여 쓰는 것도 허용합니다. 북한에서는 대체로 붙여 씁니다.
+                    </div>
+
+                    <h3>1.4 어미의 표기</h3>
+                    <p>과거 시제 선어말 어미 '-었-' 등의 축약 형태 사용에 차이가 있습니다.</p>
+                    <div class="example-box">
+                        <p><span class="south">남한</span>: <strong>했다</strong> (하였다), <strong>됐다</strong> (되었다) (준말 형태 주로 사용)<br>
+                            *물론 '하였다', '되었다'도 사용</p>
+                        <p><span class="north">북한</span>: <strong>하였다</strong>, <strong>되였다</strong> (원래 형태 주로 사용)</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">2. 어휘의 차이</div>
+
+                    <h3>2.1 표준어와 문화어</h3>
+                    <p>남한은 서울말을 기준으로 한 '표준어'를, 북한은 평양말을 기준으로 하고 주체사상을 반영한 '문화어'를 사용합니다.</p>
+
+                    <div class="flipcard" onclick="this.classList.toggle('active')">
+                        <div class="flipcard-inner">
+                            <div class="flipcard-front">
+                                💡 표준어 vs 문화어 (클릭해보세요)
+                            </div>
+                            <div class="flipcard-back">
+                                <span class="south">표준어</span>: 교양 있는 사람들이 두루 쓰는 현대 서울말<br>
+                                <hr style="border-color: rgba(255,255,255,0.5); margin: 5px 0;">
+                                <span class="north">문화어</span>: 평양말을 기준으로 혁명적 사상과 문화를 담은 언어
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>2.2 일상 용어 비교</h3>
+                    <div class="example-box">
+                         <table>
+                            <thead>
+                                <tr><th>구분</th><th>남한 표준어</th><th>북한 문화어</th></tr>
+                             </thead>
+                             <tbody>
+                                <tr><td>채소</td><td>상추</td><td>부루</td></tr>
+                                <tr><td>음료</td><td>주스</td><td>단물</td></tr>
+                                <tr><td>간식</td><td>아이스크림</td><td>얼음보숭이</td></tr>
+                                <tr><td>간식</td><td>도넛</td><td>가락지빵</td></tr>
+                                <tr><td>교통</td><td>헬리콥터</td><td>직승비행기</td></tr>
+                                <tr><td>운동</td><td>축구 골</td><td>축구 문</td></tr>
+                                <tr><td>화장실</td><td>화장실</td><td>위생실</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3>2.3 외래어 차이</h3>
+                    <p>남한은 외래어를 비교적 많이 받아들이는 반면, 북한은 외래어를 순화하거나 러시아어 등의 영향을 받은 표현을 사용하는 경향이 있습니다.</p>
+                    <div class="example-box">
+                        <p><span class="south">남한</span>: 컴퓨터, 프린터, 키보드, 마우스, 파일, 스트레스</p>
+                        <p><span class="north">북한</span>: 콤퓨터(또는 컴퓨타), 인쇄기, 글자판, 누리개, 파일(또는 화일), 스트레스(또는 쓰뜨레스)</p>
+                        <p style="font-size:0.9em; color:#6c757d; margin-top:10px;">*북한도 '컴퓨터', '파일', '스트레스' 등 일부 외래어는 그대로 사용하기도 합니다.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">3. 남북한 언어 차이 극복 노력</div>
+
+                    <p>분단으로 인해 벌어진 남북한의 언어 차이를 줄이고 동질성을 회복하기 위한 노력이 필요합니다.</p>
+
+                    <h3>3.1 공동 연구 및 편찬 사업</h3>
+                    <ul style="margin-left: 20px; margin-bottom: 15px; list-style-type: disc;">
+                        <li><strong>겨레말큰사전 공동 편찬:</strong> 남북한 및 해외 학자들이 함께 참여하여 남북의 어휘를 총망라하는 사전 편찬 사업 진행 중</li>
+                        <li>남북 언어 비교 연구</li>
+                    </ul>
+
+                    <h3>3.2 교육 및 교류</h3>
+                    <ul style="margin-left: 20px; margin-bottom: 15px; list-style-type: disc;">
+                        <li>학교 교육 과정에 남북한 언어 차이 내용 포함</li>
+                        <li>언어 관련 학술 교류 및 공동 행사 추진 (상황에 따라 유동적)</li>
+                        <li>탈북민 대상 남한 언어 교육 지원</li>
+                    </ul>
+
+                    <h3>3.3 기술 활용</h3>
+                     <ul style="margin-left: 20px; margin-bottom: 15px; list-style-type: disc;">
+                        <li>남북한 용어 번역 앱 또는 웹 서비스 개발</li>
+                        <li>인공지능(AI) 기반 언어 차이 분석 및 변환 기술 연구</li>
+                    </ul>
+                </div>
+
+                <div class="quiz-container">
+                    <h2>개념 확인 퀴즈</h2>
+                    <p class="instructions">배운 내용을 바탕으로 각 질문에 가장 적합한 답을 하나 선택하세요.</p>
+
+                    <div class="quiz-question">1. 북한의 문화어 표기법에 따르면, 남한의 '나뭇잎'은 어떻게 표기하는 것이 일반적일까요?</div>
+                    <div class="quiz-options" data-correct="나무잎">
+                        <div class="quiz-option" onclick="checkAnswer(this)">① 나무잎</div>
+                        <div class="quiz-option" onclick="checkAnswer(this)">② 나무이프</div>
+                        <div class="quiz-option" onclick="checkAnswer(this)">③ 나무입</div>
+                        <div class="quiz-option" onclick="checkAnswer(this)">④ 나뭇잎</div>
+                    </div>
+                    <div class="feedback"></div>
+
+                    <div class="quiz-question">2. 남한에서 '여자(女子)'라고 쓰는 단어를 북한에서 '녀자'라고 쓰는 이유는 주로 어떤 맞춤법 규정의 차이 때문인가요?</div>
+                    <div class="quiz-options" data-correct="두음법칙 미적용">
+                        <div class="quiz-option" onclick="checkAnswer(this)">① 두음법칙 미적용</div>
+                        <div class="quiz-option" onclick="checkAnswer(this)">② 사이시옷 규칙</div>
+                        <div class="quiz-option" onclick="checkAnswer(this)">③ 의존명사 띄어쓰기</div>
+                        <div class="quiz-option" onclick="checkAnswer(this)">④ 어미 축약 규칙</div>
+                    </div>
+                    <div class="feedback"></div>
+
+                    <div class="quiz-question">3. 남한에서 사용하는 '아이스크림'에 해당하는 북한 문화어는 무엇인가요?</div>
+                     <div class="quiz-options" data-correct="얼음보숭이">
+                        <div class="quiz-option" onclick="checkAnswer(this)">① 얼음과자</div>
+                        <div class="quiz-option" onclick="checkAnswer(this)">② 얼음보숭이</div>
+                        <div class="quiz-option" onclick="checkAnswer(this)">③ 차가운크림</div>
+                        <div class="quiz-option" onclick="checkAnswer(this)">④ 아이스크레마</div>
+                    </div>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <div id="activity" class="tab-content">
+                <h2>남북한 언어 체험 활동</h2>
+
+                <div class="card">
+                    <div class="card-title">남북한 단어 짝 맞추기</div>
+                    <p class="instructions">아래 카드 중 의미가 같은 남한 표준어와 북한 문화어 카드를 찾아 차례로 클릭하여 짝을 맞춰보세요.</p>
+
+                    <div class="matching-game" id="matching-game">
+                        </div>
+
+                    <div class="completion-message" id="matching-completion">
+                        🎉 축하합니다! 모든 짝을 찾았습니다! 👏
+                    </div>
+                     <button class="btn" onclick="createMatchingCards()" style="margin-top: 15px;">다시하기</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">문장 변환 연습</div>
+                    <p class="instructions">아래 제시된 남한식 문장을 북한식 표현을 사용하여 바꿔 써보세요. (정답은 여러 가지일 수 있습니다)</p>
+
+                    <div class="example-box">
+                        <p><strong>예시</strong>:</p>
+                        <p><span class="south">남한</span>: 나는 학교 운동장에서 친구들과 축구를 했다.</p>
+                        <p><span class="north">북한 (예상)</span>: 나는 학교운동장에서 동무들과 축구를 하였다.</p>
+                    </div>
+
+                    <div class="writing-activity">
+                        <p><strong>1. 남한 문장:</strong> 예쁜 여자가 컴퓨터로 숙제를 했다.</p>
+                        <textarea placeholder="북한식 표현으로 바꿔 써보세요... (예: 두음법칙, 어미, 어휘 등 고려)"></textarea>
+                        <button class="btn" onclick="showHint(0)">힌트 보기</button>
+                        <p class="hint">힌트: '예쁜' → '곱다' 또는 '아름답다', '여자' → '녀자', '컴퓨터' → '콤퓨터', '숙제' → '과제', '했다' → '하였다' 등을 고려해 보세요.</p>
+
+                        <p style="margin-top:20px;"><strong>2. 남한 문장:</strong> 점심으로 비빔밥을 먹을 수 있을까?</p>
+                        <textarea placeholder="북한식 표현으로 바꿔 써보세요... (예: 띄어쓰기, 어휘 등 고려)"></textarea>
+                        <button class="btn" onclick="showHint(1)">힌트 보기</button>
+                        <p class="hint">힌트: '점심' → '점심밥' 또는 '오찬', '비빔밥' → 동일, '먹을 수 있을까' → '먹을수 있을가?' (의존명사 붙여쓰기, 의문형 어미 '-ㄹ가') 등을 고려해 보세요.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">통일 시대 뉴스 대본 작성하기</div>
+                    <p class="instructions">미래에 통일이 되었다고 상상하고, 남북한 주민 모두가 쉽게 이해할 수 있는 짧은 뉴스 대본(1~2문단)을 작성해 보세요.</p>
+
+                    <div class="example-box">
+                        <p><strong>주제 예시</strong>: 남북 공동 관광 특구 개방 소식</p>
+                        <p><strong>고려할 점</strong>: 특정 지역(남/북)에서만 주로 쓰이는 단어보다는 공통적으로 이해 가능한 단어 사용, 외래어 사용 시 신중</p>
+                    </div>
+
+                    <div class="writing-activity">
+                        <textarea placeholder="예: 안녕하십니까? 통일 뉴스입니다. 오늘, 금강산과 설악산을 잇는 새로운 관광 길이 열렸습니다. 남과 북의 주민들이 함께..." rows="6"></textarea>
+                        <button class="btn" onclick="saveNews()">작성 내용 저장 (임시)</button>
+                        <div id="saved-message" style="display:none; color: var(--success-color); margin-top: 10px; font-weight:bold;">
+                            작성하신 내용이 임시로 저장되었습니다! (실제 저장 기능 없음)
+                        </div>
+                    </div>
+                </div>
+
+                 <div class="card">
+                    <div class="card-title">언어 차이 극복 아이디어 제안</div>
+                    <p class="instructions">남북한 언어 차이를 줄이고 서로 더 잘 소통하기 위해 어떤 노력이 필요할까요? 자유롭게 아이디어를 제안해 보세요.</p>
+
+                    <div class="writing-activity">
+                        <p><strong>아이디어 제목</strong>:</p>
+                        <input type="text" placeholder="예: 남북 청소년 언어 교류 앱 개발">
+
+                        <p><strong>아이디어 설명</strong>:</p>
+                        <textarea placeholder="예: 남북한 청소년들이 서로의 일상 용어나 신조어를 퀴즈, 게임 형태로 배우고 공유할 수 있는 스마트폰 앱을 만듭니다..." rows="4"></textarea>
+
+                        <p><strong>기대 효과</strong>:</p>
+                        <textarea placeholder="예: 젊은 세대 간의 언어 장벽을 낮추고 문화적 이해도를 높일 수 있습니다..." rows="3"></textarea>
+
+                         <button class="btn" onclick="alert('아이디어가 제출되었습니다! (실제 제출 기능 없음)')">아이디어 제출하기</button>
+                    </div>
+                </div>
+
+            </div> </div> <footer>
+            남북한 언어의 이해와 소통을 위한 학습 자료입니다. (2025)
+        </footer>
+    </div> <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove('active');
+            }
+            tablinks = document.getElementsByClassName("tab");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove('active');
+            }
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
+
+             // 탭 전환 시 스크롤 맨 위로 이동 (선택 사항)
+             // window.scrollTo(0, 0);
+        }
+
+        // --- 퀴즈 로직 수정 ---
+        function checkAnswer(element) {
+            const optionsContainer = element.parentElement;
+            const correctAnswerText = optionsContainer.dataset.correct; // 정답은 부모 요소의 data-correct 속성에서 가져옴
+            const options = optionsContainer.getElementsByClassName('quiz-option');
+            const feedbackElement = optionsContainer.nextElementSibling; // 피드백 div
+
+            let alreadyAnswered = false;
+            for(let option of options) {
+                if(option.classList.contains('correct') || option.classList.contains('incorrect')) {
+                    alreadyAnswered = true;
+                    break;
+                }
+            }
+
+            if (alreadyAnswered) return; // 이미 답을 선택했으면 더 이상 진행하지 않음
+
+            // 선택한 옵션 텍스트 추출 (예: "① 나무잎" -> "나무잎")
+            const selectedAnswerText = element.textContent.replace(/^[①②③④]\s*/, '').trim();
+
+             // 모든 옵션의 클릭 이벤트 제거 및 스타일 초기화 (선택 시점에)
+            for(let option of options) {
+                 option.classList.remove('selected');
+                 option.onclick = null; // 이벤트 리스너 제거
+            }
+            element.classList.add('selected'); // 현재 선택한 것만 selected 표시
+
+            if (selectedAnswerText === correctAnswerText) {
+                element.classList.add('correct');
+                feedbackElement.textContent = '👍 정답입니다!';
+                feedbackElement.className = 'feedback success';
+            } else {
+                element.classList.add('incorrect');
+                feedbackElement.textContent = `❌ 오답입니다. 정답은 '${correctAnswerText}'입니다.`;
+                feedbackElement.className = 'feedback error';
+                // 정답 옵션 찾아서 correct 클래스 추가
+                for(let option of options) {
+                    if (option.textContent.replace(/^[①②③④]\s*/, '').trim() === correctAnswerText) {
+                        option.classList.add('correct');
+                        break;
+                    }
+                }
+            }
+            feedbackElement.style.display = 'block';
+        }
+
+
+        function showHint(index) {
+           const hints = document.querySelectorAll('.writing-activity .hint');
+           if (hints[index]) {
+               hints[index].style.display = hints[index].style.display === 'none' ? 'block' : 'none'; // 토글 방식
+           }
+        }
+
+        function saveNews() {
+            const messageDiv = document.getElementById('saved-message');
+            messageDiv.style.display = 'block';
+            setTimeout(() => { messageDiv.style.display = 'none'; }, 3000);
+        }
+
+         // --- 플립카드 클릭 이벤트 ---
+         document.querySelectorAll('.flipcard').forEach(card => {
+            card.addEventListener('click', () => {
+                card.classList.toggle('active');
+            });
+         });
+
+        // --- 짝 맞추기 게임 로직 ---
+        const matchingPairs = [
+            { south: '상추', north: '부루', id: 1 },
+            { south: '아이스크림', north: '얼음보숭이', id: 2 },
+            { south: '주스', north: '단물', id: 3 },
+            { south: '헬리콥터', north: '직승비행기', id: 4 },
+            { south: '도넛', north: '가락지빵', id: 5 },
+            { south: '화장실', north: '위생실', id: 6 }
+        ];
+
+        let firstSelectedCard = null;
+        let secondSelectedCard = null;
+        let matchedPairsCount = 0;
+        let lockBoard = false; // 카드 클릭 잠금 변수
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function createMatchingCards() {
+            const gameContainer = document.getElementById('matching-game');
+            gameContainer.innerHTML = ''; // 초기화
+            matchedPairsCount = 0;
+            firstSelectedCard = null;
+            secondSelectedCard = null;
+            lockBoard = false;
+            document.getElementById('matching-completion').style.display = 'none';
+
+            const cardsData = [];
+            matchingPairs.forEach(pair => {
+                cardsData.push({ text: pair.south, type: 'south', pairId: pair.id });
+                cardsData.push({ text: pair.north, type: 'north', pairId: pair.id });
+            });
+
+            shuffleArray(cardsData);
+
+            cardsData.forEach(cardData => {
+                const cardElement = document.createElement('div');
+                cardElement.classList.add('matching-card');
+                cardElement.textContent = cardData.text;
+                cardElement.dataset.type = cardData.type;
+                cardElement.dataset.pairId = cardData.pairId;
+                cardElement.addEventListener('click', handleCardClick); // 이벤트 리스너 사용
+                gameContainer.appendChild(cardElement);
+            });
+        }
+
+        function handleCardClick(event) {
+             if (lockBoard) return; // 보드 잠금 상태면 클릭 무시
+            const clickedCard = event.currentTarget;
+            if (clickedCard === firstSelectedCard || clickedCard.classList.contains('correct')) return; // 같은 카드 또는 이미 맞춘 카드 클릭 무시
+
+            clickedCard.classList.add('selected');
+
+            if (!firstSelectedCard) {
+                firstSelectedCard = clickedCard;
+                return; // 첫 번째 카드 선택 완료
+            }
+
+            // 두 번째 카드 선택
+            secondSelectedCard = clickedCard;
+            lockBoard = true; // 두 개 선택 시 잠금
+
+            checkMatch();
+        }
+
+        function checkMatch() {
+            const isMatch = firstSelectedCard.dataset.pairId === secondSelectedCard.dataset.pairId;
+
+            if (isMatch) {
+                disableCards();
+            } else {
+                unselectCards();
+            }
+        }
+
+        function disableCards() {
+            firstSelectedCard.classList.remove('selected');
+            secondSelectedCard.classList.remove('selected');
+            firstSelectedCard.classList.add('correct');
+            secondSelectedCard.classList.add('correct');
+            // 이벤트 리스너 제거 대신 CSS로 처리하거나, 여기서 명시적으로 제거
+             firstSelectedCard.removeEventListener('click', handleCardClick);
+             secondSelectedCard.removeEventListener('click', handleCardClick);
+
+            matchedPairsCount++;
+            resetBoard();
+
+            if (matchedPairsCount === matchingPairs.length) {
+                setTimeout(() => { // 약간의 딜레이 후 완료 메시지 표시
+                     document.getElementById('matching-completion').style.display = 'block';
+                }, 500);
+            }
+        }
+
+        function unselectCards() {
+            setTimeout(() => {
+                firstSelectedCard.classList.remove('selected');
+                secondSelectedCard.classList.remove('selected');
+                resetBoard();
+            }, 800); // 0.8초 후 틀린 카드 원상복구
+        }
+
+        function resetBoard() {
+            [firstSelectedCard, secondSelectedCard] = [null, null];
+            lockBoard = false; // 보드 잠금 해제
+        }
+
+        // 페이지 로드 시 게임 자동 시작
+        document.addEventListener('DOMContentLoaded', createMatchingCards);
+
+    </script>
+    </body>
+</html>
